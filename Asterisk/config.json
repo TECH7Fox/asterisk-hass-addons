@@ -1,6 +1,6 @@
 {
   "name": "Asterisk",
-  "version": "0.96",
+  "version": "0.97",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
