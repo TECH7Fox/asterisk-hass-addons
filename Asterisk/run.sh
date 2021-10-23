@@ -72,6 +72,7 @@ fi
 for extension in $(bashio::config 'custom_extensions|keys')
 do
     EXTENSION=$(bashio::config "custom_extensions[${extension}].extension")
+    SECRET=$(bashio::config "custom_extensions[${extension}].secret")
     CONFIG=$(bashio::config "custom_extensions[${extension}].configuration")
     TYPE=$(bashio::config "custom_extensions[${extension}].type")
     NAME=$(bashio::config "custom_extensions[${extension}].name")
@@ -80,6 +81,7 @@ do
     echo "
     [${EXTENSION}]
     username=${NAME}
+    secret=${SECRET}
     ${CONFIG}
     " >> '/etc/asterisk/sip.conf'
     else

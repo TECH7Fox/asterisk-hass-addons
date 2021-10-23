@@ -11,11 +11,11 @@
     "auto_add": true,
     "custom_extensions": [
       {
-        "type": "chan_pjsip",
+        "type": "chan_sip",
         "name": "doorbell",
         "extension": "201",
         "secret": "1234",
-        "configuration": "secret=1234"
+        "configuration": "direct-media=true"
       }
     ]
   },
