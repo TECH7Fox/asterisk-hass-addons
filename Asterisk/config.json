@@ -1,21 +1,20 @@
 {
   "name": "Asterisk",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",
   "boot": "auto",
   "homeassistant_api": true,
+  "map": ["config:rw"],
   "options": {
     "auto_add": true,
     "custom_extensions": [
       {
         "type": "chan_sip",
         "name": "doorbell",
-        "extension": "201",
-        "secret": "1234",
-        "configuration": "direct-media=true"
+        "extension": "201"
       }
     ]
   },
@@ -25,9 +24,7 @@
       {
         "type": "list(chan_sip|chan_pjsip)",
         "name": "str",
-        "extension": "int",
-        "secret": "str",
-        "configuration": "str"
+        "extension": "int"
       }
     ]
   },
