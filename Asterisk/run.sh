@@ -125,6 +125,6 @@ do
                 STATE='on'
             fi
         fi
-        curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "secret": "'"${SECRET}"'", "user": "'"${NAME}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${NAME}" > /dev/null
+        curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "user": "'"${NAME}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${NAME}" > /dev/null
     done
 done
