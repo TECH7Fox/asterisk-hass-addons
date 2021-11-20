@@ -1,20 +1,23 @@
 {
   "name": "Asterisk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
+  "url": "https://github.com/TECH7Fox/Asterisk-add-on",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",
   "boot": "auto",
   "homeassistant_api": true,
-  "map": ["config:rw"],
+  "host_network": true,
+  "stage": "experimental",
+  "map": ["config:rw", "ssl"],
   "options": {
     "auto_add": true,
     "custom_extensions": [
       {
         "type": "chan_sip",
         "name": "doorbell",
-        "extension": "201"
+        "extension": 201
       }
     ]
   },
@@ -29,9 +32,25 @@
     ]
   },
   "ports": {
+    "22/tcp": 22,
     "8089/tcp": 8089,
     "8088/tcp": 8088,
     "5060/tcp": 5060,
-    "5160/tcp": 5160
+    "5060/udp": 5060,
+    "5160/tcp": 5160,
+    "5160/udp": 5160,
+    "4569/udp": 4569,
+    "2727/udp": 2727
+  },
+  "ports_description": {
+    "22/tcp": "Port for SSH",
+    "8089/tcp": "Port for WSS",
+    "8088/tcp": "Port for WS",
+    "5060/tcp": "Port for SIP",
+    "5060/udp": "Port for SIP",
+    "5160/tcp": "Port for SIP",
+    "5160/udp": "Port for SIP",
+    "4569/udp": "Port for IAX2",
+    "2727/udp": "Port for MGCP"
   }
 }

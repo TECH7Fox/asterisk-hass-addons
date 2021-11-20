@@ -14,11 +14,17 @@ bindaddr=0.0.0.0
 bindport=8088
 tlsenable=yes
 tlsbindaddr=0.0.0.0:8089
-tlscertfile=/etc/asterisk/keys/asterisk.cert
-tlsprivatekey=/etc/asterisk/keys/asterisk.key
+tlscertfile=/etc/asterisk/keys/asterisk.pem
+tlsprivatekey=/etc/asterisk/keys/asterisk.pem
 ' > '/etc/asterisk/http.conf'
 
 echo $'
+[general]
+udpbindaddr=0.0.0.0
+bind=0.0.0.0
+bindaddr=0.0.0.0
+protocol=udp
+
 [sipjs-phone](!)
 type=friend
 host=dynamic ; Allows any host to register
@@ -27,15 +33,14 @@ avpf=yes ; Tell Asterisk to use AVPF for this peer
 icesupport=yes ; Tell Asterisk to use ICE for this peer
 context=default ; Tell Asterisk which context to use when this peer is dialing
 directmedia=no ; Asterisk will relay media for this peer
-transport=wss,ws,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets
+transport=wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets
 force_avp=yes ; Force Asterisk to use avp. Introduced in Asterisk 11.11
 dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
 dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
-dtlscertfile=/etc/asterisk/keys/asterisk.cert ; Tell Asterisk where your DTLS cert file is
+dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
 dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
 rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
-realm=127.0.0.1
 \n
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723\n
@@ -56,6 +61,9 @@ openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=NL/ST=Denial/L=Amsterdam/O=Dis/CN=Asterisk" \
     -keyout /etc/asterisk/keys/asterisk.key  -out /etc/asterisk/keys/asterisk.cert > /dev/null
 
+cat /etc/asterisk/keys/asterisk.key > /etc/asterisk/keys/asterisk.pem
+cat /etc/asterisk/keys/asterisk.cert >> /etc/asterisk/keys/asterisk.pem
+
 cp -a -f  /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 
 bashio::log.info "Configuring Asterisk..."
@@ -72,7 +80,7 @@ if $AUTO_ADD; then
     EXTENSION=$((${EXTENSION}+1))
     echo "
 [${EXTENSION}](sipjs-phone,my-codecs)
-username=${person}
+username=${EXTENSION}
 secret=1234
     " >> '/etc/asterisk/sip.conf'
     done
@@ -80,7 +88,9 @@ fi
 
 bashio::log.info "Starting Asterisk..."
 
-asterisk -vvvv -ddd
+asterisk -vvvvvvvvv -ddddddddddd -c
+
+# RUN ANOTHER SCRIPT UPDATING THE ENTITIES AND KEEP ASTERISK CONSOLE HERE
 
 sleep 10
 
@@ -112,7 +122,7 @@ do
         EXTENSION=$(bashio::config "custom_extensions[${extension}].extension")
         NAME=$(bashio::config "custom_extensions[${extension}].name")
         TYPE=$(bashio::config "custom_extensions[${extension}].type")
-        if [ "${TYPE}" = "chan_sip" ]; then
+        if [ $TYPE = "chan_sip" ]; then
             if asterisk -x "sip show peers" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
                 STATE='off'
             else

@@ -6,8 +6,13 @@ ENV LANG C.UTF-8
 # Install requirements for add-on
 RUN apk add --update \
       asterisk \
+      asterisk-srtp \
       asterisk-sample-config \
+      asterisk-sounds-en \
+      asterisk-speex \
+      asterisk-dahdi \
       openssl \
+      openssh \
 && asterisk -U asterisk \
 && sleep 5 \
 && pkill -9 asterisk \
@@ -29,5 +34,7 @@ WORKDIR /data
 # Copy data for add-on
 COPY run.sh /
 RUN chmod a+x /run.sh
+
+EXPOSE 10000-20000/udp
 
 CMD [ "/run.sh" ]
