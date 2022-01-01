@@ -18,6 +18,12 @@ tlscertfile=/etc/asterisk/keys/asterisk.pem
 tlsprivatekey=/etc/asterisk/keys/asterisk.pem
 ' > '/etc/asterisk/http.conf'
 
+echo '
+[general]
+rtpstart=10000
+rtpend=10008
+' > '/etc/asterisk/rtp.conf'
+
 echo $'
 [general]
 udpbindaddr=0.0.0.0
@@ -92,49 +98,49 @@ asterisk -vvvvvvvvv -ddddddddddd -c
 
 # RUN ANOTHER SCRIPT UPDATING THE ENTITIES AND KEEP ASTERISK CONSOLE HERE
 
-sleep 10
+# sleep 10
 
-while true
-do
-    echo " "
-    bashio::log.info $(asterisk -x "sip show peers")
-    sleep 5
-    echo " "
-    bashio::log.info $(asterisk -x "http show status")
-    sleep 5
-    echo " "
-    if $AUTO_ADD; then
-        EXTENSION=100
-        for person in ${PERSONS}
-        do
-            EXTENSION=$((${EXTENSION}+1))
-            if asterisk -x "sip show peers" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
-                STATE='off'
-            else
-                STATE='on'
-            fi
-            curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "secret": "1234", "user": "'"${person}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${person}" > /dev/null
-        done
-    fi
+# while true
+# do
+#     echo " "
+#     bashio::log.info $(asterisk -x "sip show peers")
+#     sleep 5
+#     echo " "
+#     bashio::log.info $(asterisk -x "http show status")
+#     sleep 5
+#     echo " "
+#     if $AUTO_ADD; then
+#         EXTENSION=100
+#         for person in ${PERSONS}
+#         do
+#             EXTENSION=$((${EXTENSION}+1))
+#             if asterisk -x "sip show peers" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
+#                 STATE='off'
+#             else
+#                 STATE='on'
+#             fi
+#             curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "secret": "1234", "user": "'"${person}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${person}" > /dev/null
+#         done
+#     fi
 
-    for extension in $(bashio::config 'custom_extensions|keys')
-    do
-        EXTENSION=$(bashio::config "custom_extensions[${extension}].extension")
-        NAME=$(bashio::config "custom_extensions[${extension}].name")
-        TYPE=$(bashio::config "custom_extensions[${extension}].type")
-        if [ $TYPE = "chan_sip" ]; then
-            if asterisk -x "sip show peers" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
-                STATE='off'
-            else
-                STATE='on'
-            fi
-        else
-            if asterisk -x "pjsip show endpoints" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
-                STATE='off'
-            else
-                STATE='on'
-            fi
-        fi
-        curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "user": "'"${NAME}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${NAME}" > /dev/null
-    done
-done
+#     for extension in $(bashio::config 'custom_extensions|keys')
+#     do
+#         EXTENSION=$(bashio::config "custom_extensions[${extension}].extension")
+#         NAME=$(bashio::config "custom_extensions[${extension}].name")
+#         TYPE=$(bashio::config "custom_extensions[${extension}].type")
+#         if [ $TYPE = "chan_sip" ]; then
+#             if asterisk -x "sip show peers" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
+#                 STATE='off'
+#             else
+#                 STATE='on'
+#             fi
+#         else
+#             if asterisk -x "pjsip show endpoints" | grep "${EXTENSION}" | grep '(Unspecified)' > /dev/null; then
+#                 STATE='off'
+#             else
+#                 STATE='on'
+#             fi
+#         fi
+#         curl -s -X POST -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" -d '{"state": "'"${STATE}"'", "attributes": {"extension": "'"${EXTENSION}"'", "user": "'"${NAME}"'"}}' "http://supervisor/core/api/states/binary_sensor.sip_${NAME}" > /dev/null
+#     done
+# done

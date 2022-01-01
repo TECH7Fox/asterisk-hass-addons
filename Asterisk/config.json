@@ -1,6 +1,6 @@
 {
   "name": "Asterisk",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
   "url": "https://github.com/TECH7Fox/Asterisk-add-on",
@@ -40,7 +40,16 @@
     "5160/tcp": 5160,
     "5160/udp": 5160,
     "4569/udp": 4569,
-    "2727/udp": 2727
+    "2727/udp": 2727,
+    "10000": 10000,
+    "10001": 10001,
+    "10002": 10002,
+    "10003": 10003,
+    "10004": 10004,
+    "10005": 10005,
+    "10006": 10006,
+    "10007": 10007,
+    "10008": 10008
   },
   "ports_description": {
     "22/tcp": "Port for SSH",
@@ -51,6 +60,15 @@
     "5160/tcp": "Port for SIP",
     "5160/udp": "Port for SIP",
     "4569/udp": "Port for IAX2",
-    "2727/udp": "Port for MGCP"
+    "2727/udp": "Port for MGCP",
+    "10000": "RTP",
+    "10001": "RTP",
+    "10002": "RTP",
+    "10003": "RTP",
+    "10004": "RTP",
+    "10005": "RTP",
+    "10006": "RTP",
+    "10007": "RTP",
+    "10008": "RTP"
   }
 }
