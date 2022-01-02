@@ -7,6 +7,24 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         || bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
+AMI_PASSWORD=$(bashio::config 'ami.password')
+
+sed "s/%%AMI_PASSWORD%%/$AMI_PASSWORD/g" <<'EOF' > '/etc/asterisk/manager.conf'
+[general]
+enabled = yes
+port = 5038
+bindaddr = 0.0.0.0
+displayconnects=no ;only effects 1.6+
+
+[admin]
+secret = %%AMI_PASSWORD%%
+deny=0.0.0.0/0.0.0.0
+permit=127.0.0.1/255.255.255.0
+read = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
+write = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
+writetimeout = 5000
+EOF
+
 echo '
 [general]
 enabled=yes

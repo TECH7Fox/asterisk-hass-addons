@@ -19,7 +19,8 @@
         "name": "doorbell",
         "extension": 201
       }
-    ]
+    ],
+    "ami_password": "c32d3bd655d9226ffc062751ab9d1058"
   },
   "schema": {
     "auto_add": "bool",
@@ -29,10 +30,12 @@
         "name": "str",
         "extension": "int"
       }
-    ]
+    ],
+    "ami_password": "password"
   },
   "ports": {
-    "22/tcp": 22,
+    "5048/tcp": 5048,
+    "5048/udp": 5048,
     "8089/tcp": 8089,
     "8088/tcp": 8088,
     "5060/tcp": 5060,
@@ -52,7 +55,8 @@
     "10008": 10008
   },
   "ports_description": {
-    "22/tcp": "Port for SSH",
+    "5048/tcp": "Port for AMI",
+    "5048/udp": "Port for AMI",
     "8089/tcp": "Port for WSS",
     "8088/tcp": "Port for WS",
     "5060/tcp": "Port for SIP",
