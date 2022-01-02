@@ -34,7 +34,7 @@
     "ami_password": "password"
   },
   "ports": {
-    "5048/tcp": 5048,
+    "5038/tcp": 5038,
     "8089/tcp": 8089,
     "8088/tcp": 8088,
     "5060/tcp": 5060,
@@ -54,7 +54,7 @@
     "10008": 10008
   },
   "ports_description": {
-    "5048/tcp": "Port for AMI",
+    "5038/tcp": "Port for AMI",
     "8089/tcp": "Port for WSS",
     "8088/tcp": "Port for WS",
     "5060/tcp": "Port for SIP",
