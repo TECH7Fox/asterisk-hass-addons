@@ -7,7 +7,7 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         || bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-AMI_PASSWORD=$(bashio::config 'ami.password')
+AMI_PASSWORD=$(bashio::config 'ami_password')
 
 sed "s/%%AMI_PASSWORD%%/$AMI_PASSWORD/g" <<'EOF' > '/etc/asterisk/manager.conf'
 [general]
