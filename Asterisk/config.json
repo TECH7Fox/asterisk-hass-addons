@@ -7,7 +7,6 @@
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",
   "boot": "auto",
-  "homeassistant_api": true,
   "stage": "experimental",
   "map": ["config:rw", "ssl"],
   "options": {
