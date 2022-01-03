@@ -65,10 +65,10 @@ bashio::log.info "Configuring Asterisk..."
 
 # Generate sip.conf configuration
 persons="$(curl -s -X GET \
-        -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
-        -H "Content-Type: application/json" \
-        http://supervisor/core/api/states |
-        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
+    -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+    -H "Content-Type: application/json" \
+    http://supervisor/core/api/states |
+    jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
 readonly persons
 
 bashio::var.json \

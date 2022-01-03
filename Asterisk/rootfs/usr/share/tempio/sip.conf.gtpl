@@ -25,7 +25,7 @@ dtmfmode=rfc2833
 allow=!all,ulaw,alaw,speex,gsm,g726,g723
 
 {{- if .auto_add -}}
-{{-  range $index,$_ := .persons  -}}
+{{-  range $index := until .persons  -}}
 {{-   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
