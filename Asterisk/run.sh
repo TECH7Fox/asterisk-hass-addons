@@ -7,6 +7,28 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         || bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
+AMI_PASSWORD=$(bashio::config 'ami_password')
+HA_IP=$(getent hosts homeassistant | awk '{ print $1 }')
+
+cat <<'EOF' > '/etc/asterisk/manager.conf'
+[general]
+enabled = yes
+port = 5038
+bindaddr = 0.0.0.0
+displayconnects = yes
+
+[admin]
+secret = %%AMI_PASSWORD%%
+deny = 0.0.0.0/0.0.0.0
+permit = %%HA_IP%%/255.255.255.254
+read = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
+write = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
+writetimeout = 5000
+EOF
+
+sed -i "s/%%AMI_PASSWORD%%/$AMI_PASSWORD/g" '/etc/asterisk/manager.conf'
+sed -i "s/%%HA_IP%%/$HA_IP/g" '/etc/asterisk/manager.conf'
+
 echo '
 [general]
 enabled=yes
@@ -94,7 +116,7 @@ fi
 
 bashio::log.info "Starting Asterisk..."
 
-asterisk -vvvvvvvvv -ddddddddddd -c
+asterisk -vvvvvvvvv -ddddddddddd -f
 
 # RUN ANOTHER SCRIPT UPDATING THE ENTITIES AND KEEP ASTERISK CONSOLE HERE
 
