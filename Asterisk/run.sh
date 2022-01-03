@@ -116,7 +116,7 @@ fi
 
 bashio::log.info "Starting Asterisk..."
 
-asterisk -vvvvvvvvv -ddddddddddd -f
+exec asterisk -vvvvvvvvv -ddddddddddd -f
 
 # RUN ANOTHER SCRIPT UPDATING THE ENTITIES AND KEEP ASTERISK CONSOLE HERE
 
