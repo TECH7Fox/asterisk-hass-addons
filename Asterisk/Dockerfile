@@ -23,18 +23,13 @@ RUN apk add --update \
 && chown -R asterisk: /var/spool/asterisk/fax \
 && truncate -s 0 /var/log/asterisk/messages \
                  /var/log/asterisk/queue_log \
-&&  rm -rf /var/cache/apk/* \
+&& rm -rf /var/cache/apk/* \
            /tmp/* \
            /var/tmp/* \
 && mkdir /etc/asterisk/keys
 
-# Set add-on persistent data directory
-WORKDIR /data
-
 # Copy data for add-on
 COPY run.sh /
 RUN chmod a+x /run.sh
-
-EXPOSE 10000-20000/udp
 
 CMD [ "/run.sh" ]
