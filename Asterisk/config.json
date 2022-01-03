@@ -1,6 +1,6 @@
 {
   "name": "Asterisk",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
   "url": "https://github.com/TECH7Fox/Asterisk-add-on",
