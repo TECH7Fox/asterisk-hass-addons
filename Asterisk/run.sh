@@ -29,11 +29,6 @@ EOF
 sed -i "s/%%AMI_PASSWORD%%/$AMI_PASSWORD/g" '/etc/asterisk/manager.conf'
 sed -i "s/%%HA_IP%%/$HA_IP/g" '/etc/asterisk/manager.conf'
 
-cat <<'EOF' > '/etc/asterisk/logger.conf'
-[logfiles]
-console => debug,error,notice,verbose,warning,dtmf,fax
-EOF
-
 echo '
 [general]
 enabled=yes
