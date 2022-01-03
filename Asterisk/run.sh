@@ -47,41 +47,7 @@ rtpstart=10000
 rtpend=10008
 ' >'/etc/asterisk/rtp.conf'
 
-echo $'
-[general]
-udpbindaddr=0.0.0.0
-bind=0.0.0.0
-bindaddr=0.0.0.0
-protocol=udp
-
-[sipjs-phone](!)
-type=friend
-host=dynamic ; Allows any host to register
-encryption=yes ; Tell Asterisk to use encryption for this peer
-avpf=yes ; Tell Asterisk to use AVPF for this peer
-icesupport=yes ; Tell Asterisk to use ICE for this peer
-context=default ; Tell Asterisk which context to use when this peer is dialing
-directmedia=no ; Asterisk will relay media for this peer
-transport=wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets
-force_avp=yes ; Force Asterisk to use avp. Introduced in Asterisk 11.11
-dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
-dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
-dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
-dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
-rtcp_mux=yes ; Tell Asterisk to do RTCP mux
-dtmfmode=rfc2833
-\n
-[my-codecs](!)
-allow=!all,ulaw,alaw,speex,gsm,g726,g723\n
-\n
-' >'/etc/asterisk/sip.conf'
-
 sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
-
-if ! bashio::fs.file_exists '/config/asterisk/sip.conf'; then
-    cp -a /etc/asterisk/. /config/asterisk/ ||
-        bashio::exit.nok 'Failed to make sample configs'
-fi
 
 bashio::log.info "Creating certificate..."
 
@@ -97,22 +63,27 @@ cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed
 
 bashio::log.info "Configuring Asterisk..."
 
-cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk folder'
+# Generate sip.conf configuration
+persons="$(curl -s -X GET \
+        -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+        -H "Content-Type: application/json" \
+        http://supervisor/core/api/states |
+        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
+readonly persons
 
-PERSONS=$(curl -s -X GET -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" -H "Content-Type: application/json" http://supervisor/core/api/states | jq -r '.[] | select(.entity_id | contains("person.")).attributes.id')
-AUTO_ADD=$(bashio::config 'auto_add')
+bashio::var.json \
+    auto_add "^$(bashio::config 'auto_add')" \
+    persons "${persons}" |
+    tempio \
+        -template /usr/share/tempio/sip.conf.gtpl \
+        -out /etc/asterisk/sip.conf
 
-if $AUTO_ADD; then
-    EXTENSION=100
-    for person in ${PERSONS}; do
-        EXTENSION=$((${EXTENSION} + 1))
-        echo "
-[${EXTENSION}](sipjs-phone,my-codecs)
-username=${EXTENSION}
-secret=1234
-    " >>'/etc/asterisk/sip.conf'
-    done
+if ! bashio::fs.file_exists '/config/asterisk/sip.conf'; then
+    cp -a /etc/asterisk/. /config/asterisk/ ||
+        bashio::exit.nok 'Failed to make sample configs'
 fi
+
+cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk folder'
 
 bashio::log.info "Starting Asterisk..."
 
