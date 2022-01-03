@@ -8,7 +8,6 @@
   "startup": "application",
   "boot": "auto",
   "homeassistant_api": true,
-  "host_network": true,
   "stage": "experimental",
   "map": ["config:rw", "ssl"],
   "options": {
