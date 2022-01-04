@@ -10,9 +10,7 @@ arch:
   - aarch64
   - amd64
   - i386
-startup: application
 homeassistant_api: true
-boot: auto
 stage: experimental
 map:
   - config:rw
