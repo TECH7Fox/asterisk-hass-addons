@@ -9,7 +9,7 @@
   "homeassistant_api": true,
   "boot": "auto",
   "stage": "experimental",
-  "map": ["config:rw", "ssl:rw"],
+  "map": ["config:rw", "ssl"],
   "options": {
     "ami_password": "c32d3bd655d9226ffc062751ab9d1058",
     "auto_add": true,
