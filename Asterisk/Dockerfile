@@ -10,8 +10,10 @@ RUN apk add --update \
       asterisk-sample-config \
       asterisk-sounds-en \
       asterisk-speex \
-      asterisk-dahdi \
-&& asterisk -U asterisk \
+      asterisk-dahdi
+
+## Setup Asterisk
+RUN asterisk -U asterisk \
 && sleep 5 \
 && pkill -9 asterisk \
 && pkill -9 astcanary \
