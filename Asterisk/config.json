@@ -18,8 +18,8 @@
   },
   "schema": {
     "auto_add": "bool",
-    "certificate": "string",
-    "key": "string",
+    "certificate": "str",
+    "key": "str",
     "ami_password": "password"
   },
   "ports": {
