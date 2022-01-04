@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: Asterisk Add-on
+url: "https://github.com/TECH7Fox/Asterisk-add-on"
+maintainer: Jordy Kuhne <jordy.kuhn@gmail.com>
