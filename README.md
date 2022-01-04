@@ -1,4 +1,4 @@
-# Asterisk add-on for Home Assistant
+# Home Assistant Add-on: Asterisk
 
 The [Asterisk](https://github.com/asterisk/asterisk) add-on for Home Assistant, to be used with the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration).
 
@@ -6,7 +6,7 @@ The [Asterisk](https://github.com/asterisk/asterisk) add-on for Home Assistant, 
 
 ## Get started
 
-See the documentation [here](Asterisk/DOCS.md).
+See the documentation [here](asterisk/DOCS.md).
 
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
