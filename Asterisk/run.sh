@@ -34,8 +34,8 @@ bashio::var.json \
         -out /etc/asterisk/manager.conf
 
 bashio::var.json \
-    certfile "$(bashio::config 'certfile')" \
-    keyfile "$(bashio::config 'keyfile')" |
+    certfile certfile \
+    keyfile keyfile |
     tempio \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /etc/asterisk/http.conf
