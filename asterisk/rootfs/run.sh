@@ -23,6 +23,7 @@ fi
 readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
 readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
 
+mkdir -p /etc/asterisk/keys
 cp -f "${certfile}" "${target_certfile}"
 cp -f "${keyfile}" "${target_keyfile}"
 cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem

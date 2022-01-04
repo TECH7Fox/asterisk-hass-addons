@@ -5,7 +5,13 @@ ENV LANG C.UTF-8
 
 COPY rootfs /
 
-# Install and setup Asterisk
-RUN /install.sh && rm -f /install.sh
+# Install Asterisk
+RUN apk add --update --no-cache \
+    asterisk \
+    asterisk-srtp \
+    asterisk-sample-config \
+    asterisk-sounds-en \
+    asterisk-speex \
+    asterisk-dahdi
 
 CMD [ "/run.sh" ]
