@@ -1,4 +1,8 @@
 #!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Configures Asterisk
+# ==============================================================================
+
 # shellcheck shell=bash
 
 if ! bashio::fs.directory_exists '/config/asterisk'; then
@@ -77,7 +81,3 @@ if ! bashio::fs.file_exists '/config/asterisk/sip.conf'; then
 fi
 
 cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk folder'
-
-bashio::log.info "Starting Asterisk..."
-
-exec asterisk -U asterisk -vvvdddf

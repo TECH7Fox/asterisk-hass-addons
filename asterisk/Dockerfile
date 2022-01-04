@@ -1,10 +1,6 @@
 ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:edge
 FROM $BUILD_FROM
 
-ENV LANG C.UTF-8
-
-COPY rootfs /
-
 # Install Asterisk
 RUN apk add --update --no-cache \
     asterisk \
@@ -14,4 +10,4 @@ RUN apk add --update --no-cache \
     asterisk-speex \
     asterisk-dahdi
 
-CMD [ "/run.sh" ]
+COPY rootfs /
