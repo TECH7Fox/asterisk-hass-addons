@@ -20,6 +20,7 @@ options:
   auto_add: true
   certfile: fullchain.pem
   keyfile: privkey.pem
+  ip: 192.168.0.1
 schema:
   ami_password: password
   auto_add: bool

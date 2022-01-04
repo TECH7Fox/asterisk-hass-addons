@@ -25,6 +25,7 @@ ami_password: my-password-of-choice
 auto_add: true
 certfile: fullchain.pem
 keyfile: privkey.pem
+ip: 192.168.0.1
 ```
 
 **Note**: _This is just an example, don't copy and past it! Create your own!_
@@ -48,3 +49,7 @@ The certificate file to use for SSL.
 The private key file to use for SSL.
 
 **Note**: _The file MUST be stored in `/ssl/`, which is the default_
+
+### Option: `ip`
+
+HA server ip. (Only this IP will be allowed to connect)

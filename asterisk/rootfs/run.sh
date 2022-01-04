@@ -36,7 +36,7 @@ bashio::log.info "Configuring Asterisk..."
 
 bashio::var.json \
     password "$(bashio::config 'ami_password')" \
-    ip "$(getent hosts homeassistant | awk '{ print $1 }')" |
+    ip "$(bashio::config 'ip')" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /etc/asterisk/manager.conf
