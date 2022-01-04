@@ -23,11 +23,11 @@ cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed
 bashio::log.info "Configuring Asterisk..."
 
 bashio::var.json \
-    AMI_PASSWORD "$(bashio::config 'ami_password')" \
-    HA_IP "$(getent hosts homeassistant | awk '{ print $1 }')" |
+    password "$(bashio::config 'ami_password')" \
+    ip "$(getent hosts homeassistant | awk '{ print $1 }')" |
     tempio \
-        -template /usr/share/tempio/sip.conf.gtpl \
-        -out /etc/asterisk/sip.conf
+        -template /usr/share/tempio/manager.conf.gtpl \
+        -out /etc/asterisk/manager.conf
 
 tempio \
     -template /usr/share/tempio/http.conf.gtpl \
