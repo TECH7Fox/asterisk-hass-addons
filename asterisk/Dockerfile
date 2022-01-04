@@ -1,36 +1,11 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:edge
 FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-# Install requirements for add-on
-RUN apk add --update \
-      asterisk \
-      asterisk-srtp \
-      asterisk-sample-config \
-      asterisk-sounds-en \
-      asterisk-speex \
-      asterisk-dahdi
-
-## Setup Asterisk
-RUN set -x \
-&& asterisk -U asterisk \
-&& sleep 5 \
-&& pkill -9 asterisk \
-&& pkill -9 astcanary \
-&& sleep 2 \
-&& mkdir -p /var/spool/asterisk/fax \
-&& chown -R asterisk: /var/spool/asterisk/fax \
-&& truncate -s 0 /var/log/asterisk/messages \
-                 /var/log/asterisk/queue_log \
-&& rm -rf /var/cache/apk/* \
-           /tmp/* \
-           /var/tmp/* \
-&& mkdir /etc/asterisk/keys
-
-# Copy data for add-on
-COPY run.sh /
 COPY rootfs /
-RUN chmod a+x /run.sh
+
+# Install and setup Asterisk
+RUN /install.sh && rm -f /install.sh
 
 CMD [ "/run.sh" ]
