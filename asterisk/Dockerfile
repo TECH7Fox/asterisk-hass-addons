@@ -18,8 +18,10 @@ RUN set -x \
 && sleep 5 \
 && pkill -9 asterisk \
 && pkill -9 astcanary \
-&& sleep 2 \
-&& rm -rf /var/run/asterisk/* \
+&& sleep 2
+
+## Clean up and add fax
+RUN rm -rf /var/run/asterisk/* \
 && mkdir -p /var/spool/asterisk/fax \
 && chown -R asterisk: /var/spool/asterisk/fax \
 && truncate -s 0 /var/log/asterisk/messages \
