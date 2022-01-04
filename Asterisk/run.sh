@@ -51,9 +51,19 @@ bashio::var.json \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /etc/asterisk/http.conf
 
+# Make a loop for these
+
 tempio \
     -template /usr/share/tempio/rtp.conf.gtpl \
     -out /etc/asterisk/rtp.conf
+
+tempio \
+    -template /usr/share/tempio/sip_custom.conf.gtpl \
+    -out /etc/asterisk/sip_custom.conf
+
+tempio \
+    -template /usr/share/tempio/sip_default.conf.gtpl \
+    -out /etc/asterisk/sip_default.conf
 
 sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
 
