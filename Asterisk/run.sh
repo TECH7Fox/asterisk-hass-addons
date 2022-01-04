@@ -20,7 +20,13 @@ if ! bashio::fs.file_exists "${keyfile}"; then
     bashio::exit.nok "Key file at ${keyfile} was not found"
 fi
 
-cat "${keyfile}" <(echo) "${certfile}" > /etc/asterisk/keys/asterisk.pem
+readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
+readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
+
+cp -f "${certfile}" "${target_certfile}"
+cp -f "${keyfile}" "${target_keyfile}"
+cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem
+chmod 600 /etc/asterisk/keys/*.pem
 
 cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 
@@ -34,8 +40,8 @@ bashio::var.json \
         -out /etc/asterisk/manager.conf
 
 bashio::var.json \
-    certfile ${certfile} \
-    keyfile ${keyfile} |
+    certfile "${target_certfile}" \
+    keyfile "${target_keyfile}" |
     tempio \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /etc/asterisk/http.conf
