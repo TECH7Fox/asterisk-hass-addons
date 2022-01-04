@@ -13,7 +13,8 @@ RUN apk add --update \
       asterisk-dahdi
 
 ## Setup Asterisk
-RUN asterisk -U asterisk \
+RUN set -x \
+&& asterisk -U asterisk \
 && sleep 5 \
 && pkill -9 asterisk \
 && pkill -9 astcanary \
