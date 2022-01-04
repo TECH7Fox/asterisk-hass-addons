@@ -69,10 +69,11 @@ dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
 dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
 dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
 rtcp_mux=yes ; Tell Asterisk to do RTCP mux
+videosupport=yes ; Enable video support by default
 dtmfmode=rfc2833
 \n
 [my-codecs](!)
-allow=!all,ulaw,alaw,speex,gsm,g726,g723\n
+allow=!all,ulaw,alaw,speex,gsm,g726,g723,h264,h263,h263p,vp8\n
 \n
 ' >'/etc/asterisk/sip.conf'
 
