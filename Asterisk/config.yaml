@@ -1,5 +1,5 @@
 name: Asterisk
-version: 0.2.11
+version: 0.2.12
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/Asterisk-add-on
