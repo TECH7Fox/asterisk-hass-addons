@@ -30,6 +30,7 @@ RUN apk add --update \
 
 # Copy data for add-on
 COPY run.sh /
+COPY rootfs /
 RUN chmod a+x /run.sh
 
 CMD [ "/run.sh" ]
