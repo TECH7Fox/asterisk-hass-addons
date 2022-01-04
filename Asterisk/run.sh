@@ -40,6 +40,10 @@ bashio::var.json \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /etc/asterisk/manager.conf
 
+tempio \
+    -template /usr/share/tempio/extensions.conf.gtpl \
+    -out /etc/asterisk/extensions.conf
+
 bashio::var.json \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
