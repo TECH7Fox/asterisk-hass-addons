@@ -12,7 +12,6 @@ RUN apk add --update \
       asterisk-speex \
       asterisk-dahdi \
       openssl \
-      openssh \
 && asterisk -U asterisk \
 && sleep 5 \
 && pkill -9 asterisk \
