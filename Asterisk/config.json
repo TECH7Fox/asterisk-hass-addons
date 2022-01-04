@@ -1,6 +1,6 @@
 {
   "name": "Asterisk",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "slug": "asterisk",
   "description": "PBX server for SIP devices like doorbells and phones",
   "url": "https://github.com/TECH7Fox/Asterisk-add-on",
@@ -12,24 +12,14 @@
   "map": ["config:rw", "ssl"],
   "options": {
     "auto_add": true,
-    "custom_extensions": [
-      {
-        "type": "chan_sip",
-        "name": "doorbell",
-        "extension": 201
-      }
-    ],
+    "certificate": "/etc/asterisk/keys/asterisk.pem",
+    "key": "/etc/asterisk/keys/asterisk.pem",
     "ami_password": "c32d3bd655d9226ffc062751ab9d1058"
   },
   "schema": {
     "auto_add": "bool",
-    "custom_extensions": [
-      {
-        "type": "list(chan_sip|chan_pjsip)",
-        "name": "str",
-        "extension": "int"
-      }
-    ],
+    "certificate": "string",
+    "key": "string",
     "ami_password": "password"
   },
   "ports": {

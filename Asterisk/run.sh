@@ -1,13 +1,6 @@
 #!/usr/bin/with-contenv bashio
 # shellcheck shell=bash
 
-bashio::log.info "Checking config files..."
-
-if ! bashio::fs.directory_exists '/config/asterisk'; then
-    mkdir -p /config/asterisk ||
-        bashio::exit.nok 'Failed to create initial asterisk config folder'
-fi
-
 bashio::log.info "Creating certificate..."
 
 # REPLACE WITH CERTBOT
@@ -29,7 +22,10 @@ bashio::var.json \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /etc/asterisk/manager.conf
 
-tempio \
+bashio::var.json \
+    certificate "$(bashio::config 'certificate')" \
+    key "$(bashio::config 'key')" |
+    tempio \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /etc/asterisk/http.conf
 
@@ -51,6 +47,11 @@ bashio::var.json \
     tempio \
         -template /usr/share/tempio/sip.conf.gtpl \
         -out /etc/asterisk/sip.conf
+
+if ! bashio::fs.directory_exists '/config/asterisk'; then
+    mkdir -p /config/asterisk ||
+        bashio::exit.nok 'Failed to create initial asterisk config folder'
+fi
 
 if ! bashio::fs.file_exists '/config/asterisk/sip.conf'; then
     cp -a /etc/asterisk/. /config/asterisk/ ||
