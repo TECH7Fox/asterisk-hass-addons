@@ -17,7 +17,7 @@ RUN asterisk -U asterisk \
 && sleep 5 \
 && pkill -9 asterisk \
 && pkill -9 astcanary \
-&& sleep 2 \
+&& sleep 2
 
 ## Clean up and add fax
 RUN rm -rf /var/run/asterisk/* \
