@@ -20,7 +20,7 @@ if ! bashio::fs.file_exists "${keyfile}"; then
     bashio::exit.nok "Key file at ${keyfile} was not found"
 fi
 
-cat "${certfile}" <(echo) "${keyfile}" > /etc/asterisk/keys/asterisk.pem
+cat "${keyfile}" <(echo) "${certfile}" > /etc/asterisk/keys/asterisk.pem
 
 cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 
