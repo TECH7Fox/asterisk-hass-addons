@@ -4,4 +4,4 @@ The [Asterisk](https://github.com/asterisk/asterisk) add-on for Home Assistant, 
 
 ## Get started
 
-See the [documentation](Asterisk/DOCS).
+See the [documentation](Asterisk/DOCS.md).
