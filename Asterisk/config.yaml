@@ -3,6 +3,7 @@ version: 0.3.0
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/Asterisk-add-on
+image: "ghcr.io/tech7fox/{arch}-addon-asterisk"
 arch:
   - armhf
   - armv7
