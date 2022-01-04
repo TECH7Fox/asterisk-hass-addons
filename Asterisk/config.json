@@ -11,16 +11,16 @@
   "stage": "experimental",
   "map": ["config:rw", "ssl:rw"],
   "options": {
+    "ami_password": "c32d3bd655d9226ffc062751ab9d1058",
     "auto_add": true,
-    "certificate": "/etc/asterisk/keys/asterisk.pem",
-    "key": "/etc/asterisk/keys/asterisk.pem",
-    "ami_password": "c32d3bd655d9226ffc062751ab9d1058"
+    "certfile": "fullchain.pem",
+    "keyfile": "privkey.pem"
   },
   "schema": {
+    "ami_password": "password",
     "auto_add": "bool",
-    "certificate": "str",
-    "key": "str",
-    "ami_password": "password"
+    "certfile": "str",
+    "keyfile": "str"
   },
   "ports": {
     "5038/tcp": 5038,
