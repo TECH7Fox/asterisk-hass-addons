@@ -6,15 +6,26 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-bashio::log.info "Creating certificate..."
+bashio::log.info "Configuring certificate..."
 
-# REPLACE WITH CERTBOT
-openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
-    -subj "/C=NL/ST=Denial/L=Amsterdam/O=Dis/CN=Asterisk" \
-    -keyout /etc/asterisk/keys/asterisk.key -out /etc/asterisk/keys/asterisk.cert >/dev/null
+certfile="/ssl/$(bashio::config 'certfile')"
+keyfile="/ssl/$(bashio::config 'keyfile')"
+readonly certfile keyfile
 
-cat /etc/asterisk/keys/asterisk.key >/etc/asterisk/keys/asterisk.pem
-cat /etc/asterisk/keys/asterisk.cert >>/etc/asterisk/keys/asterisk.pem
+if ! bashio::fs.file_exists "${certfile}"; then
+    bashio::exit.nok "Certificate file at ${certfile} was not found"
+fi
+
+if ! bashio::fs.file_exists "${keyfile}"; then
+    bashio::exit.nok "Key file at ${keyfile} was not found"
+fi
+
+bashio::var.json \
+    cert "$(cat "${certfile}")" \
+    key "$(cat "${keyfile}")" |
+    tempio \
+        -template /usr/share/tempio/asterisk.pem.gtpl \
+        -out /etc/asterisk/keys/asterisk.pem
 
 cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 
