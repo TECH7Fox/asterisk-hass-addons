@@ -48,3 +48,7 @@ The certificate file to use for SSL.
 The private key file to use for SSL.
 
 **Note**: _The file MUST be stored in `/ssl/`, which is the default_
+
+### Option: `additional_sip_config`
+
+Additional lines that will be added as is to `/etc/asterisk/sip.conf`.

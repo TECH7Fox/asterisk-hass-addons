@@ -3,3 +3,4 @@
 ## 0.4.0
 
 - Use prebuilt image
+- Add additional sip.conf configuration

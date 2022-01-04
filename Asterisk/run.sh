@@ -65,7 +65,8 @@ persons="$(curl -s -X GET \
 
 bashio::var.json \
     auto_add "^$(bashio::config 'auto_add')" \
-    persons "^${persons}" |
+    persons "^${persons}" \
+    additional_config "$(bashio::config 'additional_sip_config')" |
     tempio \
         -template /usr/share/tempio/sip.conf.gtpl \
         -out /etc/asterisk/sip.conf

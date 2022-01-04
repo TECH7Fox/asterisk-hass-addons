@@ -32,3 +32,5 @@ username={{ $extension }}
 secret=1234
 {{   end }}
 {{ end }}
+
+{{ .additional_config }}
