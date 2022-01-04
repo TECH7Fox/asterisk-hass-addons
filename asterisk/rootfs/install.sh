@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-apk add --update \
+apk add --update --no-cache \
     asterisk \
     asterisk-srtp \
     asterisk-sample-config \
@@ -10,17 +10,4 @@ apk add --update \
     asterisk-speex \
     asterisk-dahdi
 
-asterisk -U asterisk
-
-sleep 5
-pkill -9 asterisk
-pkill -9 astcanary
-sleep 2
-mkdir -p /var/spool/asterisk/fax
-chown -R asterisk: /var/spool/asterisk/fax
-truncate -s 0 /var/log/asterisk/messages \
-    /var/log/asterisk/queue_log
-rm -rf /var/cache/apk/* \
-    /tmp/* \
-    /var/tmp/* \
-    mkdir /etc/asterisk/keys
+mkdir -p /etc/asterisk/keys
