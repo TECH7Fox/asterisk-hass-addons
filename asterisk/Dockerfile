@@ -8,6 +8,7 @@ RUN apk add --update --no-cache \
     asterisk-sample-config \
     asterisk-sounds-en \
     asterisk-speex \
-    asterisk-dahdi
+    asterisk-dahdi \
+    rsync
 
 COPY rootfs /

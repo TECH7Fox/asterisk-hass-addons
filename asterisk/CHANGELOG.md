@@ -4,6 +4,7 @@
 
 - Use prebuilt images for faster installation
 - Use S6 Overlay to manage the Asterisk service
+- Allow custom configs using `sip_custom.conf`
 
 ## 0.3.0 and below
 
