@@ -20,15 +20,18 @@ dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cer
 dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
 rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
+qualify=no
+sendrpid=pai
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723
 
 {{ if .auto_add }}
-{{  range $index, $_ := .persons }}
+{{  range $index, $person := .persons }}
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
 secret=1234
+callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 {{ end }}
