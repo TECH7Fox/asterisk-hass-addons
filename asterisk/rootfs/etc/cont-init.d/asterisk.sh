@@ -66,23 +66,6 @@ bashio::var.json \
         -template /usr/share/tempio/sip_default.conf.gtpl \
         -out /config/asterisk/sip_default.conf
 
-# Move these to rootfs/etc/asterisk?
-tempio \
-    -template /usr/share/tempio/extensions.conf.gtpl \
-    -out /etc/asterisk/extensions.conf
-
-tempio \
-    -template /usr/share/tempio/rtp.conf.gtpl \
-    -out /etc/asterisk/rtp.conf
-
-tempio \
-    -template /usr/share/tempio/sip_custom.conf.gtpl \
-    -out /etc/asterisk/sip_custom.conf
-
-tempio \
-    -template /usr/share/tempio/sip.conf.gtpl \
-    -out /config/asterisk/sip.conf
-
 sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
 
 cp -a -n /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
