@@ -21,6 +21,7 @@ dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up D
 rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
 qualify=no
+sendrpid=pai
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723
