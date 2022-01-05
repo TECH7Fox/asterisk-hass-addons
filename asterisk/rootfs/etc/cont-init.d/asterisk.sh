@@ -1,4 +1,8 @@
 #!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Configures Asterisk
+# ==============================================================================
+
 # shellcheck shell=bash
 
 if ! bashio::fs.directory_exists '/config/asterisk'; then
@@ -83,7 +87,3 @@ sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.c
 
 cp -a -n /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
 cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
-
-bashio::log.info "Starting Asterisk..."
-
-exec asterisk -U asterisk -vvvdddf
