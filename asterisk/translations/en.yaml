@@ -1,0 +1,22 @@
+configuration:
+  ami_password:
+    name: AMI Password
+    description: >-
+      The password that will be used for the `admin` user in AMI.
+  auto_add:
+    name: Auto add extensions
+    description: >-
+      Whether to enable the automatic creation of extensions for 
+      every person registered in Home Assistant. They will have
+      their number/username auto-generated starting from 100, while
+      their password will be 1234 (currently hardcoded).
+  certfile:
+    name: Certificate file
+    description: >-
+      The certificate file to use for SSL. Note that this file must
+      exist in the /ssl/ folder.
+  keyfile:
+    name: Private key file
+    description: >-
+      The private key file to use for SSL. Note that this file must
+      exist in the /ssl/ folder.

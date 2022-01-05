@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the asterisk service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
+# shellcheck shell=bash
+
+bashio::log.info "Starting Asterisk..."
+
+## Run Asterisk
+exec asterisk -U asterisk -T -vvvdddf
