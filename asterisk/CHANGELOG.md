@@ -9,7 +9,6 @@
 - Use prebuilt images for faster installation
 - Use S6 Overlay to manage the Asterisk service
 
-
 ## 0.3.0 and below
 
 Check the commit history.
