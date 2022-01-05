@@ -101,7 +101,7 @@ jobs:
 
       - name: Get lowercase GitHub username
         id: repository_owner
-        uses: ASzc/change-string-case-action@v1
+        uses: ASzc/change-string-case-action@v2
         with:
           string: ${{ github.repository_owner }}
 
