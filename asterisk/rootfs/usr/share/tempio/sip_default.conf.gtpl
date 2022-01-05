@@ -31,6 +31,6 @@ allow=!all,ulaw,alaw,speex,gsm,g726,g723
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
 secret=1234
-callerid="{{ $person }}" <$extension>
+callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 {{ end }}
