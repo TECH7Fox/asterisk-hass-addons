@@ -1,9 +1,3 @@
-[general]
-udpbindaddr=0.0.0.0
-bind=0.0.0.0
-bindaddr=0.0.0.0
-protocol=udp
-
 [sipjs-phone](!)
 type=friend
 host=dynamic ; Allows any host to register
