@@ -68,7 +68,5 @@ bashio::var.json \
         -template /usr/share/tempio/sip_default.conf.gtpl \
         -out /config/asterisk/sip_default.conf
 
-sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
-
 rsync -a -v --ignore-existing /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
 cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
