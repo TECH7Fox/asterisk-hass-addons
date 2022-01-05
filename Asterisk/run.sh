@@ -33,39 +33,21 @@ cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed
 
 bashio::log.info "Configuring Asterisk..."
 
+# Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
+
 bashio::var.json \
     password "$(bashio::config 'ami_password')" \
     ip "$(getent hosts homeassistant | awk '{ print $1 }')" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
-        -out /etc/asterisk/manager.conf
-
-tempio \
-    -template /usr/share/tempio/extensions.conf.gtpl \
-    -out /etc/asterisk/extensions.conf
+        -out /config/asterisk/manager.conf
 
 bashio::var.json \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
     tempio \
     -template /usr/share/tempio/http.conf.gtpl \
-    -out /etc/asterisk/http.conf
-
-# Make a loop for these
-
-tempio \
-    -template /usr/share/tempio/rtp.conf.gtpl \
-    -out /etc/asterisk/rtp.conf
-
-tempio \
-    -template /usr/share/tempio/sip_custom.conf.gtpl \
-    -out /etc/asterisk/sip_custom.conf
-
-tempio \
-    -template /usr/share/tempio/sip_default.conf.gtpl \
-    -out /etc/asterisk/sip_default.conf
-
-sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
+    -out /config/asterisk/http.conf
 
 persons="$(curl -s -X GET \
     -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
@@ -77,15 +59,30 @@ bashio::var.json \
     auto_add "^$(bashio::config 'auto_add')" \
     persons "^${persons}" |
     tempio \
-        -template /usr/share/tempio/sip.conf.gtpl \
-        -out /etc/asterisk/sip.conf
+        -template /usr/share/tempio/sip_default.conf.gtpl \
+        -out /config/asterisk/sip_default.conf
 
-if ! bashio::fs.file_exists '/config/asterisk/sip.conf'; then
-    cp -a /etc/asterisk/. /config/asterisk/ ||
-        bashio::exit.nok 'Failed to make sample configs'
-fi
+# Move these to rootfs/etc/asterisk?
+tempio \
+    -template /usr/share/tempio/extensions.conf.gtpl \
+    -out /etc/asterisk/extensions.conf
 
-cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk folder'
+tempio \
+    -template /usr/share/tempio/rtp.conf.gtpl \
+    -out /etc/asterisk/rtp.conf
+
+tempio \
+    -template /usr/share/tempio/sip_custom.conf.gtpl \
+    -out /etc/asterisk/sip_custom.conf
+
+tempio \
+    -template /usr/share/tempio/sip.conf.gtpl \
+    -out /config/asterisk/sip.conf
+
+sed -i 's/noload => chan_sip.so/;noload => chan_sip.so/' /etc/asterisk/modules.conf >/dev/null
+
+cp -a -n /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
+cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
 
 bashio::log.info "Starting Asterisk..."
 
