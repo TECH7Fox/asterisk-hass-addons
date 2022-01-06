@@ -70,6 +70,7 @@ readonly video_support
 bashio::var.json \
     auto_add "^$(bashio::config 'auto_add')" \
     video_support "${video_support}" \
+    auto_add_secret "$(bashio::config 'auto_add_secret')" \
     persons "^${persons}" |
     tempio \
         -template /usr/share/tempio/sip_default.conf.gtpl \
