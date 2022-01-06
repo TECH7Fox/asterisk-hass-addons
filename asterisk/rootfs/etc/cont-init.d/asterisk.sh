@@ -42,8 +42,7 @@ bashio::log.info "Configuring Asterisk..."
 # Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
 
 bashio::var.json \
-    password "$(bashio::config 'ami_password')" \
-    ip "$(getent hosts homeassistant | awk '{ print $1 }')" |
+    password "$(bashio::config 'ami_password')" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /config/asterisk/manager.conf
