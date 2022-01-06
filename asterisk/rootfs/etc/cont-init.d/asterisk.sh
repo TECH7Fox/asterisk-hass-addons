@@ -60,15 +60,16 @@ persons="$(curl -s -X GET \
     http://supervisor/core/api/states |
     jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
 
-if bashio::config 'video_support'; then
-    video_support = "yes"
+if bashio::var.true "$(bashio::config 'video_support')"; then
+    video_support="yes"
 else
-    video_support = "no"
+    video_support="no"
 fi
+readonly video_support
 
 bashio::var.json \
     auto_add "^$(bashio::config 'auto_add')" \
-    video_support video_support \
+    video_support "${video_support}" \
     persons "^${persons}" |
     tempio \
         -template /usr/share/tempio/sip_default.conf.gtpl \
