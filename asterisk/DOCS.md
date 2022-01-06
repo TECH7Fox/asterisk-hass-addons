@@ -21,7 +21,7 @@ Follow these steps to get the add-on installed on your system:
 
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
-- **_Host_**: `b35499aa-asterisk`
+- **_Host_**: `localhost`
 - **_Port_**: `5038`
 - **_Username_**: `admin`
 - **_Password_**: whatever you set in the AMI Password configuration
