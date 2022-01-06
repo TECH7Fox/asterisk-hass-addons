@@ -42,8 +42,7 @@ bashio::log.info "Configuring Asterisk..."
 # Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
 
 bashio::var.json \
-    password "$(bashio::config 'ami_password')" \
-    ip "$(getent hosts homeassistant | awk '{ print $1 }')" |
+    password "$(bashio::config 'ami_password')" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /config/asterisk/manager.conf
@@ -61,8 +60,17 @@ persons="$(curl -s -X GET \
     http://supervisor/core/api/states |
     jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
 
+if bashio::var.true "$(bashio::config 'video_support')"; then
+    video_support="yes"
+else
+    video_support="no"
+fi
+readonly video_support
+
 bashio::var.json \
     auto_add "^$(bashio::config 'auto_add')" \
+    video_support "${video_support}" \
+    auto_add_secret "$(bashio::config 'auto_add_secret')" \
     persons "^${persons}" |
     tempio \
         -template /usr/share/tempio/sip_default.conf.gtpl \

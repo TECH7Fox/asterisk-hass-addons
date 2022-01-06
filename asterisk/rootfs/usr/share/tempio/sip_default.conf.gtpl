@@ -16,16 +16,18 @@ rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
+videosupport={{ .video_support }}
 
 [my-codecs](!)
-allow=!all,ulaw,alaw,speex,gsm,g726,g723
+allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
 
 {{ if .auto_add }}
+{{ $secret := .auto_add_secret }}
 {{  range $index, $person := .persons }}
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
-secret=1234
+secret={{ $secret }}
 callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 {{ end }}

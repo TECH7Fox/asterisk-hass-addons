@@ -3,6 +3,16 @@ configuration:
     name: AMI Password
     description: >-
       The password that will be used for the `admin` user in AMI.
+  video_support:
+    name: Video Support
+    description: >-
+      Enables videosupport for the auto-added extensions.
+      Video support does not work for the companion app.
+  auto_add_secret:
+    name: Auto add secret
+    description: >-
+      The secret set for every auto-added extension.
+      Change this to something secure.
   auto_add:
     name: Auto add extensions
     description: >-
