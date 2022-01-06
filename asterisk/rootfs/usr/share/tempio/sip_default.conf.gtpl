@@ -19,7 +19,7 @@ sendrpid=pai
 videosupport={{ .video_support }}
 
 [my-codecs](!)
-allow=!all,ulaw,alaw,speex,gsm,g726,g723
+allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
 
 {{ if .auto_add }}
 {{  range $index, $person := .persons }}
