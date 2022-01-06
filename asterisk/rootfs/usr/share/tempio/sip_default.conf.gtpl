@@ -16,6 +16,7 @@ rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
+videosupport={{ .video_support }}
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723
