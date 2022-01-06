@@ -26,7 +26,7 @@ allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
-secret={{ auto_add_secret }}
+secret={{ .auto_add_secret }}
 callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 {{ end }}
