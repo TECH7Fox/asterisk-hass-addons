@@ -22,11 +22,12 @@ videosupport={{ .video_support }}
 allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
 
 {{ if .auto_add }}
+{{ $secret := .auto_add_secret }}
 {{  range $index, $person := .persons }}
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone,my-codecs)
 username={{ $extension }}
-secret={{ .auto_add_secret }}
+secret={{ $secret }}
 callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 {{ end }}

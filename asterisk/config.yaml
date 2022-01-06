@@ -19,7 +19,7 @@ options:
   ami_password: c32d3bd655d9226ffc062751ab9d1058
   video_support: false
   auto_add: true
-  auto_add_secret: 1234
+  auto_add_secret: 1234abcd
   certfile: fullchain.pem
   keyfile: privkey.pem
 schema:
