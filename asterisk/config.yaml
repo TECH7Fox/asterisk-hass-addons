@@ -10,6 +10,9 @@ arch:
   - aarch64
   - amd64
   - i386
+ingress: true
+ingress_port: 0
+ingress_entry: /ws
 homeassistant_api: true
 map:
   - config:rw
