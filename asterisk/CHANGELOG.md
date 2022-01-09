@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 0.3.4
+
+- Add default conference room [#54](https://github.com/TECH7Fox/Asterisk-add-on/pull/54). Now you can join a conference room via 444 (for default user) or 555 (for admin user). This is useful for things like doorbells.
+- Add music-on-hold. (moh)
+
 ## 0.3.3
 
 - Add video support [#39](https://github.com/TECH7Fox/Asterisk-add-on/pull/39). This feature comes disabled by default as otherwise the SIP Lovelace Card does not work in the companion app.
