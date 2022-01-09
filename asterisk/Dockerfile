@@ -7,6 +7,7 @@ RUN apk add --update --no-cache \
     asterisk-srtp \
     asterisk-sample-config \
     asterisk-sounds-en \
+    asterisk-sounds-moh \
     asterisk-speex \
     asterisk-dahdi \
     rsync
