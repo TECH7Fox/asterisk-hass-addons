@@ -25,3 +25,7 @@ Follow these steps to get the add-on installed on your system:
 - **_Port_**: `5038`
 - **_Username_**: `admin`
 - **_Password_**: whatever you set in the AMI Password configuration
+
+## Troubleshoot
+
+If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on.
