@@ -1,5 +1,5 @@
 name: Asterisk
-version: 0.3.4
+version: 1.0.0
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/Asterisk-add-on
@@ -11,7 +11,7 @@ arch:
   - amd64
   - i386
 homeassistant_api: true
-stage: experimental
+stage: stable
 map:
   - config:rw
   - ssl
