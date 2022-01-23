@@ -30,8 +30,14 @@ Follow these steps to get the add-on installed on your system:
 
 - **_Host_**: `localhost`
 - **_Port_**: `8089`
+- **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
 
 And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
+
+## Wiki
+For more information, visit the [wiki](https://github.com/TECH7Fox/Asterisk-add-on/wiki).
+- [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Configure-Dahua-VTO-doorbell)
+- [Parking](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Parking)
 
 ## Troubleshoot
 
