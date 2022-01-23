@@ -20,8 +20,6 @@ dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
-tlsclientmethod=ALL
-tlscipher=ALL
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
