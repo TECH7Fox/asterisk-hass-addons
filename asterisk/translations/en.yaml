@@ -19,6 +19,10 @@ configuration:
       Whether to enable the automatic creation of extensions for 
       every person registered in Home Assistant. They will have
       their number/username auto-generated starting from 100.
+  ssl:
+    name: SSL
+    description: >-
+      Enables/disables the SSL/TLS/HTTPS Asterisk interfaces.
   certfile:
     name: Certificate File
     description: >-
