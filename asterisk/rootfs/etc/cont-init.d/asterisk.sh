@@ -67,10 +67,16 @@ else
 fi
 readonly video_support
 
+auto_add=$(bashio::config 'auto_add')
+auto_add_secret=$(bashio::config 'auto_add_secret')
+if bashio::var.true "${auto_add}" && bashio::var.is_empty "${auto_add_secret}"; then
+    bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
+fi
+
 bashio::var.json \
-    auto_add "^$(bashio::config 'auto_add')" \
+    auto_add "^${auto_add}" \
+    auto_add_secret "${auto_add_secret}" \
     video_support "${video_support}" \
-    auto_add_secret "$(bashio::config 'auto_add_secret')" \
     persons "^${persons}" |
     tempio \
         -template /usr/share/tempio/sip_default.conf.gtpl \
