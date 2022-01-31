@@ -16,7 +16,7 @@ map:
   - ssl
 options:
   ami_password: c32d3bd655d9226ffc062751ab9d1058
-  video_support: false
+  video_support: true
   auto_add: true
   auto_add_secret: 1234abcd
   certfile: fullchain.pem
