@@ -7,7 +7,11 @@
   "containerEnv": {
     "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
   },
-  "extensions": ["timonwong.shellcheck", "esbenp.prettier-vscode"],
+  "extensions": [
+    "timonwong.shellcheck",
+    "exiasr.hadolint",
+    "esbenp.prettier-vscode"
+  ],
   "settings": {
     "terminal.integrated.profiles.linux": {
       "zsh": {
