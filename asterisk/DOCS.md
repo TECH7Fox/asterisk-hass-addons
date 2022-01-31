@@ -14,7 +14,7 @@ Follow these steps to get the add-on installed on your system:
 ## Using
 
 1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl` directory.
-1. Check the add-on configuration by going to the **_Configuration_** tab. For example, you may want to change the default AMI Password to something else.
+1. Check the add-on configuration by going to the **_Configuration_** tab. You need to at least fill the _AMI Password_ and the _Auto add secret_ (if you leave _Auto add extensions_ enabled).
 1. Start the add-on by clicking in the **_START_** button.
 
 **Note**: _Remember to restart the add-on when the configuration is changed._
