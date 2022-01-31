@@ -10,6 +10,10 @@ RUN apk add --update --no-cache \
     asterisk-sounds-moh \
     asterisk-speex \
     asterisk-dahdi \
-    rsync
+    rsync \
+    python3 \
+    py3-pip
+
+RUN pip3 install asterisk_mbox_server --no-cache-dir
 
 COPY rootfs /
