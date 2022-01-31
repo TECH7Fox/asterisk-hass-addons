@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:edge
+ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:11.0.1
 FROM $BUILD_FROM
 
 # Install Asterisk
