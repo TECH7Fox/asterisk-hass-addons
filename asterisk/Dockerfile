@@ -13,6 +13,12 @@ RUN apk add --update --no-cache \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5
 
-RUN pip3 install --no-cache asterisk_mbox_server
+RUN apk add --no-cache \
+        libressl-dev \
+        musl-dev && \
+    pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 && \
+    apk del \
+        libressl-dev \
+        musl-dev \
 
 COPY rootfs /
