@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:11.0.1
+ARG BUILD_FROM=ghcr.io/hassio-addons/base-python/amd64:11.0.1
 FROM $BUILD_FROM
 
 # Install Asterisk
@@ -13,11 +13,6 @@ RUN apk add --update --no-cache \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5
 
-# Install Python
-RUN apk add --no-cache --virtual .build-dependencies \
-    py3-pip
-
-RUN apk add --update --no-cache python3
-RUN pip install --no-cache --upgrade pip setuptools asterisk_mbox_server
+RUN pip3 install --no-cache asterisk_mbox_server
 
 COPY rootfs /
