@@ -14,7 +14,7 @@ Follow these steps to get the add-on installed on your system:
 ## Using
 
 1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl` directory.
-1. Check the add-on configuration by going to the **_Configuration_** tab. For example, you may want to change the default AMI Password to something else.
+1. Check the add-on configuration by going to the **_Configuration_** tab. You need to at least fill the _AMI Password_ and the _Auto add secret_ (if you leave _Auto add extensions_ enabled).
 1. Start the add-on by clicking in the **_START_** button.
 
 **Note**: _Remember to restart the add-on when the configuration is changed._
@@ -25,3 +25,20 @@ Follow these steps to get the add-on installed on your system:
 - **_Port_**: `5038`
 - **_Username_**: `admin`
 - **_Password_**: whatever you set in the AMI Password configuration
+
+## Configuring the [SIP.js card](https://github.com/TECH7Fox/HA-SIP)
+
+- **_Host_**: `localhost`
+- **_Port_**: `8089`
+- **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
+
+And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
+
+## Wiki
+For more information, visit the [wiki](https://github.com/TECH7Fox/Asterisk-add-on/wiki).
+- [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Configure-Dahua-VTO-doorbell)
+- [Parking](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Parking)
+
+## Troubleshoot
+
+If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on.

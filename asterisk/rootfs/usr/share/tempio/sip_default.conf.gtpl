@@ -1,3 +1,6 @@
+; DON'T MODIFY THIS FILE, IT GET'S OVERWRITTEN!
+; IF YOU REALLY WANT TO CHANGE sipjs-phone OR my-codecs, YOU CAN ADD THAT IN sip_custom.conf OR EVEN sip.conf
+
 [sipjs-phone](!)
 type=friend
 host=dynamic ; Allows any host to register
