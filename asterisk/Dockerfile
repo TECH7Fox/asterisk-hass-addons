@@ -13,9 +13,7 @@ RUN apk add --update --no-cache \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5
 
-RUN apk add --no-cache --virtual .build-dependencies \
-    gcc=10.3.1_git20211027-r0 \
-    && pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 \
-    && apk del --no-cache --purge .build-dependencies
+RUN apk add build-base \
+    && pip3 install --no-cache-dir asterisk_mbox_server==0.5.3
 
 COPY rootfs /
