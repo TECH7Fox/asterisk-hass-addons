@@ -6,7 +6,9 @@
 
 # shellcheck shell=bash
 
-bashio::log.info "Starting Asterisk Mailbox"
+if bashio::var.true "$(bashio::config 'mailbox')"; then
+    bashio::log.info "Starting Asterisk Mailbox"
 
-## Run Asterisk_mbox
-exec /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini -U asterisk
+    ## Run Asterisk_mbox
+    exec /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini -U asterisk
+fi
