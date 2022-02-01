@@ -19,6 +19,6 @@ RUN apk add --no-cache \
     pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 && \
     apk del \
         libressl-dev \
-        musl-dev \
+        musl-dev
 
 COPY rootfs /
