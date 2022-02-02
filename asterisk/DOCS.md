@@ -13,11 +13,29 @@ Follow these steps to get the add-on installed on your system:
 
 ## Using
 
-1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl` directory.
-1. Check the add-on configuration by going to the **_Configuration_** tab. For example, you may want to change the default AMI Password to something else.
-1. Start the add-on by clicking in the **_START_** button.
+1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl/` directory.
+2. Check the add-on configuration by going to the **_Configuration_** tab. You need to at least fill the _AMI Password_ and the _Auto add secret_ (if you leave _Auto add extensions_ enabled).
+3. Start the add-on by clicking in the **_START_** button.
 
 **Note**: _Remember to restart the add-on when the configuration is changed._
+
+### Option: `ami_password`
+Set's the password for the Asterisk Manager Interface, to connect to the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration).
+
+### Option: `video_support`
+Enables video support for the auto generated extensions.
+
+### Option: `auto_add`
+Creates a extension for every [person](https://www.home-assistant.io/integrations/person/) registered in Home Assistant. They will have their number and username auto-generated starting from 100, with the `callerid` set to the person's name.
+
+### Option: `auto_add_secret`
+The secret for the auto generated extensions.
+
+### Option: `certfile`
+The certificate file to use for SSL in your `/ssl/` folder.
+
+### Option: `keyfile`
+The key file to use for SSL in your `/ssl/` folder.
 
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
@@ -38,6 +56,8 @@ And add a extension. To see which extension every person has, you can look at `/
 For more information, visit the [wiki](https://github.com/TECH7Fox/Asterisk-add-on/wiki).
 - [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Configure-Dahua-VTO-doorbell)
 - [Parking](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Parking)
+- [SSL](https://github.com/TECH7Fox/Asterisk-add-on/wiki/SSL)
+- [Doorbell Dialplan](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Doorbell-Dialplan)
 
 ## Troubleshoot
 
