@@ -45,7 +45,7 @@ configuration:
     name: Mailbox Server Extension
     description: >-
       Which extension to get the voicemails from.
-  api_key:
+  mailbox_google_api_key:
     name: Google API Key
     description: >-
       The API Key for speech-to-text.
