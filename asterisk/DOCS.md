@@ -37,6 +37,22 @@ The certificate file to use for SSL in your `/ssl/` folder.
 ### Option: `keyfile`
 The key file to use for SSL in your `/ssl/` folder.
 
+### Option: `mailbox_server`
+Enables the mailbox server to send voicemails to the Asterisk mailbox integration.
+
+### Option: `mailbox_port`
+The port used by the mailbox server.
+
+### Option: `mailbox_password`
+The password for the mailbox server.
+
+### Option: `mailbox_extension`
+Which extension to get the voicemails from.
+
+### Option: `api_key`
+The API Key for speech-to-text.
+You can get a key [here](https://cloud.google.com/speech-to-text). Google says it's free, but requires a billing account.
+
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
 - **_Host_**: `localhost`
