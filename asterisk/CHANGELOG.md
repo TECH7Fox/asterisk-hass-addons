@@ -2,13 +2,14 @@
 
 ## 1.1.0
 
-- Add mailbox server [$68](https://github.com/TECH7Fox/Asterisk-add-on/pull/68). To use with the Asterisk Mailbox Integration.
+- Add mailbox server [#68](https://github.com/TECH7Fox/Asterisk-add-on/pull/68). To use with the Asterisk Mailbox Integration.
 - Add discovery for the [Asterisk Integration](https://github.com/TECH7Fox/Asterisk-integration).
 - Allow to customize `logging.conf`.
 
 ## 1.0.0
 
 - Use parking instead of conference.
+- Remove default passwords.
 - Update config and docs.
 
 ## 0.3.4

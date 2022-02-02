@@ -15,17 +15,10 @@ map:
   - config:rw
   - ssl
 options:
-  ami_password: ''
   video_support: true
   auto_add: true
-  auto_add_secret: ''
   certfile: fullchain.pem
   keyfile: privkey.pem
-  mailbox: false
-  mailbox_port: 12345
-  mailbox_password: ''
-  mailbox_extension: '101'
-  api_key: GOOGLE_API_KEY
 schema:
   ami_password: password
   video_support: bool
@@ -34,8 +27,8 @@ schema:
   certfile: str
   keyfile: str
   mailbox: bool
-  mailbox_port: port
-  mailbox_password: password
-  mailbox_extension: str
-  api_key: password
+  mailbox_port: port?
+  mailbox_password: password?
+  mailbox_extension: str?
+  api_key: password?
 host_network: true
