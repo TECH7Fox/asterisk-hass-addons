@@ -9,24 +9,23 @@ configuration:
       Enables videosupport for the auto-added extensions.
       Video support does not work for the companion app.
   auto_add_secret:
-    name: Auto add secret
+    name: Auto Add Secret
     description: >-
       The secret set for every auto-added extension.
       Change this to something secure.
   auto_add:
-    name: Auto add extensions
+    name: Auto Add Extensions
     description: >-
       Whether to enable the automatic creation of extensions for 
       every person registered in Home Assistant. They will have
-      their number/username auto-generated starting from 100, while
-      their password will be 1234 (currently hardcoded).
+      their number/username auto-generated starting from 100.
   certfile:
-    name: Certificate file
+    name: Certificate File
     description: >-
       The certificate file to use for SSL. Note that this file must
       exist in the /ssl/ folder.
   keyfile:
-    name: Private key file
+    name: Private Key File
     description: >-
       The private key file to use for SSL. Note that this file must
       exist in the /ssl/ folder.
