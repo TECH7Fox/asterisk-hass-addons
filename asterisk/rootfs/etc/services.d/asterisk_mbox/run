@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the asterisk mailbox service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
+# shellcheck shell=bash
+
+if bashio::var.true "$(bashio::config 'mailbox')"; then
+    bashio::log.info "Starting Asterisk Mailbox"
+
+    ## Run Asterisk_mbox
+    exec /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini -U asterisk
+fi
