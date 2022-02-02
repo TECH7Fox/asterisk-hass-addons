@@ -54,15 +54,6 @@ bashio::var.json \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /config/asterisk/http.conf
 
-bashio::var.json \
-    port "$(bashio::config 'mailbox_port')" \
-    password "$(bashio::config 'mailbox_password')" \
-    extension "$(bashio::config 'mailbox_extension')" \
-    api_key "$(bashio::config 'mailbox_google_api_key')" |
-    tempio \
-    -template /usr/share/tempio/asterisk_mbox.ini.gtpl \
-    -out /config/asterisk/asterisk_mbox.ini
-
 persons="$(curl -s -X GET \
     -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
     -H "Content-Type: application/json" \
