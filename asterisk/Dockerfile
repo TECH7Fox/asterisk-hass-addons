@@ -14,7 +14,7 @@ RUN apk add --update --no-cache \
     rsync=~3.2.3-r5
 
 # Install mailbox server
-RUN apk add --no-cache --virtual .build-dependencies build-base==0.4-r1 \
+RUN apk add --no-cache --virtual .build-dependencies build-base=0.5-r2 \
     && pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 \
     && apk del --purge .build-dependencies
 
