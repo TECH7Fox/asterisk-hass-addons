@@ -1,7 +1,7 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:11.0.1
+ARG BUILD_FROM=ghcr.io/hassio-addons/base-python/amd64:8.0.1
 FROM $BUILD_FROM
 
-# Install packages
+# Install Asterisk
 ARG ASTERISK_VERSION=18.2.2-r5
 RUN apk add --update --no-cache \
     asterisk="${ASTERISK_VERSION}" \
@@ -12,5 +12,10 @@ RUN apk add --update --no-cache \
     asterisk-speex="${ASTERISK_VERSION}" \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5
+
+# Install mailbox server
+RUN apk add --no-cache --virtual .build-dependencies build-base=0.5-r2 \
+    && pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 \
+    && apk del --purge .build-dependencies
 
 COPY rootfs /

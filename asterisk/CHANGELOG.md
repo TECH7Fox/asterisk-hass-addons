@@ -1,5 +1,17 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.1.0
+
+- Add mailbox server [#68](https://github.com/TECH7Fox/Asterisk-add-on/pull/68). To use with the Asterisk Mailbox Integration.
+- Add discovery for the [Asterisk Integration](https://github.com/TECH7Fox/Asterisk-integration).
+- Allow to customize `logging.conf`.
+
+## 1.0.0
+
+- Use parking instead of conference.
+- Remove default passwords.
+- Update config and docs.
+
 ## 0.3.4
 
 - Add default conference room [#54](https://github.com/TECH7Fox/Asterisk-add-on/pull/54). Now you can join a conference room via 444 (for default user) or 555 (for admin user). This is useful for things like doorbells.

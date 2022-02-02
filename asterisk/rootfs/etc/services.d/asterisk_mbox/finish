@@ -1,12 +1,9 @@
-#!/usr/bin/with-contenv bashio
+#!/usr/bin/execlineb -S1
 # ==============================================================================
-# Start the asterisk service
+# Take down the S6 supervision tree when asterisk mailbox fails
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
+if { s6-test ${1} -ne 0 }
+if { s6-test ${1} -ne 256 }
 
-# shellcheck shell=bash
-
-bashio::log.info "Starting Asterisk..."
-
-## Run Asterisk
-exec asterisk -U asterisk -T -f
+s6-svscanctl -t /var/run/s6/services
