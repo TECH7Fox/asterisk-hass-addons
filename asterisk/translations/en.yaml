@@ -38,7 +38,7 @@ configuration:
     description: >-
       The port used by the mailbox server.
   mailbox_password:
-    mame: Mailbox Server Password
+    name: Mailbox Server Password
     description: >-
       The password for the mailbox server.
   mailbox_extension:
