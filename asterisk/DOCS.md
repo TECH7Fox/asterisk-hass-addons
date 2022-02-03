@@ -1,5 +1,8 @@
 # Home Assistant Add-on: Asterisk
 
+Asterisk is a free and open source framework for building communications applications.
+Asterisk powers IP PBX systems, VoIP gateways, conference servers, and is used by SMBs, enterprises, call centers, carriers and governments worldwide.
+
 ## Installation
 
 Follow these steps to get the add-on installed on your system:
