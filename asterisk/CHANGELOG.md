@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.1.4
+
+- Send out discovery information.
+
 ## 1.1.3
 
 - Add `host` and `port` to discovery.
