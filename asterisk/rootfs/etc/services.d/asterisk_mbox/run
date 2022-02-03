@@ -6,9 +6,12 @@
 
 # shellcheck shell=bash
 
-if bashio::var.true "$(bashio::config 'mailbox')"; then
-    bashio::log.info "Starting Asterisk Mailbox"
-
-    ## Run Asterisk_mbox
-    exec /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini -U asterisk
+if bashio::var.false "$(bashio::config 'mailbox')"; then
+    s6-svc -O .
+    exit 0
 fi
+
+bashio::log.info "Starting Asterisk Mailbox"
+
+## Run Asterisk_mbox
+exec /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini -U asterisk
