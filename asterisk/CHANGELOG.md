@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.1.2
+
+- Optimize when mailbox service is disabled (#80)
+
+## 1.1.1
+
+- Fix translations
+
 ## 1.1.0
 
 - Add mailbox server [#68](https://github.com/TECH7Fox/Asterisk-add-on/pull/68). To use with the Asterisk Mailbox Integration.
