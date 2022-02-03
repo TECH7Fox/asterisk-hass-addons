@@ -1,8 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.1.3
+
+- Add `host` and `port` to discovery.
+
 ## 1.1.2
 
-- Optimize when mailbox service is disabled (#80)
+- Optimize when mailbox service is disabled [#80](https://github.com/TECH7Fox/Asterisk-add-on/pull/80)
 
 ## 1.1.1
 

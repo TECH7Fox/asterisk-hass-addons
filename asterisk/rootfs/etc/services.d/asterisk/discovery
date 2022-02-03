@@ -10,8 +10,10 @@ bashio::net.wait_for 8089
 
 # Create discovery config payload for Home Assistant
 config=$(bashio::var.json \
-    ami_user "admin" \
-    ami_password "$(bashio::config 'ami_password')"
+    host  "127.0.0.1" \
+    port "8089" \
+    username "admin" \
+    password "$(bashio::config 'ami_password')"
 )
 
 # Send discovery info
