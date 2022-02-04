@@ -14,8 +14,6 @@ homeassistant_api: true
 map:
   - config:rw
   - ssl
-discovery:
-  - asterisk
 options:
   video_support: true
   auto_add: true
