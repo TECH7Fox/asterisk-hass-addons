@@ -2,12 +2,21 @@
   "build": {
     "dockerfile": "Dockerfile",
   },
-  "appPort": ["7123:8123", "7357:4357"],
+  "appPort": [
+    "7123:8123",
+    "7357:4357"
+  ],
   "postStartCommand": "bash devcontainer_bootstrap",
-  "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged"],
+  "runArgs": [
+    "--privileged"
+  ],
   "containerEnv": {
+    "GIT_EDITOR": "code --wait",
     "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
   },
+  "mounts": [
+    "type=volume,target=/var/lib/docker"
+  ],
   "extensions": [
     "timonwong.shellcheck",
     "exiasr.hadolint",
