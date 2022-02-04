@@ -8,8 +8,5 @@
 
 bashio::log.info "Starting Asterisk..."
 
-# Send out discovery information
-./discovery &
-
 ## Run Asterisk
 exec asterisk -U asterisk -T -f

@@ -7,6 +7,7 @@
 # shellcheck shell=bash
 
 if bashio::var.false "$(bashio::config 'mailbox')"; then
+    # Tell S6-Overlay not to restart this service
     s6-svc -O .
     exit 0
 fi

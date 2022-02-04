@@ -3,18 +3,20 @@
 # Home Assistant Community Add-on: Asterisk
 # Send Discovery information to Home Assistant
 # ==============================================================================
-declare config
 
-# Wait for motionEye to start before continuing
-bashio::net.wait_for 8089
+# shellcheck shell=bash
+
+# Wait for Asterisk to become available before continuing
+bashio::net.wait_for 8088
 
 # Create discovery config payload for Home Assistant
 config=$(bashio::var.json \
     host  "127.0.0.1" \
-    port "8089" \
+    port "5038" \
     username "admin" \
     password "$(bashio::config 'ami_password')"
 )
+readonly config
 
 # Send discovery info
 if bashio::discovery "asterisk" "${config}" > /dev/null; then
@@ -22,3 +24,6 @@ if bashio::discovery "asterisk" "${config}" > /dev/null; then
 else
     bashio::log.error "Discovery message to Home Assistant failed!"
 fi
+
+# Tell S6-Overlay not to restart this service
+s6-svc -O .
