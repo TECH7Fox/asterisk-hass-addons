@@ -21,7 +21,7 @@ options:
   keyfile: privkey.pem
   mailbox: false
   mailbox_port: 12345
-  mailbox_extension: '100'
+  mailbox_extension: "100"
 schema:
   ami_password: password
   video_support: bool
@@ -35,3 +35,4 @@ schema:
   mailbox_extension: str?
   mailbox_google_api_key: password?
 host_network: true
+init: false
