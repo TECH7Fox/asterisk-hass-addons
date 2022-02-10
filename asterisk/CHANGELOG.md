@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.1.6
+
+- Fix mailbox server
+
 ## 1.1.5
 
 - Fix permission denied error in discovery service (#85)
