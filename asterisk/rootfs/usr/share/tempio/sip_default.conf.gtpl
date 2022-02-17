@@ -4,6 +4,7 @@
 [sipjs-phone](!)
 type=friend
 host=dynamic ; Allows any host to register
+encryption=yes ; Tell Asterisk to use encryption for this peer
 avpf=yes ; Tell Asterisk to use AVPF for this peer
 icesupport=yes ; Tell Asterisk to use ICE for this peer
 context=default ; Tell Asterisk which context to use when this peer is dialing
@@ -15,7 +16,6 @@ qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
 {{ if .ssl -}}
-encryption=yes ; Tell Asterisk to use encryption for this peer
 transport=ws,wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets or TLS
 dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
 dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
