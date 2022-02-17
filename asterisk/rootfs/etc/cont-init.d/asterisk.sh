@@ -21,22 +21,26 @@ readonly ssl certfile keyfile target_certfile target_keyfile
 if bashio::var.true "${ssl}"; then
     bashio::log.info "Configuring certificate..."
 
+    if bashio::var.is_empty "${certfile}" || bashio::var.is_empty "${keyfile}"; then
+        bashio::exit.nok "'certfile' and 'keyfile' must be set when 'ssl' is enabled"
+    fi
+
     if ! bashio::fs.file_exists "${certfile}"; then
-        bashio::exit.nok "Certificate file at ${certfile} was not found"
+        bashio::exit.nok "Certificate file at '${certfile}' was not found"
     fi
 
     if ! bashio::fs.file_exists "${keyfile}"; then
-        bashio::exit.nok "Key file at ${keyfile} was not found"
+        bashio::exit.nok "Key file at '${keyfile}' was not found"
     fi
-    
+
     mkdir -p /etc/asterisk/keys
-    
+
     cp -f "${certfile}" "${target_certfile}"
     cp -f "${keyfile}" "${target_keyfile}"
     cat "${target_keyfile}" <(echo) "${target_certfile}" >/etc/asterisk/keys/asterisk.pem
     chown asterisk: /etc/asterisk/keys/*.pem
     chmod 600 /etc/asterisk/keys/*.pem
-    
+
     cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 fi
 
@@ -51,7 +55,7 @@ bashio::var.json \
         -out /config/asterisk/manager.conf
 
 bashio::var.json \
-    ssl "^$(bashio::config 'ssl')" \
+    ssl "^${ssl}" \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
     tempio \
