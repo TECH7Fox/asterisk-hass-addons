@@ -10,7 +10,6 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-
 ssl=$(bashio::config 'ssl')
 certfile="/ssl/$(bashio::config 'certfile')"
 keyfile="/ssl/$(bashio::config 'keyfile')"
@@ -62,6 +61,12 @@ bashio::var.json \
         -template /usr/share/tempio/http.conf.gtpl \
         -out /config/asterisk/http.conf
 
+bashio::var.json \
+    ssl "^${ssl}" |
+    tempio \
+        -template /usr/share/tempio/sip.conf.gtpl \
+        -out /config/asterisk/sip.conf
+
 persons="$(curl -s -X GET \
     -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
     -H "Content-Type: application/json" \
@@ -84,7 +89,7 @@ fi
 bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
-    ssl "^$(bashio::config 'ssl')" \
+    ssl "^${ssl}" \
     video_support "${video_support}" \
     persons "^${persons}" |
     tempio \

@@ -9,17 +9,21 @@ avpf=yes ; Tell Asterisk to use AVPF for this peer
 icesupport=yes ; Tell Asterisk to use ICE for this peer
 context=default ; Tell Asterisk which context to use when this peer is dialing
 directmedia=no ; Asterisk will relay media for this peer
-transport=wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets
 force_avp=yes ; Force Asterisk to use avp. Introduced in Asterisk 11.11
-dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
-dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
-dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
-dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
 rtcp_mux=yes ; Tell Asterisk to do RTCP mux
 dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
+{{ if .ssl -}}
+transport=wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets or TLS
+dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
+dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
+dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
+dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
+{{- else -}}
+transport=wss,udp ; Asterisk will allow this peer to register on UDP or WebSockets
+{{- end }}
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
