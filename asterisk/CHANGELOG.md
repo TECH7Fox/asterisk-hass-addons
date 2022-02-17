@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 1.2.1
+
+- Disable WS protocol wrongly introduced in 1.2.0 which caused issues
+
 ## 1.2.0
 
 - Add an option to disable SSL (#66)
