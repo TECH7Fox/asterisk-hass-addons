@@ -1,0 +1,13 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the NGINX service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
+# shellcheck shell=bash
+
+bashio::log.info "Starting NGINX..."
+
+## Run NGINX
+
+exec nginx -g "daemon off;error_log /dev/stdout debug;"
