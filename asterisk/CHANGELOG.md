@@ -1,5 +1,18 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+# Changelog
+
+## 1.2.0
+
+- Add an option to disable SSL (#66)
+  - Useful for setting up Asterisk to work behind a reverse proxy like NGINX. Here is one example on how to configure NGINX to proxy the Asterisk WebSockets interface: https://warlord0blog.wordpress.com/2020/04/16/asterisk-webrtc/
+  - PS: This was not tested, so any feedback is welcome.
+- Add initial support for Ingress (#57)
+  - Work is still required from other components like the integration and the card to effectively be able to use it.
+  - Note that the WebUI shown in the addon page is not a GUI page, but rather the WebSocket connection needed by SIP.JS to connect to the SIP server.
+- Fix mailbox server not working (#92)
+- Disable docker builtin init, to prevent multiple init systems as we already have S6 Overlay (#89)
+
 ## 1.1.5
 
 - Fix permission denied error in discovery service (#85)
