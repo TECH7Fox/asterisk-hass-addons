@@ -34,20 +34,11 @@ Creates a extension for every [person](https://www.home-assistant.io/integration
 ### Option: `auto_add_secret`
 The secret for the auto generated extensions.
 
-### Option: `ssl`
-Enables/disables the SSL/TLS/HTTPS Asterisk interfaces.
-
-Enabled by default.
-
 ### Option: `certfile`
-The certificate file to use for SSL in your `/ssl/` folder, when SSL is enabled.
-
-The default is `fullchain.pem`.
+The certificate file to use for SSL in your `/ssl/` folder.
 
 ### Option: `keyfile`
-The key file to use for SSL in your `/ssl/` folder, when SSL is enabled.
-
-The default is `privkey.pem`.
+The key file to use for SSL in your `/ssl/` folder.
 
 ### Option: `mailbox_server`
 Enables the mailbox server to send voicemails to the Asterisk mailbox integration.
