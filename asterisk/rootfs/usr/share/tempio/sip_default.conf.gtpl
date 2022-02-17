@@ -16,13 +16,13 @@ qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
 {{ if .ssl -}}
-transport=ws,wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets or TLS
+transport=wss,udp,tls ; Asterisk will allow this peer to register on UDP or WebSockets or TLS
 dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
 dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
 dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
 dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
 {{- else -}}
-transport=ws,udp ; Asterisk will allow this peer to register on UDP or WebSockets
+transport=wss,udp ; Asterisk will allow this peer to register on UDP or WebSockets
 {{- end }}
 
 [my-codecs](!)
