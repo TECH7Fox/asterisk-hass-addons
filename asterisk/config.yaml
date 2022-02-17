@@ -17,6 +17,7 @@ map:
 options:
   video_support: true
   auto_add: true
+  ssl: true
   certfile: fullchain.pem
   keyfile: privkey.pem
   mailbox: false
@@ -27,6 +28,7 @@ schema:
   video_support: bool
   auto_add: bool
   auto_add_secret: password?
+  ssl: bool
   certfile: str
   keyfile: str
   mailbox: bool

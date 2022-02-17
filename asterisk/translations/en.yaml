@@ -16,19 +16,21 @@ configuration:
   auto_add:
     name: Auto Add Extensions
     description: >-
-      Whether to enable the automatic creation of extensions for 
+      Whether to enable the automatic creation of extensions for
       every person registered in Home Assistant. They will have
       their number/username auto-generated starting from 100.
+  ssl:
+    name: SSL
+    description: >-
+      Enables/disables the SSL/TLS/HTTPS Asterisk interfaces.
   certfile:
     name: Certificate File
     description: >-
-      The certificate file to use for SSL. Note that this file must
-      exist in the /ssl/ folder.
+      The certificate file to use for SSL in your `/ssl/` folder, when SSL is enabled.
   keyfile:
     name: Private Key File
     description: >-
-      The private key file to use for SSL. Note that this file must
-      exist in the /ssl/ folder.
+      The key file to use for SSL in your `/ssl/` folder, when SSL is enabled.
   mailbox:
     name: Mailbox Server
     description: >-
