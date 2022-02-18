@@ -54,3 +54,7 @@ configuration:
     name: Google API Key
     description: >-
       The API Key for speech-to-text.
+  log_level:
+    name: Log Level
+    description: >-
+      The log level to configure Asterisk to use.
