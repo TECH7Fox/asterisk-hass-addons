@@ -59,7 +59,7 @@ bashio::var.json \
         -out /config/asterisk/manager.conf
 
 bashio::var.json \
-    password "$(bashio::config 'log_level')" |
+    log_level "$(bashio::config 'log_level')" |
     tempio \
         -template /usr/share/tempio/logger.conf.gtpl \
         -out /config/asterisk/logger.conf
