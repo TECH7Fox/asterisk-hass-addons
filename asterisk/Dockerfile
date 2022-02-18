@@ -28,7 +28,8 @@ RUN apk add --update --no-cache \
     asterisk-speex="${ASTERISK_VERSION}" \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5 \
-    nginx=~1.20.2-r0
+    nginx=~1.20.2-r0 \
+    openssl=~1.1.1l-r8
 
 # Install mailbox server
 RUN apk add --no-cache --virtual .build-dependencies build-base=0.5-r2 \
