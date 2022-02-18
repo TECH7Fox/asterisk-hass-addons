@@ -2,6 +2,15 @@
 
 # Changelog
 
+## 1.3.0
+
+- Remove the initial Ingress support added in 1.2.0.
+  - Ingress will not be needed to make the integration and the card work without having to export additional ports or configuring additional reverse proxies (details [here](https://github.com/dermotduffy/frigate-hass-card/issues/331#issuecomment-1043671490)).
+- Remove the option to disable SSL (#98)
+  - Disabling SSL causes the HA-SIP card not to work anymore.
+- Add an option to automatically generate a self-signed certificate (#98)
+  - So that, users running Asterisk behind a reverse proxy do not need to bother about managing their own certificate to be used by Asterisk. You can directly proxy `https://<ha-ip>:8089`.
+
 ## 1.2.1
 
 - Disable WS protocol wrongly introduced in 1.2.0 which caused issues

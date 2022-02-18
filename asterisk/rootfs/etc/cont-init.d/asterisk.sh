@@ -10,38 +10,43 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-ssl=$(bashio::config 'ssl')
+bashio::log.info "Configuring certificate..."
+
 certfile="/ssl/$(bashio::config 'certfile')"
 keyfile="/ssl/$(bashio::config 'keyfile')"
-target_certfile="/etc/asterisk/keys/fullchain.pem"
-target_keyfile="/etc/asterisk/keys/privkey.pem"
-readonly ssl certfile keyfile target_certfile target_keyfile
+readonly certfile keyfile
 
-if bashio::var.true "${ssl}"; then
-    bashio::log.info "Configuring certificate..."
+readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
+readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
 
-    if bashio::var.is_empty "${certfile}" || bashio::var.is_empty "${keyfile}"; then
-        bashio::exit.nok "'certfile' and 'keyfile' must be set when 'ssl' is enabled"
-    fi
+mkdir -p /etc/asterisk/keys
+
+if bashio::var.true "$(bashio::config 'generate_ssl_cert')"; then
+    bashio::log.info "Generating a self-signed certificate..."
+    
+    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+        -subj "/C=NL/ST=Denial/L=Amsterdam/O=Dis/CN=Asterisk" \
+        -keyout "${target_keyfile}" -out "${target_certfile}" >/dev/null
+else
+    bashio::log.info "Using existing certificate as 'generate_ssl_certificate' is disabled..."
 
     if ! bashio::fs.file_exists "${certfile}"; then
-        bashio::exit.nok "Certificate file at '${certfile}' was not found"
+        bashio::exit.nok "Certificate file at ${certfile} was not found"
     fi
 
     if ! bashio::fs.file_exists "${keyfile}"; then
-        bashio::exit.nok "Key file at '${keyfile}' was not found"
+        bashio::exit.nok "Key file at ${keyfile} was not found"
     fi
-
-    mkdir -p /etc/asterisk/keys
 
     cp -f "${certfile}" "${target_certfile}"
     cp -f "${keyfile}" "${target_keyfile}"
-    cat "${target_keyfile}" <(echo) "${target_certfile}" >/etc/asterisk/keys/asterisk.pem
-    chown asterisk: /etc/asterisk/keys/*.pem
-    chmod 600 /etc/asterisk/keys/*.pem
-
-    cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 fi
+
+cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem
+chown asterisk: /etc/asterisk/keys/*.pem
+chmod 600 /etc/asterisk/keys/*.pem
+
+cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
 
 bashio::log.info "Configuring Asterisk..."
 
@@ -54,18 +59,11 @@ bashio::var.json \
         -out /config/asterisk/manager.conf
 
 bashio::var.json \
-    ssl "^${ssl}" \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
     tempio \
-        -template /usr/share/tempio/http.conf.gtpl \
-        -out /config/asterisk/http.conf
-
-bashio::var.json \
-    ssl "^${ssl}" |
-    tempio \
-        -template /usr/share/tempio/sip.conf.gtpl \
-        -out /config/asterisk/sip.conf
+    -template /usr/share/tempio/http.conf.gtpl \
+    -out /config/asterisk/http.conf
 
 persons="$(curl -s -X GET \
     -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
@@ -89,7 +87,6 @@ fi
 bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
-    ssl "^${ssl}" \
     video_support "${video_support}" \
     persons "^${persons}" |
     tempio \
@@ -97,4 +94,4 @@ bashio::var.json \
         -out /config/asterisk/sip_default.conf
 
 rsync -a -v --ignore-existing /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
-cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.'         # Does overwrite
+cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite

@@ -17,7 +17,7 @@ RUN S6_ARCH="${BUILD_ARCH}" \
     && curl -L -s "https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-${S6_ARCH}.tar.gz" \
         | tar zxvf - -C /
 
-# Install asterisk, rsync and nginx
+# Install Asterisk
 ARG ASTERISK_VERSION=18.2.2-r5
 RUN apk add --update --no-cache \
     asterisk="${ASTERISK_VERSION}" \
@@ -28,7 +28,7 @@ RUN apk add --update --no-cache \
     asterisk-speex="${ASTERISK_VERSION}" \
     asterisk-dahdi="${ASTERISK_VERSION}" \
     rsync=~3.2.3-r5 \
-    nginx=~1.20.2-r0
+    openssl=~1.1.1l-r8
 
 # Install mailbox server
 RUN apk add --no-cache --virtual .build-dependencies build-base=0.5-r2 \
