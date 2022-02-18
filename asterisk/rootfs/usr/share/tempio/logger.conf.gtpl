@@ -20,7 +20,7 @@ console => notice,warning,error,verbose
 console => notice,warning,error,verbose,debug
 
 {{ else if .log_level == "trace" }}
-console => notice,warning,error,verbose,dtmf,fax
+console => notice,warning,error,verbose,debug,dtmf,fax
 
 {{ else if .log_level == "all" }}
 console => notice,warning,error,debug,verbose,dtmf,fax
