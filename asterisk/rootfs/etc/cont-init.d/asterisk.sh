@@ -16,21 +16,32 @@ certfile="/ssl/$(bashio::config 'certfile')"
 keyfile="/ssl/$(bashio::config 'keyfile')"
 readonly certfile keyfile
 
-if ! bashio::fs.file_exists "${certfile}"; then
-    bashio::exit.nok "Certificate file at ${certfile} was not found"
-fi
-
-if ! bashio::fs.file_exists "${keyfile}"; then
-    bashio::exit.nok "Key file at ${keyfile} was not found"
-fi
-
 readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
 readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
 
 mkdir -p /etc/asterisk/keys
 
-cp -f "${certfile}" "${target_certfile}"
-cp -f "${keyfile}" "${target_keyfile}"
+if bashio::var.true "$(bashio::config 'generate_ssl_cert')"; then
+    bashio::log.info "Generating a self-signed certificate..."
+    
+    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+        -subj "/C=NL/ST=Denial/L=Amsterdam/O=Dis/CN=Asterisk" \
+        -keyout "${target_keyfile}" -out "${target_certfile}" >/dev/null
+else
+    bashio::log.info "Using existing certificate as 'generate_ssl_certificate' is disabled..."
+
+    if ! bashio::fs.file_exists "${certfile}"; then
+        bashio::exit.nok "Certificate file at ${certfile} was not found"
+    fi
+
+    if ! bashio::fs.file_exists "${keyfile}"; then
+        bashio::exit.nok "Key file at ${keyfile} was not found"
+    fi
+
+    cp -f "${certfile}" "${target_certfile}"
+    cp -f "${keyfile}" "${target_keyfile}"
+fi
+
 cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem
 chown asterisk: /etc/asterisk/keys/*.pem
 chmod 600 /etc/asterisk/keys/*.pem

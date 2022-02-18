@@ -1,5 +1,51 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+# Changelog
+
+## 1.3.0
+
+- Remove the initial Ingress support added in 1.2.0.
+  - Ingress will not be needed to make the integration and the card work without having to export additional ports or configuring additional reverse proxies (details [here](https://github.com/dermotduffy/frigate-hass-card/issues/331#issuecomment-1043671490)).
+- Remove the option to disable SSL (#98)
+  - Disabling SSL causes the HA-SIP card not to work anymore.
+- Add an option to automatically generate a self-signed certificate (#98)
+  - So that, users running Asterisk behind a reverse proxy do not need to bother about managing their own certificate to be used by Asterisk. You can directly proxy `https://<ha-ip>:8089`.
+
+## 1.2.1
+
+- Disable WS protocol wrongly introduced in 1.2.0 which caused issues
+
+## 1.2.0
+
+- Add an option to disable SSL (#66)
+  - Useful for setting up Asterisk to work behind a reverse proxy like NGINX. Here is one example on how to configure NGINX to proxy the Asterisk WebSockets interface: https://warlord0blog.wordpress.com/2020/04/16/asterisk-webrtc/
+  - PS: This was not tested, so any feedback is welcome.
+- Add initial support for Ingress (#57)
+  - Work is still required from other components like the integration and the card to effectively be able to use it.
+  - Note that the WebUI shown in the addon page is not a GUI page, but rather the WebSocket connection needed by SIP.JS to connect to the SIP server.
+- Fix mailbox server not working (#92)
+- Disable docker builtin init, to prevent multiple init systems as we already have S6 Overlay (#89)
+
+## 1.1.5
+
+- Fix permission denied error in discovery service (#85)
+
+## 1.1.4
+
+- Send out discovery information.
+
+## 1.1.3
+
+- Add `host` and `port` to discovery.
+
+## 1.1.2
+
+- Optimize when mailbox service is disabled [#80](https://github.com/TECH7Fox/Asterisk-add-on/pull/80)
+
+## 1.1.1
+
+- Fix translations
+
 ## 1.1.0
 
 - Add mailbox server [#68](https://github.com/TECH7Fox/Asterisk-add-on/pull/68). To use with the Asterisk Mailbox Integration.
