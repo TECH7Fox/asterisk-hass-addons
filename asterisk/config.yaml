@@ -1,5 +1,5 @@
 name: Asterisk
-version: 1.3.0
+version: 1.3.1
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/Asterisk-add-on
@@ -23,6 +23,7 @@ options:
   mailbox: false
   mailbox_port: 12345
   mailbox_extension: "100"
+  log_level: notice
 schema:
   ami_password: password
   video_support: bool
@@ -36,5 +37,6 @@ schema:
   mailbox_password: password?
   mailbox_extension: str?
   mailbox_google_api_key: password?
+  log_level: list(all|trace|debug|info|notice|warning|error|fatal|off)
 host_network: true
 init: false
