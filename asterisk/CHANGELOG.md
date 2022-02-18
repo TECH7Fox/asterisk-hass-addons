@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 1.3.1
+
+- Add `log_level` option
+
 ## 1.3.0
 
 - Remove the initial Ingress support added in 1.2.0.
