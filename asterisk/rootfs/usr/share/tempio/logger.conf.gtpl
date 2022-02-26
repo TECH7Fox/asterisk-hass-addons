@@ -17,12 +17,12 @@ console => notice,warning,error
 console => verbose(1),notice,warning,error
 
 {{- else if eq .log_level "debug" -}}
-console => verbose(1),debug(1),notice,warning,error
+console => verbose(2),debug,notice,warning,error
 
 {{- else if eq .log_level "trace" -}}
-console => verbose(2),debug(2),notice,warning,error
+console => verbose(3),debug,trace,notice,warning,error
 
 {{- else if eq .log_level "all" -}}
-console => verbose(3),debug(3),*
+console => verbose(4),*
 
 {{- end }}
