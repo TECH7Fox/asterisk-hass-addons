@@ -14,15 +14,15 @@ console => warning,error
 console => notice,warning,error
 
 {{- else if eq .log_level "info" -}}
-console => verbose,notice,warning,error
+console => verbose(1),notice,warning,error
 
 {{- else if eq .log_level "debug" -}}
-console => verbose,debug,notice,warning,error
+console => verbose(2),debug,notice,warning,error
 
 {{- else if eq .log_level "trace" -}}
-console => verbose,debug,notice,warning,error
+console => verbose(3),debug,trace,notice,warning,error
 
 {{- else if eq .log_level "all" -}}
-console => dtmf,fax,verbose,debug,notice,warning,error
+console => verbose(4),*
 
 {{- end }}
