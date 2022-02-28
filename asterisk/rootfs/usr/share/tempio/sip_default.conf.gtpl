@@ -20,6 +20,9 @@ dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
+allowsubscribe=yes
+subscribecontext=hints
+busylevel=1
 
 [my-codecs](!)
 allow=!all,ulaw,alaw,speex,gsm,g726,g723,h263,h263p,h264,vp8
