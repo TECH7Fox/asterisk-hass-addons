@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 1.3.3
+
+- Include hint settings and add busylevel to auto generated extensions.
+
 ## 1.3.2
 
 - Fix verbose and debug log levels
