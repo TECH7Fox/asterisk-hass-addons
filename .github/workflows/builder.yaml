@@ -22,7 +22,7 @@ jobs:
       changed: ${{ steps.changed_addons.outputs.changed }}
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Get changed files
         id: changed_files
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Get information
         id: info
@@ -94,7 +94,7 @@ jobs:
 
       - name: Login to GitHub Container Registry
         if: env.BUILD_ARGS != '--test'
-        uses: docker/login-action@v1.13.0
+        uses: docker/login-action@v1.14.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
