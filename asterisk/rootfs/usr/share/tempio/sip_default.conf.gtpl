@@ -20,8 +20,6 @@ dtmfmode=rfc2833
 qualify=no
 sendrpid=pai
 videosupport={{ .video_support }}
-allowsubscribe=yes
-subscribecontext=hints
 busylevel=1
 
 [my-codecs](!)
