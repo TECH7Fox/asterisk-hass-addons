@@ -6,11 +6,10 @@
 {{ if .auto_add }}
 {{ $secret := .auto_add_secret }}
 
-; Common AUTH parameters (same username and same secret for all auto-generated endpoints)
-[sipjs-phone-auth]
+; Common AUTH parameters (template)
+[sipjs-phone-auth](!)
 type=auth
 auth_type=userpass
-username=sipjs
 password={{ $secret }}
 
 ; Common AOR parameters (template)
@@ -23,7 +22,6 @@ qualify_frequency=30
 ; Common ENDPOINT parameters (template)
 [sipjs-phone-endpoint](!) 
 type=endpoint
-auth=sipjs-phone-auth
 send_rpid=yes
 send_pai=yes
 device_state_busy_at=1
@@ -47,8 +45,11 @@ allow=h263,h263p,h264,vp8
 {{  range $index, $person := .persons }}
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone-aor)
+[{{ $extension }}](sipjs-phone-auth)
+username={{ $person }}
 [{{ $extension }}](sipjs-phone-endpoint)
 aors={{ $extension }}
+auth={{ $extension }}
 callerid="{{ $person }}" <{{ $extension }}>
 {{   end }}
 
