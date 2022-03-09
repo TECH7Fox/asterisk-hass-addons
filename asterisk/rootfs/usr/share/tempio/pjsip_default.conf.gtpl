@@ -46,7 +46,7 @@ allow=h263,h263p,h264,vp8
 {{   $extension := add 100 $index }}
 [{{ $extension }}](sipjs-phone-aor)
 [{{ $extension }}](sipjs-phone-auth)
-username={{ $person }}
+username={{ $extension }}
 [{{ $extension }}](sipjs-phone-endpoint)
 aors={{ $extension }}
 auth={{ $extension }}
