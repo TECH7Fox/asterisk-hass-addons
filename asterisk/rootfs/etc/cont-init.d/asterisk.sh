@@ -77,15 +77,9 @@ persons="$(curl -s -X GET \
     http://supervisor/core/api/states |
     jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
 
-if bashio::var.true "$(bashio::config 'video_support')"; then
-    video_support="yes"
-else
-    video_support="no"
-fi
-readonly video_support
-
 auto_add=$(bashio::config 'auto_add')
 auto_add_secret=$(bashio::config 'auto_add_secret')
+video_support=$(bashio::config 'video_support')
 if bashio::var.true "${auto_add}" && bashio::var.is_empty "${auto_add_secret}"; then
     bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
 fi
@@ -93,16 +87,7 @@ fi
 bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
-    video_support "${video_support}" \
-    persons "^${persons}" |
-    tempio \
-        -template /usr/share/tempio/sip_default.conf.gtpl \
-        -out /config/asterisk/sip_default.conf
-
-bashio::var.json \
-    auto_add "^${auto_add}" \
-    auto_add_secret "${auto_add_secret}" \
-    video_support "${video_support}" \
+    video_support "^${video_support}" \
     persons "^${persons}" |
     tempio \
         -template /usr/share/tempio/pjsip_default.conf.gtpl \
