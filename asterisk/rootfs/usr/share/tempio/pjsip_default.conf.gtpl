@@ -17,7 +17,6 @@ password={{ $secret }}
 type=aor
 max_contacts=5
 remove_existing=yes
-qualify_frequency=30
 
 ; Common ENDPOINT parameters (template)
 [sipjs-phone-endpoint](!) 
