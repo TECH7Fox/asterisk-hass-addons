@@ -1,27 +1,58 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/base-python/${BUILD_ARCH}:8.1.0
 
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:5.3.0
 
 FROM $BUILD_FROM
 
 ARG BUILD_ARCH
 
-# Install Asterisk
-ARG ASTERISK_VERSION=18.2.2-r5
-RUN apk add --update --no-cache \
-    asterisk="${ASTERISK_VERSION}" \
-    asterisk-srtp="${ASTERISK_VERSION}" \
-    asterisk-sample-config="${ASTERISK_VERSION}" \
-    asterisk-sounds-en="${ASTERISK_VERSION}" \
-    asterisk-sounds-moh="${ASTERISK_VERSION}" \
-    asterisk-speex="${ASTERISK_VERSION}" \
-    asterisk-dahdi="${ASTERISK_VERSION}" \
-    rsync=~3.2.3-r5 \
-    openssl=~1.1.1l-r8
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+            autoconf \
+            file \
+            binutils-dev \
+            build-essential \
+            ca-certificates \
+            curl \
+            less \
+            libcurl4-openssl-dev \
+            libedit-dev \
+            libgsm1-dev \
+            libogg-dev \
+            libpopt-dev \
+            libresample1-dev \
+            libspandsp-dev \
+            libspeex-dev \
+            libspeexdsp-dev \
+            libsqlite3-dev \
+            libsrtp2-dev \
+            libssl-dev \
+            libvorbis-dev \
+            libxml2-dev \
+            libxslt1-dev \
+            libncurses5 ncurses-bin ncurses-term \
+            portaudio19-dev \
+            procps \
+            python3-pip \
+            python-setuptools \
+            rsync \
+            sipgrep \
+            tcpdump \
+            unixodbc-dev \
+            uuid \
+            uuid-dev \
+            xmlstarlet \
+	    && \
+    apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
 
-# Install mailbox server
-RUN apk add --no-cache --virtual .build-dependencies build-base=0.5-r2 \
-    && pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 \
-    && apk del --purge .build-dependencies
+RUN useradd --system asterisk
+RUN pip3 install asterisk_mbox_server==0.5.3
+
+ENV ASTERISK_VERSION=18.10.1
+
+COPY build-asterisk.sh /build-asterisk
+
+RUN /build-asterisk && rm -f /build-asterisk
 
 COPY rootfs /
