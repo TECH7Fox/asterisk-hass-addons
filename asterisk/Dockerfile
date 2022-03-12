@@ -53,6 +53,7 @@ FROM ${BUILD_FROM}
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends --no-install-suggests \
+            libbinutils \
             file \
             ca-certificates \
             curl \
