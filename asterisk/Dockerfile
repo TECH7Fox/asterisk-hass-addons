@@ -93,17 +93,24 @@ RUN apt-get update -qq && \
     apt-get autoclean -y && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /opt/asterisk/sbin/ast* /opt/asterisk/sbin/autosupport /opt/asterisk/sbin/rasterisk /opt/asterisk/sbin/safe_asterisk /usr/sbin/
-COPY --from=build /opt/asterisk/lib/libasterisk* /lib/
-COPY --from=build /opt/asterisk/lib/asterisk /usr/lib/asterisk/
-COPY --from=build /opt/asterisk/var/ /var/
-COPY --from=build /opt/asterisk/etc/asterisk/ /etc/asterisk/
+COPY --from=build /usr/sbin/ast* /usr/sbin/autosupport /usr/sbin/rasterisk /usr/sbin/safe_asterisk /usr/sbin/
+COPY --from=build /lib/libasterisk* /lib/
+COPY --from=build /usr/lib/asterisk/ /usr/lib/asterisk/
+COPY --from=build /var/lib/asterisk/ /var/lib/asterisk/
+COPY --from=build /var/log/asterisk/ /var/log/asterisk/
+COPY --from=build /var/run/asterisk/ /var/run/asterisk/
+COPY --from=build /var/spool/asterisk/ /var/spool/asterisk/
+COPY --from=build /var/spool/asterisk/ /var/spool/asterisk/
+COPY --from=build /usr/share/man/man8/ast* /usr/share/man/man8/autosupport /usr/share/man/man8/safe_asterisk /etc/asterisk/
 
 COPY --from=rootfs / /
 
 RUN groupadd --system asterisk && \
     useradd --system -d /var/lib/asterisk -g asterisk asterisk && \
     chown -R asterisk:asterisk  /etc/asterisk \
-                                /var/*/asterisk \
-                                /usr/*/asterisk && \
+                                /var/lib/asterisk \
+                                /var/log/asterisk \
+                                /var/run/asterisk \
+                                /var/spool/asterisk \
+                                /usr/lib/asterisk && \
     chmod -R 750 /var/spool/asterisk

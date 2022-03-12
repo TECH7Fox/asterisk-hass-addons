@@ -43,7 +43,7 @@ curl -vsLfS http://downloads.asterisk.org/pub/telephony/asterisk/releases/asteri
 # 1.5 jobs per core works out okay
 : ${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}
 
-./configure --with-resample --with-jansson-bundled --with-pjproject-bundled --prefix=/opt/asterisk
+./configure --with-resample --with-jansson-bundled --with-pjproject-bundled
 
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
@@ -78,4 +78,4 @@ make install
 make samples
 
 # set runuser and rungroup
-sed -i -E 's/^;(run)(user|group)/\1\2/' /opt/asterisk/etc/asterisk/asterisk.conf
+sed -i -E 's/^;(run)(user|group)/\1\2/' /etc/asterisk/asterisk.conf
