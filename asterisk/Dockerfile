@@ -94,14 +94,14 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/sbin/ast* /usr/sbin/autosupport /usr/sbin/rasterisk /usr/sbin/safe_asterisk /usr/sbin/
-COPY --from=build /lib/libasterisk* /lib/
+COPY --from=build /usr/lib/libasterisk* /usr/lib/
 COPY --from=build /usr/lib/asterisk/ /usr/lib/asterisk/
 COPY --from=build /var/lib/asterisk/ /var/lib/asterisk/
 COPY --from=build /var/log/asterisk/ /var/log/asterisk/
 COPY --from=build /var/run/asterisk/ /var/run/asterisk/
 COPY --from=build /var/spool/asterisk/ /var/spool/asterisk/
 COPY --from=build /var/spool/asterisk/ /var/spool/asterisk/
-COPY --from=build /usr/share/man/man8/ast* /usr/share/man/man8/autosupport /usr/share/man/man8/safe_asterisk /etc/asterisk/
+COPY --from=build /usr/share/man/man8/ast* /usr/share/man/man8/autosupport.8 /usr/share/man/man8/safe_asterisk.8 /usr/share/man/man8/
 
 COPY --from=rootfs / /
 
