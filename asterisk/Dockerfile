@@ -1,21 +1,21 @@
 ARG BUILD_ARCH=amd64
-
 ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:5.3.0
 
-FROM $BUILD_FROM
+FROM $BUILD_FROM AS build
 
-ARG BUILD_ARCH
+ENV ASTERISK_VERSION=18.10.1
+
+COPY build-asterisk.sh /build-asterisk
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends --no-install-suggests \
             autoconf \
             file \
             binutils-dev \
             build-essential \
             ca-certificates \
             curl \
-            less \
             libcurl4-openssl-dev \
             libedit-dev \
             libgsm1-dev \
@@ -34,25 +34,75 @@ RUN apt-get update -qq && \
             libncurses5 ncurses-bin ncurses-term \
             portaudio19-dev \
             procps \
-            python3-pip \
-            python-setuptools \
-            rsync \
-            sipgrep \
-            tcpdump \
             unixodbc-dev \
             uuid \
             uuid-dev \
             xmlstarlet \
 	    && \
-    apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
+    apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/* && \
+    useradd --system asterisk && \
+    chmod +x /build-asterisk && \
+    /build-asterisk && rm -f /build-asterisk
 
-RUN useradd --system asterisk
-RUN pip3 install asterisk_mbox_server==0.5.3
-
-ENV ASTERISK_VERSION=18.10.1
-
-COPY build-asterisk.sh /build-asterisk
-
-RUN /build-asterisk && rm -f /build-asterisk
+FROM scratch AS rootfs
 
 COPY rootfs /
+
+FROM ${BUILD_FROM}
+
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends --no-install-suggests \
+            file \
+            ca-certificates \
+            curl \
+            libcurl4 \
+            libedit2 \
+            libgsm1 \
+            libogg0 \
+            libpopt0 \
+            libresample1 \
+            libspandsp2 \
+            libspeex1 \
+            libspeexdsp1 \
+            libsqlite3-0 \
+            libsrtp2-1 \
+            libssl1.1 \
+            libvorbis0a \
+            libxml2 \
+            libxslt1.1 \
+            libncurses5 ncurses-bin ncurses-term \
+            libportaudio2 \
+            procps \
+            python3-pip \
+            python-setuptools \
+            rsync \
+            sipgrep \
+            tcpdump \
+            unixodbc \
+            uuid \
+            xmlstarlet \
+	    && \
+    pip3 install --no-cache-dir asterisk_mbox_server==0.5.3 && \
+    apt-get purge -y --auto-remove \
+            perl \
+            perl-modules \
+            perl-modules-* \
+        && \
+    apt-get autoclean -y && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /opt/asterisk/sbin/ast* /opt/asterisk/sbin/autosupport /opt/asterisk/sbin/rasterisk /opt/asterisk/sbin/safe_asterisk /usr/sbin/
+COPY --from=build /opt/asterisk/lib/libasterisk* /lib/
+COPY --from=build /opt/asterisk/lib/asterisk /usr/lib/asterisk/
+COPY --from=build /opt/asterisk/var/ /var/
+COPY --from=build /opt/asterisk/etc/asterisk/ /etc/asterisk/
+
+COPY --from=rootfs / /
+
+RUN groupadd --system asterisk && \
+    useradd --system -d /var/lib/asterisk -g asterisk asterisk && \
+    chown -R asterisk:asterisk  /etc/asterisk \
+                                /var/{lib,log,spool}/asterisk \
+                                /usr/*/asterisk && \
+    chmod -R 750 /var/spool/asterisk

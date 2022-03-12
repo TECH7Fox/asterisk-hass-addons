@@ -6,18 +6,18 @@ if test -z ${ASTERISK_VERSION}; then
     exit 1
 fi
 
-set -ex
+set -euxo pipefail
 
 mkdir /usr/src/asterisk
 cd /usr/src/asterisk
 
-curl -vsL http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz |
+curl -vsLfS http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz |
     tar --strip-components 1 -xz
 
 # 1.5 jobs per core works out okay
 : ${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}
 
-./configure  --with-resample --with-jansson-bundled
+./configure --with-resample --with-jansson-bundled --with-pjproject-bundled --prefix=/opt/asterisk
 
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
@@ -26,7 +26,10 @@ menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
 
 # enable good things
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
+
+# codecs
 menuselect/menuselect --enable codec_opus menuselect.makeopts
+# menuselect/menuselect --enable codec_silk menuselect.makeopts
 
 # download more sounds
 for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do
@@ -35,19 +38,18 @@ for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do
     done
 done
 
+# we don't need any sounds in docker, they will be mounted as volume
+#menuselect/menuselect --disable-category MENUSELECT_CORE_SOUNDS menuselect.makeopts
+#menuselect/menuselect --disable-category MENUSELECT_MOH menuselect.makeopts
+#menuselect/menuselect --disable-category MENUSELECT_EXTRA_SOUNDS menuselect.makeopts
+
 make -j ${JOBS} all
+
+#install asterisk binaries and modules
 make install
-chown -R asterisk:asterisk /var/*/asterisk
-chmod -R 750 /var/spool/asterisk
-mkdir -p /etc/asterisk/
 
 # install example configuration
 make samples
 
 # set runuser and rungroup
-sed -i -E 's/^;(run)(user|group)/\1\2/' /etc/asterisk/asterisk.conf
-
-cd /
-
-# Uncomment this if you want to remove the asterisk source files.
-#exec rm -rf /usr/src/asterisk
+sed -i -E 's/^;(run)(user|group)/\1\2/' /opt/asterisk/etc/asterisk/asterisk.conf
