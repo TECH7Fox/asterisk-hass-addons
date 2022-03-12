@@ -103,6 +103,6 @@ COPY --from=rootfs / /
 RUN groupadd --system asterisk && \
     useradd --system -d /var/lib/asterisk -g asterisk asterisk && \
     chown -R asterisk:asterisk  /etc/asterisk \
-                                /var/{lib,log,spool}/asterisk \
+                                /var/*/asterisk \
                                 /usr/*/asterisk && \
     chmod -R 750 /var/spool/asterisk
