@@ -2,48 +2,56 @@
 
 # This modified build script is based on a version found in this project:
 # https://github.com/andrius/asterisk
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2016 Andrius Kairiukstis
+# Licensed under the MIT license
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+PROGNAME=$(basename "$0")
 
-PROGNAME=$(basename $0)
-
-if test -z ${ASTERISK_VERSION}; then
+if test -z "${ASTERISK_VERSION}"; then
     echo "${PROGNAME}: ASTERISK_VERSION required" >&2
     exit 1
 fi
 
 set -euxo pipefail
 
+INSTALL_DIR="/opt/asterisk"
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get update
+
+apt-get install -y --no-install-recommends --no-install-suggests \
+    autoconf \
+    build-essential \
+    binutils-dev \
+    libcurl4-openssl-dev \
+    libedit-dev \
+    libgsm1-dev \
+    libogg-dev \
+    libpopt-dev \
+    libresample1-dev \
+    libspandsp-dev \
+    libspeex-dev \
+    libspeexdsp-dev \
+    libsqlite3-dev \
+    libsrtp2-dev \
+    libssl-dev \
+    libvorbis-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    portaudio19-dev \
+    procps \
+    unixodbc-dev \
+    uuid-dev
+
 mkdir /usr/src/asterisk
 cd /usr/src/asterisk
 
-curl -vsLfS http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz |
+curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" |
     tar --strip-components 1 -xz
 
 # 1.5 jobs per core works out okay
-: ${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}
+: "${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}"
 
-./configure --with-resample --with-jansson-bundled --with-pjproject-bundled
+./configure --prefix="${INSTALL_DIR}" --with-resample --with-jansson-bundled --with-pjproject-bundled
 
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
@@ -65,17 +73,23 @@ for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do
 done
 
 # we don't need any sounds in docker, they will be mounted as volume
-#menuselect/menuselect --disable-category MENUSELECT_CORE_SOUNDS menuselect.makeopts
-#menuselect/menuselect --disable-category MENUSELECT_MOH menuselect.makeopts
-#menuselect/menuselect --disable-category MENUSELECT_EXTRA_SOUNDS menuselect.makeopts
+# menuselect/menuselect --disable-category MENUSELECT_CORE_SOUNDS menuselect.makeopts
+# menuselect/menuselect --disable-category MENUSELECT_MOH menuselect.makeopts
+# menuselect/menuselect --disable-category MENUSELECT_EXTRA_SOUNDS menuselect.makeopts
 
 make -j ${JOBS} all
 
-#install asterisk binaries and modules
+# install asterisk binaries and modules
 make install
 
 # install example configuration
 make samples
 
 # set runuser and rungroup
-sed -i -E 's/^;(run)(user|group)/\1\2/' /etc/asterisk/asterisk.conf
+sed -i -E 's/^;(run)(user|group)/\1\2/' "${INSTALL_DIR}/etc/asterisk/asterisk.conf"
+
+chown -R asterisk:asterisk "${INSTALL_DIR}"
+
+mv "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run" # otherwise we run into https://github.com/docker/buildx/issues/150
+
+chmod -R 750 "${INSTALL_DIR}/var/spool/asterisk"
