@@ -26,6 +26,8 @@ apt-get install -y --no-install-recommends --no-install-suggests \
     libedit-dev \
     libgsm1-dev \
     libogg-dev \
+    libopus-dev \
+    libopusfile-dev \
     libpopt-dev \
     libresample1-dev \
     libspandsp-dev \
@@ -41,11 +43,23 @@ apt-get install -y --no-install-recommends --no-install-suggests \
     subversion \
     uuid-dev
 
+mkdir /usr/src/asterisk-opus
+cd /usr/src/asterisk-opus
+
+curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/18.10.1_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" |
+    tar --strip-components 2 -xz
+
 mkdir /usr/src/asterisk
 cd /usr/src/asterisk
 
 curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" |
     tar --strip-components 1 -xz
+
+# copy codec_opus_open_source files
+# res/* and include/asterisk/* are not needed as asterisk is new enough
+cp --verbose ../asterisk-opus*/codecs/* codecs
+cp --verbose ../asterisk-opus*/formats/* formats
+patch -p1 < ../asterisk-opus/asterisk.patch
 
 # 1.5 jobs per core works out okay
 : "${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}"
@@ -53,6 +67,8 @@ curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asteri
 ./configure --prefix="${INSTALL_DIR}" \
             --with-jansson-bundled \
             --with-pjproject-bundled \
+            --with-opus \
+            --with-opusfile \
             --with-resample \
             --without-asound \
             --without-bluetooth \
@@ -90,7 +106,7 @@ menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
 menuselect/menuselect --enable format_mp3 menuselect.makeopts
 
 # codecs
-menuselect/menuselect --enable codec_opus menuselect.makeopts
+menuselect/menuselect --enable codec_opus_open_source menuselect.makeopts
 
 # download more sounds
 for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do

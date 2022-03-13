@@ -17,6 +17,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libedit2 \
         libgsm1 \
         libogg0 \
+        libopus0 \
+        libopusfile0 \
         libpopt0 \
         libresample1 \
         libspandsp2 \
