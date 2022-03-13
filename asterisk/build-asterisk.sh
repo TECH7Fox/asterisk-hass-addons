@@ -37,9 +37,7 @@ apt-get install -y --no-install-recommends --no-install-suggests \
     libvorbis-dev \
     libxml2-dev \
     libxslt1-dev \
-    portaudio19-dev \
     procps \
-    unixodbc-dev \
     uuid-dev
 
 mkdir /usr/src/asterisk
@@ -51,19 +49,46 @@ curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asteri
 # 1.5 jobs per core works out okay
 : "${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}"
 
-./configure --prefix="${INSTALL_DIR}" --with-resample --with-jansson-bundled --with-pjproject-bundled
+./configure --prefix="${INSTALL_DIR}" \
+            --with-jansson-bundled \
+            --with-pjproject-bundled \
+            --with-resample \
+            --without-asound \
+            --without-bluetooth \
+            --without-dahdi \
+            --without-gtk2 \
+            --without-jack \
+            --without-portaudio \
+            --without-postgres \
+            --without-pri \
+            --without-radius \
+            --without-sdl \
+            --without-ss7 \
+            --without-tds \
+            --without-unixodbc \
+            --without-x11
 
 make menuselect/menuselect menuselect-tree menuselect.makeopts
 
 # disable BUILD_NATIVE to avoid platform issues
 menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
 
+# channels
+menuselect/menuselect --disable-category MENUSELECT_CHANNELS \
+                      --enable chan_audiosocket \
+                      --enable chan_bridge_media \
+                      --enable chan_iax2 \
+                      --enable chan_pjsip \
+                      --enable chan_rtp
+
 # enable good things
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
 
+# formats
+menuselect/menuselect --enable format_mp3 menuselect.makeopts
+
 # codecs
 menuselect/menuselect --enable codec_opus menuselect.makeopts
-# menuselect/menuselect --enable codec_silk menuselect.makeopts
 
 # download more sounds
 for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do
@@ -76,6 +101,9 @@ done
 # menuselect/menuselect --disable-category MENUSELECT_CORE_SOUNDS menuselect.makeopts
 # menuselect/menuselect --disable-category MENUSELECT_MOH menuselect.makeopts
 # menuselect/menuselect --disable-category MENUSELECT_EXTRA_SOUNDS menuselect.makeopts
+
+# We require this for module format_mp3.so
+contrib/scripts/get_mp3_source.sh
 
 make -j ${JOBS} all
 

@@ -29,14 +29,12 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libxml2 \
         libxslt1.1 \
         libncurses5 ncurses-bin ncurses-term \
-        libportaudio2 \
         procps \
         python3-pip \
         python-setuptools \
         rsync \
         sipgrep \
         tcpdump \
-        unixodbc \
         uuid \
         xmlstarlet; \
     \
