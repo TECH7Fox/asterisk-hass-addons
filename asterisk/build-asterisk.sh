@@ -20,6 +20,7 @@ apt-get update
 
 apt-get install -y --no-install-recommends --no-install-suggests \
     autoconf \
+    automake \
     build-essential \
     binutils-dev \
     libcurl4-openssl-dev \
