@@ -143,3 +143,6 @@ chown -R asterisk:asterisk "${INSTALL_DIR}"
 mv "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run" # otherwise we run into https://github.com/docker/buildx/issues/150
 
 chmod -R 750 "${INSTALL_DIR}/var/spool/asterisk"
+
+# remove the man pages
+rm -rf "${INSTALL_DIR}/share"
