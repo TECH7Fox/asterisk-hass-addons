@@ -38,6 +38,7 @@ apt-get install -y --no-install-recommends --no-install-suggests \
     libxml2-dev \
     libxslt1-dev \
     procps \
+    subversion \
     uuid-dev
 
 mkdir /usr/src/asterisk
