@@ -59,10 +59,13 @@ curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asteri
 # res/* and include/asterisk/* are not needed as asterisk is new enough
 cp --verbose ../asterisk-opus*/codecs/* codecs
 cp --verbose ../asterisk-opus*/formats/* formats
-patch -p1 < ../asterisk-opus/asterisk.patch
+patch -p1 < ../asterisk-opus*/asterisk.patch
 
 # 1.5 jobs per core works out okay
 : "${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}"
+
+# Recreate the configure script as we patched it above for the new formats
+./bootstrap.sh
 
 ./configure --prefix="${INSTALL_DIR}" \
             --with-jansson-bundled \
