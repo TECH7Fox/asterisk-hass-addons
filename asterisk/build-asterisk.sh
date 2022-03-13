@@ -68,7 +68,7 @@ patch -p1 < ../asterisk-opus*/asterisk.patch
 # Recreate the configure script as we patched it above for the new formats
 ./bootstrap.sh
 
-./configure --prefix="${INSTALL_DIR}" \
+./configure \
             --with-jansson-bundled \
             --with-pjproject-bundled \
             --with-opus \
@@ -130,10 +130,10 @@ contrib/scripts/get_mp3_source.sh
 make -j ${JOBS} all
 
 # install asterisk binaries and modules
-make install
+DESTDIR="${INSTALL_DIR}" make install
 
 # install example configuration
-make samples
+DESTDIR="${INSTALL_DIR}" make samples
 
 # set runuser and rungroup
 sed -i -E 's/^;(run)(user|group)/\1\2/' "${INSTALL_DIR}/etc/asterisk/asterisk.conf"

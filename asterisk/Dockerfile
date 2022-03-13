@@ -59,7 +59,7 @@ RUN /build-asterisk.sh
 
 FROM scratch AS rootfs
 
-COPY --from=build /opt/asterisk /
+COPY --from=build /opt/asterisk/ /
 
 COPY rootfs /
 
