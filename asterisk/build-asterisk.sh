@@ -100,8 +100,7 @@ menuselect/menuselect --disable-category MENUSELECT_CHANNELS \
                       --enable chan_bridge_media \
                       --enable chan_iax2 \
                       --enable chan_pjsip \
-                      --enable chan_rtp \
-                      --enable chan_sip 
+                      --enable chan_rtp
 
 # enable good things
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
