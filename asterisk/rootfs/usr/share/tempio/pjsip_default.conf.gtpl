@@ -15,8 +15,9 @@ password={{ $secret }}
 ; Common AOR parameters (template)
 [sipjs-phone-aor](!)
 type=aor
-max_contacts=5
+max_contacts=6
 remove_existing=yes
+remove_unavailable=yes
 
 ; Common ENDPOINT parameters (template)
 [sipjs-phone-endpoint](!) 
@@ -24,11 +25,11 @@ type=endpoint
 send_rpid=yes
 send_pai=yes
 device_state_busy_at=1
-dtls_auto_generate_cert=yes
 webrtc=yes
 ; Setting webrtc=yes is a shortcut for setting the following options:
 ; use_avpf=yes
 ; media_encryption=dtls
+; dtls_auto_generate_cert=yes (if dtls_cert_file is not set)
 ; dtls_verify=fingerprint
 ; dtls_setup=actpass
 ; ice_support=yes
@@ -36,10 +37,8 @@ webrtc=yes
 ; rtcp_mux=yes
 context=default
 disallow=all
-allow=ulaw,alaw,speex,gsm,g726,g723,opus
-{{ if .video_support }}
-allow=h263,h263p,h264,vp8
-{{ end }}
+allow=ulaw,alaw,speex,gsm,g726,g723,g722,opus
+{{ if .video_support }}allow=h264,vp8,vp9{{ end }}
 
 {{  range $index, $person := .persons }}
 {{   $extension := add 100 $index }}
