@@ -39,7 +39,7 @@ context=default
 disallow=all
 allow=ulaw,alaw,speex,gsm,g726,g723,g722,opus
 {{ if .video_support -}}
-allow=h263,h263p,h264,vp8,vp9
+allow=h264,vp8,vp9
 {{- end }}
 
 {{  range $index, $person := .persons }}
