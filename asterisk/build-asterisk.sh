@@ -100,8 +100,7 @@ menuselect/menuselect --disable-category MENUSELECT_CHANNELS \
                       --enable chan_bridge_media \
                       --enable chan_iax2 \
                       --enable chan_pjsip \
-                      --enable chan_rtp \
-                      --enable chan_sip 
+                      --enable chan_rtp
 
 # enable good things
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
@@ -110,6 +109,17 @@ menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
 menuselect/menuselect --enable format_mp3 menuselect.makeopts
 
 # codecs
+menuselect/menuselect --enable codec_a_mu menuselect.makeopts
+menuselect/menuselect --enable codec_adpcm menuselect.makeopts
+menuselect/menuselect --enable codec_alaw menuselect.makeopts
+menuselect/menuselect --enable codec_codec2 menuselect.makeopts
+menuselect/menuselect --enable codec_g722 menuselect.makeopts
+menuselect/menuselect --enable codec_g726 menuselect.makeopts
+menuselect/menuselect --enable codec_gsm menuselect.makeopts
+menuselect/menuselect --enable codec_ilbc menuselect.makeopts
+menuselect/menuselect --enable codec_resample menuselect.makeopts
+menuselect/menuselect --enable codec_speex menuselect.makeopts
+menuselect/menuselect --enable codec_ulaw menuselect.makeopts
 menuselect/menuselect --enable codec_opus_open_source menuselect.makeopts
 
 # download more sounds
