@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
     apt-get install -y --no-install-recommends --no-install-suggests \
         gcc \
+        g++ \
         libc6-dev \
         python3-dev \
         libbinutils \
@@ -48,7 +49,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     groupadd --system  asterisk; \
     useradd --system --gid asterisk --home-dir /var/lib/asterisk asterisk; \
     \
-    apt-get purge -y --auto-remove gcc libc6-dev python3-dev; \
+    apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
     \
     rm -rf /var/lib/apt/lists/*
 
