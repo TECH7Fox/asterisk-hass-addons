@@ -90,7 +90,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         uuid-dev; \
     rm -rf /var/lib/apt/lists/*
 
-ENV DESTDIR="/opt/asterisk"
+ENV INSTALL_DIR="/opt/asterisk"
 
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/18.10.1_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
@@ -191,22 +191,22 @@ RUN \
     JOBS=$(( $(nproc) + $(nproc) / 2 )); \
     make -j ${JOBS} all; \
     # install asterisk binaries and modules \
-    make install; \
+    DESTDIR="${INSTALL_DIR}" make install; \
     # install example configuration \
-    make samples
+    DESTDIR="${INSTALL_DIR}" make samples
 
 # set runuser and rungroup
-RUN sed -i -E 's/^;(run)(user|group)/\1\2/' "${DESTDIR}/etc/asterisk/asterisk.conf"
+RUN sed -i -E 's/^;(run)(user|group)/\1\2/' "${INSTALL_DIR}/etc/asterisk/asterisk.conf"
 
-RUN chown -R asterisk:asterisk "${DESTDIR}"
+RUN chown -R asterisk:asterisk "${INSTALL_DIR}"
 
 # Otherwise we run into https://github.com/docker/buildx/issues/150
-RUN mv "${DESTDIR}/var/run" "${DESTDIR}/run"
+RUN mv "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
 
-RUN chmod -R 750 "${DESTDIR}/var/spool/asterisk"
+RUN chmod -R 750 "${INSTALL_DIR}/var/spool/asterisk"
 
 # remove the man pages
-RUN rm -rf "${DESTDIR}/share"
+RUN rm -rf "${INSTALL_DIR}/share"
 
 
 FROM scratch AS rootfs
