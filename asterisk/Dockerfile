@@ -57,7 +57,6 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 ENV ASTERISK_VERSION="18.10.1"
 
-
 FROM base AS build
 
 # Install dependencies
@@ -89,8 +88,6 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         subversion \
         uuid-dev; \
     rm -rf /var/lib/apt/lists/*
-
-ENV INSTALL_DIR="/opt/asterisk"
 
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/18.10.1_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
@@ -186,7 +183,11 @@ RUN \
     done; \
     \
     # We require this for module format_mp3.so \
-    contrib/scripts/get_mp3_source.sh; \
+    contrib/scripts/get_mp3_source.sh
+
+ENV INSTALL_DIR="/opt/asterisk"
+
+RUN \
     # 1.5 jobs per core works out okay \
     JOBS=$(( $(nproc) + $(nproc) / 2 )); \
     make -j ${JOBS} all; \
