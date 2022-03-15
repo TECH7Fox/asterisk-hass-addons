@@ -105,6 +105,20 @@ menuselect/menuselect --disable-category MENUSELECT_CHANNELS \
 # enable good things
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
 
+# applications
+menuselect/menuselect --disable app_ices menuselect.makeopts
+menuselect/menuselect --disable app_adsiprog menuselect.makeopts
+menuselect/menuselect --disable app_url menuselect.makeopts
+menuselect/menuselect --disable app_image menuselect.makeopts
+menuselect/menuselect --disable app_nbscat menuselect.makeopts
+menuselect/menuselect --disable app_getcpeid menuselect.makeopts
+
+# call detail recording
+menuselect/menuselect --disable cdr_sqlite3_custom menuselect.makeopts
+
+# call event logging
+menuselect/menuselect --disable cel_sqlite3_custom menuselect.makeopts
+
 # formats
 menuselect/menuselect --enable format_mp3 menuselect.makeopts
 
@@ -121,6 +135,18 @@ menuselect/menuselect --enable codec_resample menuselect.makeopts
 menuselect/menuselect --enable codec_speex menuselect.makeopts
 menuselect/menuselect --enable codec_ulaw menuselect.makeopts
 menuselect/menuselect --enable codec_opus_open_source menuselect.makeopts
+
+# pbx modules
+menuselect/menuselect --disable pbx_spool menuselect.makeopts
+
+# resource modules
+menuselect/menuselect --disable res_config_sqlite3 menuselect.makeopts
+menuselect/menuselect --disable res_monitor menuselect.makeopts
+menuselect/menuselect --disable res_adsi menuselect.makeopts
+
+# utilities
+menuselect/menuselect --disable astdb2sqlite3 menuselect.makeopts
+menuselect/menuselect --disable astdb2bdb menuselect.makeopts
 
 # download more sounds
 for i in CORE-SOUNDS-EN MOH-OPSOUND EXTRA-SOUNDS-EN; do
