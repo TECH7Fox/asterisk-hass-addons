@@ -2,6 +2,28 @@
 
 # Changelog
 
+## 2.0.0
+
+- Change base from Alpine to Debian (#116) (by @nanosonde)
+  - Addon size has been considerable increased
+- Upgrade Asterisk to 18.1.0 (#116) (by @nanosonde)
+  - Now we build it from source, so we can always use the latest version and have more control about it
+- Migrate from `chan_sip` to `res_pjsip`  (#112) (by @nanosonde)
+  - This is a breaking change. Check below the upgrade guide.
+
+Lots of issues were fixed by the above.
+
+### Upgrade guide
+
+It's strongly recommended to erase your existing Asterisk configuration before upgrading.
+
+1. Move any customization you have done in `/config/asterisk/` to somewhere else.
+2. Delete the `/config/asterisk` folder.
+3. Restore your customizations to the `/etc/config` folder if you have any.
+4. Make sure to convert your extensions from `chan_sip` to `res_pjsip` if you have any.
+
+Then, you can go ahead and upgrade.
+
 ## 1.3.3
 
 - Include hint settings and add busylevel to auto generated extensions.
