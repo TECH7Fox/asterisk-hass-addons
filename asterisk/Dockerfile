@@ -32,6 +32,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libsrtp2-1 \
         libssl1.1 \
         libvorbis0a \
+        libvorbisenc2 \
+        libvorbisfile3 \
         libxml2 \
         libxslt1.1 \
         libncurses5 ncurses-bin ncurses-term \
