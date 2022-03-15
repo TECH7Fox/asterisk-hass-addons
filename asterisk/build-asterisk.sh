@@ -136,6 +136,9 @@ menuselect/menuselect --enable codec_speex menuselect.makeopts
 menuselect/menuselect --enable codec_ulaw menuselect.makeopts
 menuselect/menuselect --enable codec_opus_open_source menuselect.makeopts
 
+# pbx modules
+menuselect/menuselect --disable pbx_spool menuselect.makeopts
+
 # resource modules
 menuselect/menuselect --disable res_config_sqlite3 menuselect.makeopts
 menuselect/menuselect --disable res_monitor menuselect.makeopts
