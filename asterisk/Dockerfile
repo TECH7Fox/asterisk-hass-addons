@@ -44,7 +44,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         sipgrep \
         tcpdump \
         uuid \
-        xmlstarlet; \
+        xmlstarlet \
+        # for googletts \
+        perl \
+        libwww-perl \
+        liblwp-protocol-https-perl \
+        sox \
+        mpg123; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server==0.5.3; \
     \
@@ -192,11 +198,11 @@ RUN make all; \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
+## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
 ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
 RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
-
 RUN ./bootstrap; \
     ./configure \
         DESTDIR="${INSTALL_DIR}/usr/lib/asterisk/modules" \
@@ -204,7 +210,14 @@ RUN ./bootstrap; \
         --with-asterisk="/usr/src/asterisk/include"; \
     make all; \
     make install; \
-    cp etc/dongle.conf "${INSTALL_DIR}/etc/asterisk/"
+    cp -f etc/dongle.conf "${INSTALL_DIR}/etc/asterisk/"
+
+## Install googletts
+WORKDIR /usr/src/asterisk-googletts
+ARG CHAN_DONGLE_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
+RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
+RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 # Debian has a symlink from /var/run to /run, so here we move contents
 # directly to /run. Otherwise we run into https://github.com/docker/buildx/issues/150.
