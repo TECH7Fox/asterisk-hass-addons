@@ -15,4 +15,4 @@ fi
 bashio::log.info "Starting Asterisk Mailbox"
 
 ## Run Asterisk_mbox
-exec s6-setuidgid asterisk /usr/local/bin/asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini
+exec asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini

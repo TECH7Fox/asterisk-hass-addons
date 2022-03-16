@@ -43,7 +43,6 @@ else
 fi
 
 cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem
-chown asterisk: /etc/asterisk/keys/*.pem
 chmod 600 /etc/asterisk/keys/*.pem
 
 cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'

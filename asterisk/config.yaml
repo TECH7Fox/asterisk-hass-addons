@@ -40,3 +40,7 @@ schema:
   log_level: list(all|trace|debug|info|notice|warning|error|fatal|off)
 host_network: true
 init: false
+devices:
+  - /dev/ttyUSB0:/dev/ttyUSB0
+  - /dev/ttyUSB1:/dev/ttyUSB1
+  - /dev/ttyUSB2:/dev/ttyUSB2

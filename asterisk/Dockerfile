@@ -48,14 +48,11 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server==0.5.3; \
     \
-    groupadd --system  asterisk; \
-    useradd --system --gid asterisk --home-dir /var/lib/asterisk asterisk; \
-    \
+    # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
     \
     rm -rf /var/lib/apt/lists/*
 
-ENV ASTERISK_VERSION="18.10.1"
 
 FROM base AS build
 
@@ -89,8 +86,10 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         uuid-dev; \
     rm -rf /var/lib/apt/lists/*
 
+ARG ASTERISK_VERSION="18.10.1"
+
 WORKDIR /usr/src/asterisk-opus
-RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/18.10.1_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
+RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_VERSION}_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 WORKDIR /usr/src/asterisk
@@ -187,27 +186,29 @@ RUN \
 
 ENV INSTALL_DIR="/opt/asterisk"
 
-RUN \
-    # 1.5 jobs per core works out okay \
-    JOBS=$(( $(nproc) + $(nproc) / 2 )); \
-    make -j ${JOBS} all; \
+RUN make all; \
     # install asterisk binaries and modules \
     DESTDIR="${INSTALL_DIR}" make install; \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
-# set runuser and rungroup
-RUN sed -i -E 's/^;(run)(user|group)/\1\2/' "${INSTALL_DIR}/etc/asterisk/asterisk.conf"
+WORKDIR /usr/src/asterisk-chan-dongle
+ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
+RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
 
-RUN chown -R asterisk:asterisk "${INSTALL_DIR}"
+RUN ./bootstrap; \
+    ./configure \
+        DESTDIR="${INSTALL_DIR}/usr/lib/asterisk/modules" \
+        --with-astversion="${ASTERISK_VERSION}" \
+        --with-asterisk="/usr/src/asterisk/include"; \
+    make all; \
+    make install; \
+    cp etc/dongle.conf "${INSTALL_DIR}/etc/asterisk/"
 
-# Otherwise we run into https://github.com/docker/buildx/issues/150
-RUN mv "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
-
-RUN chmod -R 750 "${INSTALL_DIR}/var/spool/asterisk"
-
-# remove the man pages
-RUN rm -rf "${INSTALL_DIR}/share"
+# Debian has a symlink from /var/run to /run, so here we move contents
+# directly to /run. Otherwise we run into https://github.com/docker/buildx/issues/150.
+RUN mv -f "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
 
 
 FROM scratch AS rootfs

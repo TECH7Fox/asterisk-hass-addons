@@ -9,4 +9,4 @@
 bashio::log.info "Starting Asterisk..."
 
 ## Run Asterisk
-exec asterisk -U asterisk -T -f
+exec asterisk -T -f
