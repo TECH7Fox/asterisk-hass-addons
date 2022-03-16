@@ -19,7 +19,7 @@ It's strongly recommended to erase your existing Asterisk configuration before u
 
 1. Move any customization you have done in `/config/asterisk/` to somewhere else.
 2. Delete the `/config/asterisk` folder.
-3. Restore your customizations to the `/etc/config` folder if you have any.
+3. Restore your customizations to the `/config/asterisk` folder if you have any.
 4. Make sure to convert your extensions from `chan_sip` to `res_pjsip` if you have any.
 
 Then, you can go ahead and upgrade.
