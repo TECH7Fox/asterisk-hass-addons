@@ -50,7 +50,11 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libwww-perl \
         liblwp-protocol-https-perl \
         sox \
-        mpg123; \
+        mpg123 \
+        # for speech-recog \
+        libjson-perl \
+        libio-socket-ssl-perl \
+        flac; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server==0.5.3; \
     \
@@ -214,10 +218,17 @@ RUN ./bootstrap; \
 
 ## Install googletts
 WORKDIR /usr/src/asterisk-googletts
-ARG CHAN_DONGLE_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
-RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
+ARG GOOGLETTS_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
+RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${GOOGLETTS_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
 RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
+
+## Install speech-recog
+WORKDIR /usr/src/asterisk-speech-recog
+ARG SPEECH_RECOG_VERSION="dbc933bca1074514963a2294c52e617ef539a90a"
+RUN curl -fsSL "https://github.com/zaf/asterisk-speech-recog/archive/${SPEECH_RECOG_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
+RUN cp -f speech-recog.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 # Debian has a symlink from /var/run to /run, so here we move contents
 # directly to /run. Otherwise we run into https://github.com/docker/buildx/issues/150.
