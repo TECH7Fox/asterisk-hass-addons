@@ -9,7 +9,7 @@ Follow these steps to get the add-on installed on your system:
 
 1. Click here:
 
-    [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FTECH7Fox%2FAsterisk-add-on)
+    [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FTECH7Fox%2Fasterisk-hass-addons)
 
 1. Scroll down the page to find the new repository, and click in the new add-on named **_Asterisk_**.
 1. Click in the **_INSTALL_** button.
@@ -78,11 +78,11 @@ The log level to configure Asterisk to use. To know more about the existing pres
 And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
 
 ## Wiki
-For more information, visit the [wiki](https://github.com/TECH7Fox/Asterisk-add-on/wiki).
-- [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Configure-Dahua-VTO-doorbell)
-- [Parking](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Parking)
-- [SSL](https://github.com/TECH7Fox/Asterisk-add-on/wiki/SSL)
-- [Doorbell Dialplan](https://github.com/TECH7Fox/Asterisk-add-on/wiki/Doorbell-Dialplan)
+For more information, visit the [wiki](https://github.com/TECH7Fox/asterisk-hass-addons/wiki).
+- [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Configure-Dahua-VTO-doorbell)
+- [Parking](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Parking)
+- [SSL](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/SSL)
+- [Doorbell Dialplan](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Doorbell-Dialplan)
 
 ## Troubleshoot
 
