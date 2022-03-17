@@ -106,6 +106,20 @@ jobs:
         with:
           string: ${{ github.repository_owner }}
 
+      - name: Enable Docker Buildkit
+        run: |
+          set -euxo pipefail
+
+          original=$(cat /etc/docker/daemon.json)
+          if [[ -z "$original" ]]; then
+            original='{}'
+          fi
+
+          new=$(jq --raw-output --tab '.features.buildkit = true' <<<"${original}")
+
+          echo "$new" | sudo tee /etc/docker/daemon.json
+          sudo systemctl restart docker
+
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
         uses: home-assistant/builder@2022.03.1
