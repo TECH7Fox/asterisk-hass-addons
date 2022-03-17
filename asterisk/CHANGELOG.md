@@ -2,6 +2,16 @@
 
 # Changelog
 
+## 2.1.0
+
+- Add [asterisk-chan-dongle](https://github.com/wdoekes/asterisk-chan-dongle)
+- Add [asterisk-googletts](https://github.com/zaf/asterisk-googletts)
+- Add [asterisk-speech-recog](https://github.com/zaf/asterisk-speech-recog)
+- Run Asterisk as root (instead of as asterisk), this is requires so that chan-dongle can properly communicate with the dongle
+- Tidy up some minor things
+
+More information at #124.
+
 ## 2.0.2
 
 - Fix Asterisk never starting after starting the addon (again, but for a different reason this time)

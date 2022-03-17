@@ -44,18 +44,25 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         sipgrep \
         tcpdump \
         uuid \
-        xmlstarlet; \
+        xmlstarlet \
+        # for googletts \
+        perl \
+        libwww-perl \
+        liblwp-protocol-https-perl \
+        sox \
+        mpg123 \
+        # for speech-recog \
+        libjson-perl \
+        libio-socket-ssl-perl \
+        flac; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server==0.5.3; \
     \
-    groupadd --system  asterisk; \
-    useradd --system --gid asterisk --home-dir /var/lib/asterisk asterisk; \
-    \
+    # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
     \
     rm -rf /var/lib/apt/lists/*
 
-ENV ASTERISK_VERSION="18.10.1"
 
 FROM base AS build
 
@@ -89,8 +96,10 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         uuid-dev; \
     rm -rf /var/lib/apt/lists/*
 
+ARG ASTERISK_VERSION="18.10.1"
+
 WORKDIR /usr/src/asterisk-opus
-RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/18.10.1_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
+RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_VERSION}_dfsg+_cs6.10.40431411/asterisk-upstream-${ASTERISK_VERSION}_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 WORKDIR /usr/src/asterisk
@@ -197,18 +206,37 @@ RUN \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
-# set runuser and rungroup
-RUN sed -i -E 's/^;(run)(user|group)/\1\2/' "${INSTALL_DIR}/etc/asterisk/asterisk.conf"
+## Install chan-gongle
+WORKDIR /usr/src/asterisk-chan-dongle
+ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
+RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
+RUN ./bootstrap; \
+    ./configure \
+        DESTDIR="${INSTALL_DIR}/usr/lib/asterisk/modules" \
+        --with-astversion="${ASTERISK_VERSION}" \
+        --with-asterisk="/usr/src/asterisk/include"; \
+    make all; \
+    make install; \
+    cp -f etc/dongle.conf "${INSTALL_DIR}/etc/asterisk/"
 
-RUN chown -R asterisk:asterisk "${INSTALL_DIR}"
+## Install googletts
+WORKDIR /usr/src/asterisk-googletts
+ARG GOOGLETTS_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
+RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${GOOGLETTS_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
+RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
-# Otherwise we run into https://github.com/docker/buildx/issues/150
-RUN mv "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
+## Install speech-recog
+WORKDIR /usr/src/asterisk-speech-recog
+ARG SPEECH_RECOG_VERSION="dbc933bca1074514963a2294c52e617ef539a90a"
+RUN curl -fsSL "https://github.com/zaf/asterisk-speech-recog/archive/${SPEECH_RECOG_VERSION}.tar.gz" | \
+    tar --strip-components 1 -xz
+RUN cp -f speech-recog.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
-RUN chmod -R 750 "${INSTALL_DIR}/var/spool/asterisk"
-
-# remove the man pages
-RUN rm -rf "${INSTALL_DIR}/share"
+# Debian has a symlink from /var/run to /run, so here we move contents
+# directly to /run. Otherwise we run into https://github.com/docker/buildx/issues/150.
+RUN mv -f "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
 
 
 FROM scratch AS rootfs
