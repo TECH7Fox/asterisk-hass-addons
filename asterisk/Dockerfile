@@ -99,7 +99,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 ARG ASTERISK_VERSION="18.10.1"
 
 WORKDIR /usr/src/asterisk-opus
-RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_VERSION}_dfsg+_cs6.10.40431411/asterisk-upstream-18.10.1_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
+RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_VERSION}_dfsg+_cs6.10.40431411/asterisk-upstream-${ASTERISK_VERSION}_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 WORKDIR /usr/src/asterisk
