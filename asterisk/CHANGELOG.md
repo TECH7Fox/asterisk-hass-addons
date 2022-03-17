@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.0.1
+
+- Fix Asterisk never starting after starting the addon, which started to happen after [v2.0.0](#200) (issue #127, pr #128)
+
 ## 2.0.0
 
 - Change base from Alpine to Debian (#116) (by @nanosonde)

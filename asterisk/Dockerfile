@@ -129,8 +129,6 @@ RUN \
         --without-x11; \
     \
     make menuselect/menuselect menuselect-tree menuselect.makeopts; \
-    # disable BUILD_NATIVE to avoid platform issues \
-    menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     # channels \
     menuselect/menuselect --disable-category MENUSELECT_CHANNELS \
         --enable chan_audiosocket \
@@ -188,6 +186,9 @@ RUN \
 ENV INSTALL_DIR="/opt/asterisk"
 
 RUN \
+    # disable BUILD_NATIVE to avoid platform issues \
+    # for some reason, this needs to be set just before calling make (see #128) \
+    menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     # 1.5 jobs per core works out okay \
     JOBS=$(( $(nproc) + $(nproc) / 2 )); \
     make -j ${JOBS} all; \
