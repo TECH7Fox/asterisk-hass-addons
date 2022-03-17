@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 2.1.1
+
+- Do not load chan-dongle by default (because it seems to cause lots of errors and warnings when there is no dongle attached)
+  - You have to delete the `/config/asterisk/modules.conf` file so that the new one which
+    has disabled chan-dongle can be created.
+
 ## 2.1.0
 
 - Add [asterisk-chan-dongle](https://github.com/wdoekes/asterisk-chan-dongle)
