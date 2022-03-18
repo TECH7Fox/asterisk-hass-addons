@@ -2,6 +2,11 @@
 
 # Changelog
 
+## 2.1.2
+
+- Fix timezone
+- Disable qualify for the generated pjsip extensions, because it wasn't used and caused problems
+
 ## 2.1.1
 
 - Do not load chan-dongle by default (because it seems to cause lots of errors and warnings when there is no dongle attached)
