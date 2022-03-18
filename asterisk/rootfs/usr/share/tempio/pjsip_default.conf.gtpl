@@ -18,7 +18,7 @@ type=aor
 max_contacts=6
 remove_existing=yes
 remove_unavailable=yes
-qualify_frequency=30
+qualify_frequency=0
 
 ; Common ENDPOINT parameters (template)
 [sipjs-phone-endpoint](!) 
