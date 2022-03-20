@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 2.1.3
+
+- Fix TLS transport
+- Set NAT settings
+- Include default STUN server
+
 ## 2.1.2
 
 - Fix timezone
