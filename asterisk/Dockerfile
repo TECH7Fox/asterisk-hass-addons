@@ -113,7 +113,8 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
 # patch: increase the number of format entries in SDPs to 128
-RUN sed -i 's/^\(#define\s\+PJMEDIA_MAX_SDP_FMT\s\+\).*/\1128/' ./third-party/pjproject/patches/config_site.h
+RUN sed -i 's/^\(#define\s\+PJMEDIA_MAX_SDP_FMT\s\+\).*/\1128/' ./third-party/pjproject/patches/config_site.h; \
+    cat ./third-party/pjproject/patches/config_site.h
 
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
