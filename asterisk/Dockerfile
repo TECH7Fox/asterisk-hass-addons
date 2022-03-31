@@ -112,6 +112,12 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     cp --verbose ../asterisk-opus*/formats/* formats; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
+#copy patches specific for this addon
+COPY patches /usr/src/asterisk-patches
+WORKDIR /usr/src/asterisk
+# patch: increase the number of format entries in SDPs to 128
+RUN patch -p0 --verbose < /usr/src/asterisk-patches/0000-increase_max_number_of_sdp_format_entries.patch;
+
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
     ./bootstrap.sh; \
