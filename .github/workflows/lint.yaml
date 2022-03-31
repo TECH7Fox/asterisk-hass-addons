@@ -41,6 +41,6 @@ jobs:
           path: "./${{ matrix.path }}"
 
       - name: 🚀 Run Hadolint
-        uses: hadolint/hadolint-action@v1.6.0
+        uses: hadolint/hadolint-action@v1.7.0
         with:
           dockerfile: "./${{ matrix.path }}/Dockerfile"
