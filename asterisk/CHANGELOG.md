@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.1.4
+
+- Increase maximum possible number of SDP formats (#140) (by @nanosonde)
+
 ## 2.1.3
 
 - Fix TLS transport
