@@ -1,0 +1,23 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the asterisk service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
+# shellcheck shell=bash
+
+while read -r input; do
+    input=$(bashio::jq "${input}" '.')
+    bashio::log.info "Read alias: $input"
+
+    if basio::var.equals "pjsip" "$input"; then
+        cp /config/asterisk/pjsip_custom.conf /etc/asterisk/pjsip_custom.conf
+        cp /config/asterisk/pjsip.conf /etc/asterisk/pjsip.conf
+        asterisk -x module reload res_pjsip
+    fi
+
+    if basio::var.equals "dialplan" "$input"; then
+        cp /config/asterisk/extensions.conf /etc/asterisk/extensions.conf
+        asterisk -x dialplan reload
+    fi
+done
