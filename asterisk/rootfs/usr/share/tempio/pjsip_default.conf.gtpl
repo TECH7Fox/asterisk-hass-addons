@@ -36,6 +36,7 @@ webrtc=yes
 ; ice_support=yes
 ; media_use_received_transport=yes
 ; rtcp_mux=yes
+from_domain=asterisk
 rtp_symmetric=yes
 force_rport=yes
 rewrite_contact=yes
