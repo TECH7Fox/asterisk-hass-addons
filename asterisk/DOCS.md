@@ -78,12 +78,7 @@ The log level to configure Asterisk to use. To know more about the existing pres
 And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
 
 ## Wiki
-For more information, visit the [wiki](https://github.com/TECH7Fox/asterisk-hass-addons/wiki).
-- [How to configure the Dahua VTO doorbell with the Asterisk addon](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Configure-Dahua-VTO-doorbell)
-- [Parking](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Parking)
-- [SSL](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/SSL)
-- [Doorbell Dialplan](https://github.com/TECH7Fox/asterisk-hass-addons/wiki/Doorbell-Dialplan)
+For more information, visit the [SIP-HASS docs](ch7fox.github.io/sip-hass-docs/).
 
 ## Troubleshoot
-
-If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on.
+If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on. This will make sure you have the latest configuration files.
