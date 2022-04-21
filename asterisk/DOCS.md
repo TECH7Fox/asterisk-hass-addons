@@ -78,7 +78,7 @@ The log level to configure Asterisk to use. To know more about the existing pres
 And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
 
 ## Wiki
-For more information, visit the [SIP-HASS docs](ch7fox.github.io/sip-hass-docs/).
+For more information, visit the [SIP-HASS docs](tech7fox.github.io/sip-hass-docs/).
 
 ## Troubleshoot
 If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on. This will make sure you have the latest configuration files.
