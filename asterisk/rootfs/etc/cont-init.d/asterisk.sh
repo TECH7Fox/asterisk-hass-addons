@@ -94,3 +94,25 @@ bashio::var.json \
 
 rsync -a -v --ignore-existing /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
 cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
+
+# Copy sounds to /media/asterisk
+if ! bashio::fs.directory_exists '/media/asterisk'; then
+    mkdir -p /media/asterisk ||
+        bashio::exit.nok 'Failed to create initial asterisk media folder'
+fi
+
+if ! bashio::fs.directory_exists '/media/asterisk/moh'; then
+    mkdir -p /media/asterisk/moh ||
+        bashio::exit.nok 'Failed to create initial asterisk media/moh folder'
+fi
+
+if ! bashio::fs.directory_exists '/media/asterisk/sounds'; then
+    mkdir -p /media/asterisk/sounds ||
+        bashio::exit.nok 'Failed to create initial asterisk media/sounds folder'
+fi
+
+rsync -a -v --ignore-existing /var/lib/asterisk/moh/. /media/asterisk/moh/ || bashio::exit.nok 'Failed to make sample moh.'          # Doesn't overwrite
+rsync -a -v --ignore-existing /var/lib/asterisk/sounds/. /media/asterisk/sounds/ || bashio::exit.nok 'Failed to make sample sounds.' # Doesn't overwrite
+
+cp -a -f /media/asterisk/moh. /var/lib/asterisk/moh/ || bashio::exit.nok 'Failed to get moh from /media/asterisk/moh.'               # Does overwrite
+cp -a -f /media/asterisk/sounds. /var/lib/asterisk/sounds/ || bashio::exit.nok 'Failed to get config from /media/asterisk/sounds.'   # Does overwrite
