@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Community Add-on: Asterisk
+# Restarts the STDIN service
+# ==============================================================================
+
+bashio::log.info 'STDIN service was stopped, restarting...'
