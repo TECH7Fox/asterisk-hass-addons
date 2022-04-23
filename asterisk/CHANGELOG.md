@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.1.5
+
+- Fix domain bug that makes the WS contacts unreachable (by @TECH7Fox)
+
 ## 2.1.4
 
 - Increase maximum possible number of SDP formats (#140) (by @nanosonde)
