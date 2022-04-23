@@ -114,5 +114,4 @@ fi
 rsync -a -v --ignore-existing /var/lib/asterisk/moh/. /media/asterisk/moh/ || bashio::exit.nok 'Failed to make sample moh.'          # Doesn't overwrite
 rsync -a -v --ignore-existing /var/lib/asterisk/sounds/. /media/asterisk/sounds/ || bashio::exit.nok 'Failed to make sample sounds.' # Doesn't overwrite
 
-cp -a -f /media/asterisk/moh. /var/lib/asterisk/moh/ || bashio::exit.nok 'Failed to get moh from /media/asterisk/moh.'               # Does overwrite
-cp -a -f /media/asterisk/sounds. /var/lib/asterisk/sounds/ || bashio::exit.nok 'Failed to get config from /media/asterisk/sounds.'   # Does overwrite
+cp -a -f /media/asterisk/. /var/lib/asterisk/ || bashio::exit.nok 'Failed to get sounds from /media/asterisk/.' # Does overwrite
