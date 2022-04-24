@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.2.0
+
+- Add stdin services `reload_pjsip` and `reload_dialplan`.
+
 ## 2.1.5
 
 - Fix domain bug that makes the WS contacts unreachable (by @TECH7Fox)
