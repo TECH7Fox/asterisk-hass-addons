@@ -1,0 +1,60 @@
+configuration:
+  ami_password:
+    name: Senha AMI
+    description: >-
+      A senha que será usada para o usuário `admin` na AMI.
+  video_support:
+    name: Suporte de vídeo
+    description: >-
+      Ativa o suporte de vídeo para as extensões adicionadas automaticamente.
+      O suporte de vídeo não funciona para o aplicativo complementar.
+  auto_add_secret:
+    name: Adicionar Segredo Automático
+    description: >-
+      O conjunto de segredos para cada extensão adicionada automaticamente.
+      Altere isso para algo seguro.
+  auto_add:
+    name: Adicionar extensões automaticamente
+    description: >-
+      Se deve habilitar a criação automática de extensões para 
+      cada pessoa registrada no Home Assistant. Eles terão
+      seu número/nome de usuário gerado automaticamente a partir de 100.
+  generate_ssl_cert:
+    name: Gerar Certificado SSL
+    description: >-
+      Habilita/desabilita a geração de um certificado autoassinado 
+      para uso com as interfaces SSL (WSS e TLS).
+  certfile:
+    name: Arquivo de certificado
+    description: >-
+      O arquivo de certificado a ser usado para SSL em sua pasta `/ssl/`,
+      quando `generate_ssl_cert` está desabilitado.
+  keyfile:
+    name: Arquivo de chave privada
+    description: >-
+      O arquivo de chave a ser usado para SSL em sua pasta `/ssl/`, quando
+      `generate_ssl_cert` está desabilitado.
+  mailbox:
+    name: Servidor de caixa de correio
+    description: >-
+      Habilita o servidor de caixa de correio a enviar correio de voz para a integração de caixa de correio do Asterisk.
+  mailbox_port:
+    name: Porta do servidor de caixa de correio
+    description: >-
+      A porta usada pelo servidor de caixa de correio.
+  mailbox_password:
+    name: Senha do servidor de caixa de correio
+    description: >-
+      A senha para o servidor de caixa de correio.
+  mailbox_extension:
+    name: Extensão de servidor de caixa de correio
+    description: >-
+      De qual extensão obter os correios de voz.
+  mailbox_google_api_key:
+    name: Chave de API do Google
+    description: >-
+      A chave de API para conversão de fala em texto.
+  log_level:
+    name: Nível de registro
+    description: >-
+      O nível de registro para configurar o Asterisk para usar.
