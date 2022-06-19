@@ -1,11 +1,12 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:5.3.0
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.0.0
 
 
 FROM $BUILD_FROM AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
+ARG ASTERISK_MBOX_SERVER_VERSION="0.5.3"
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
     apt-get install -y --no-install-recommends --no-install-suggests \
@@ -56,7 +57,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libio-socket-ssl-perl \
         flac; \
     \
-    pip3 install --no-cache-dir asterisk_mbox_server==0.5.3; \
+    pip3 install --no-cache-dir asterisk_mbox_server=="${ASTERISK_MBOX_SERVER_VERSION}"; \
     \
     # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
@@ -96,12 +97,15 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         uuid-dev; \
     rm -rf /var/lib/apt/lists/*
 
-ARG ASTERISK_VERSION="18.10.1"
-
+# Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
+# (replace all ~ with _ and remove final -)
+ARG ASTERISK_OPUS_VERSION="18.12.0_dfsg+_cs6.12.40431413"
 WORKDIR /usr/src/asterisk-opus
-RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_VERSION}_dfsg+_cs6.10.40431411/asterisk-upstream-${ASTERISK_VERSION}_dfsg+_cs6.10.40431411.tar.gz?path=Xopus" | \
+RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
+# https://github.com/asterisk/asterisk/tags
+ARG ASTERISK_VERSION="18.12.1"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -214,6 +218,7 @@ RUN \
 
 ## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
+# https://github.com/wdoekes/asterisk-chan-dongle/commits/master
 ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
 RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -228,6 +233,7 @@ RUN ./bootstrap; \
 
 ## Install googletts
 WORKDIR /usr/src/asterisk-googletts
+# https://github.com/zaf/asterisk-googletts/commits/master
 ARG GOOGLETTS_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
 RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${GOOGLETTS_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -235,6 +241,7 @@ RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 ## Install speech-recog
 WORKDIR /usr/src/asterisk-speech-recog
+# https://github.com/zaf/asterisk-speech-recog/commits/master
 ARG SPEECH_RECOG_VERSION="dbc933bca1074514963a2294c52e617ef539a90a"
 RUN curl -fsSL "https://github.com/zaf/asterisk-speech-recog/archive/${SPEECH_RECOG_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
