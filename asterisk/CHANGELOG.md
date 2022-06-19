@@ -4,7 +4,9 @@
 
 ## 2.2.0
 
-- Add stdin services `reload_pjsip` and `reload_dialplan`.
+- Add pt-BR translations (by @LeandroIssa)
+- Upgrade addon-base from 5.3.0 to 6.0.0 (by @felipecrs)
+- Upgrade Asterisk from 18.10.1 to 18.12.1 (by @felipecrs)
 
 ## 2.1.5
 
