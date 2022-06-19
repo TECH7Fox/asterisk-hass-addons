@@ -41,4 +41,3 @@ schema:
 host_network: true
 init: false
 uart: true # chan-dongle requirement
-stdin: true
