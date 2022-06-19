@@ -4,4 +4,6 @@
 # Restarts the STDIN service
 # ==============================================================================
 
+# shellcheck shell=bash
+
 bashio::log.info 'STDIN service was stopped, restarting...'

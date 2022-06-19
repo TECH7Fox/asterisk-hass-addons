@@ -4,6 +4,8 @@
 # Starts the STDIN service
 # ==============================================================================
 
+# shellcheck shell=bash
+
 bashio::log.info 'Starting the Home Assistant STDIN service...'
 
 while read -r input; do
