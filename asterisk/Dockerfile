@@ -46,6 +46,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         tcpdump \
         uuid \
         xmlstarlet \
+        php \
+        php-cli \
         # for googletts \
         perl \
         libwww-perl \
