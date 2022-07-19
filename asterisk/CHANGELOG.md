@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 2.2.0
+
+- Add pt-BR translations (by @LeandroIssa)
+- Upgrade addon-base from 5.3.0 to 6.0.0 (by @felipecrs)
+- Upgrade Asterisk from 18.10.1 to 18.12.1 (by @felipecrs)
+
 ## 2.1.5
 
 - Fix domain bug that makes the WS contacts unreachable (by @TECH7Fox)
