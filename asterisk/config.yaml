@@ -13,6 +13,7 @@ arch:
 homeassistant_api: true
 map:
   - config:rw
+  - media:rw
   - ssl
 options:
   video_support: true
