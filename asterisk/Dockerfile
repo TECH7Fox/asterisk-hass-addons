@@ -224,6 +224,13 @@ WORKDIR /usr/src/asterisk-chan-dongle
 ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
 RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
+
+## Install app_rtsp_sip
+WORKDIR /usr/src/asterisk
+COPY patches/rtsp_sip_links.sh /usr/src/asterisk
+RUN ./rtsp_sip_links.sh
+COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+
 RUN ./bootstrap; \
     ./configure \
         DESTDIR="${INSTALL_DIR}/usr/lib/asterisk/modules" \
