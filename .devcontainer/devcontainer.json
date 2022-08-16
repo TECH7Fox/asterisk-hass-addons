@@ -1,9 +1,9 @@
 {
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
   },
   "appPort": [
-    "8123:8123",
+    "7123:8123",
     "7357:4357"
   ],
   "postStartCommand": "bash devcontainer_bootstrap",
@@ -20,8 +20,7 @@
   "extensions": [
     "timonwong.shellcheck",
     "exiasr.hadolint",
-    "esbenp.prettier-vscode",
-    "github.copilot"
+    "esbenp.prettier-vscode"
   ],
   "settings": {
     "terminal.integrated.profiles.linux": {
