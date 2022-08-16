@@ -218,6 +218,12 @@ RUN \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
+## Install app_rtsp_sip
+WORKDIR /usr/src/asterisk
+COPY patches/rtsp_sip_links.sh /usr/src/asterisk
+RUN ./rtsp_sip_links.sh
+COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+
 ## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
 # https://github.com/wdoekes/asterisk-chan-dongle/commits/master
