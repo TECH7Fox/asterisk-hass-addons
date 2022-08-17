@@ -1,6 +1,6 @@
 {
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "Dockerfile"
   },
   "appPort": [
     "7123:8123",
