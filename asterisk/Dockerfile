@@ -46,6 +46,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         tcpdump \
         uuid \
         xmlstarlet \
+        php \
+        php-cli \
         # for googletts \
         perl \
         libwww-perl \
@@ -215,6 +217,11 @@ RUN \
     DESTDIR="${INSTALL_DIR}" make install; \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
+
+## Install app_rtsp_sip
+COPY patches/rtsp_sip_links.sh /usr/src/asterisk
+RUN /usr/src/asterisk/rtsp_sip_links.sh
+COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
 
 ## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
