@@ -18,7 +18,7 @@
     {
       "label": "Build container",
       "type": "shell",
-      "command": "docker run --rm -it --network=host --privileged -v $PWD/asterisk:/data -v ~/.docker:/root/.docker homeassistant/amd64-builder --amd64 -t /data --test -d local",
+      "command": "docker run --rm -it --network=host --privileged -v $PWD/asterisk:/data -v ~/.docker:/root/.docker homeassistant/amd64-builder --all -t /data --test -d local",
       "group": {
         "kind": "test",
         "isDefault": false

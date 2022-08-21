@@ -206,16 +206,24 @@ RUN \
 
 ENV INSTALL_DIR="/opt/asterisk"
 
-## Install app_rtsp_sip
-COPY patches/rtsp_sip_links.sh /usr/src/asterisk
-RUN /usr/src/asterisk/rtsp_sip_links.sh
-COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+
 
 RUN \
     # disable BUILD_NATIVE to avoid platform issues \
     # for some reason, this needs to be set just before calling make (see #128) \
     menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     # 1.5 jobs per core works out okay \
+    JOBS=$(( $(nproc) + $(nproc) / 2 )); \
+    make -j ${JOBS} all
+
+## Install app_rtsp_sip
+COPY patches/rtsp_sip_links.sh /usr/src/asterisk
+RUN /usr/src/asterisk/rtsp_sip_links.sh
+COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+
+RUN \
+    # redo make with the new app_rtsp_sip module \
+    menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     JOBS=$(( $(nproc) + $(nproc) / 2 )); \
     make -j ${JOBS} all; \
     # install asterisk binaries and modules \
