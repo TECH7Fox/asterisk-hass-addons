@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.3.1
+
+- Only include rtsp-sip for amd64 and i386 (by @TECH7Fox)
+
 ## 2.3.0
 
 - Add php (by @TECH7Fox)
