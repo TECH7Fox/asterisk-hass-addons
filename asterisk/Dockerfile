@@ -119,10 +119,14 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
 ## Install app_rtsp_sip
+ARG TARGETARCH
 WORKDIR /usr/src/asterisk
 COPY patches/rtsp_sip_links.sh /usr/src/asterisk
-RUN /usr/src/asterisk/rtsp_sip_links.sh
 COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+RUN if [ "${TARGETARCH}" = "amd64" ] || [ "${TARGETARCH}" = "i386" ]; \
+        then /usr/src/asterisk/rtsp_sip_links.sh; \
+        else rm -rf /usr/src/asterisk/apps/app_rtsp_sip.c; \
+    fi
 
 #copy patches specific for this addon
 COPY patches /usr/src/asterisk-patches
