@@ -212,8 +212,6 @@ RUN \
 
 ENV INSTALL_DIR="/opt/asterisk"
 
-
-
 RUN \
     # disable BUILD_NATIVE to avoid platform issues \
     # for some reason, this needs to be set just before calling make (see #128) \
