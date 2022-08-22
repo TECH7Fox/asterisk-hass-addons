@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 2.3.0
+
+- Add php (by @TECH7Fox)
+- Add rtsp-sip (by @TECH7Fox)
+- Update builder and linter (by @felipecrs)
+
 ## 2.2.0
 
 - Add pt-BR translations (by @LeandroIssa)
