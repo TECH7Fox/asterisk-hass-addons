@@ -118,6 +118,12 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     cp --verbose ../asterisk-opus*/formats/* formats; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
+## Install app_rtsp_sip
+WORKDIR /usr/src/asterisk
+COPY patches/rtsp_sip_links.sh /usr/src/asterisk
+RUN /usr/src/asterisk/rtsp_sip_links.sh
+COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
+
 #copy patches specific for this addon
 COPY patches /usr/src/asterisk-patches
 WORKDIR /usr/src/asterisk
@@ -213,17 +219,6 @@ RUN \
     # for some reason, this needs to be set just before calling make (see #128) \
     menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     # 1.5 jobs per core works out okay \
-    JOBS=$(( $(nproc) + $(nproc) / 2 )); \
-    make -j ${JOBS} all
-
-## Install app_rtsp_sip
-COPY patches/rtsp_sip_links.sh /usr/src/asterisk
-RUN /usr/src/asterisk/rtsp_sip_links.sh
-COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
-
-RUN \
-    # redo make with the new app_rtsp_sip module \
-    menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts; \
     JOBS=$(( $(nproc) + $(nproc) / 2 )); \
     make -j ${JOBS} all; \
     # install asterisk binaries and modules \
