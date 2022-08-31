@@ -1,11 +1,12 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.0.0
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.1.1
 
 
 FROM $BUILD_FROM AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
+# https://pypi.org/project/asterisk_mbox_server/#history
 ARG ASTERISK_MBOX_SERVER_VERSION="0.5.3"
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
@@ -101,13 +102,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="18.12.0_dfsg+_cs6.12.40431413"
+ARG ASTERISK_OPUS_VERSION="18.14.0_dfsg+_cs6.12.40431414-1"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="18.12.1"
+ARG ASTERISK_VERSION="18.14.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -128,7 +129,7 @@ RUN if [ "${TARGETARCH}" = "amd64" ] || [ "${TARGETARCH}" = "i386" ]; \
         else rm -rf /usr/src/asterisk/apps/app_rtsp_sip.c; \
     fi
 
-#copy patches specific for this addon
+# copy patches specific for this addon
 COPY patches /usr/src/asterisk-patches
 WORKDIR /usr/src/asterisk
 # patch: increase the number of format entries in SDPs to 128
