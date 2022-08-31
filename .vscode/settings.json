@@ -1,0 +1,6 @@
+{
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "docker.languageserver.formatter.ignoreMultilineInstructions": true
+}
