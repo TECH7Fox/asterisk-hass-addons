@@ -2,6 +2,11 @@
 
 # Changelog
 
+## 2.3.2
+
+- Upgrade Asterisk from 18.12.1 to 18.14.0 (by @felipecrs)
+- Upgrade addon-debian-base from 6.0.0 to 6.1.1 (by @felipecrs)
+
 ## 2.3.1
 
 - Only include rtsp-sip for amd64 and i386 (by @TECH7Fox)
