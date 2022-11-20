@@ -7,6 +7,7 @@
 - Fix add-on failing to start sometimes (by @felipecrs)
 - Upgrade Asterisk from 18.14.0 to 18.15.0 (by @felipecrs)
 - Upgrade addon-debian-base from 6.1.1 to 6.1.3 (by @felipecrs)
+- Upgrade asterisk-chan-dongle to [503dba8](https://github.com/wdoekes/asterisk-chan-dongle/commit/503dba87d726854b74b49e70679e64e6e86d5812) (by @felipecrs)
 
 ## 2.3.2
 
