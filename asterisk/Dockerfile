@@ -108,7 +108,7 @@ RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstre
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="18.14.0"
+ARG ASTERISK_VERSION="18.15.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
