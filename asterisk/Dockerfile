@@ -232,7 +232,7 @@ RUN \
 ## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
 # https://github.com/wdoekes/asterisk-chan-dongle/commits/master
-ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
+ARG CHAN_DONGLE_VERSION="503dba87d726854b74b49e70679e64e6e86d5812"
 RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
 RUN ./bootstrap; \
