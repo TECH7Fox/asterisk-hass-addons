@@ -274,4 +274,7 @@ COPY rootfs /
 
 FROM base
 
+# Fix container failing to start some times
+ENV S6_SERVICES_READYTIME=50
+
 COPY --from=rootfs / /
