@@ -102,13 +102,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="18.14.0_dfsg+_cs6.12.40431414"
+ARG ASTERISK_OPUS_VERSION="20.0.1_dfsg+_cs6.12.40431414"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="18.15.0"
+ARG ASTERISK_VERSION="20.0.1"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -171,11 +171,7 @@ RUN \
     # enable good things \
     menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts; \
     # applications \
-    menuselect/menuselect --disable app_ices menuselect.makeopts; \
     menuselect/menuselect --disable app_adsiprog menuselect.makeopts; \
-    menuselect/menuselect --disable app_url menuselect.makeopts; \
-    menuselect/menuselect --disable app_image menuselect.makeopts; \
-    menuselect/menuselect --disable app_nbscat menuselect.makeopts; \
     menuselect/menuselect --disable app_getcpeid menuselect.makeopts; \
     # call detail recording \
     menuselect/menuselect --disable cdr_sqlite3_custom menuselect.makeopts; \
