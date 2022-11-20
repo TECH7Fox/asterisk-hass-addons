@@ -1,5 +1,5 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.1.1
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.1.3
 
 
 FROM $BUILD_FROM AS base
@@ -108,7 +108,7 @@ RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstre
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="18.14.0"
+ARG ASTERISK_VERSION="18.15.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -232,7 +232,7 @@ RUN \
 ## Install chan-gongle
 WORKDIR /usr/src/asterisk-chan-dongle
 # https://github.com/wdoekes/asterisk-chan-dongle/commits/master
-ARG CHAN_DONGLE_VERSION="57e025dda46d2a9e2eba8cb45b75d1b573efc8fb"
+ARG CHAN_DONGLE_VERSION="503dba87d726854b74b49e70679e64e6e86d5812"
 RUN curl -fsSL "https://github.com/wdoekes/asterisk-chan-dongle/archive/${CHAN_DONGLE_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
 RUN ./bootstrap; \
@@ -273,5 +273,8 @@ COPY rootfs /
 
 
 FROM base
+
+# Fix container failing to start some times
+ENV S6_SERVICES_READYTIME=50
 
 COPY --from=rootfs / /

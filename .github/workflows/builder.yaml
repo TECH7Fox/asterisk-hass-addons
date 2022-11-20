@@ -101,13 +101,13 @@ jobs:
 
       - name: Get lowercase GitHub username
         id: repository_owner
-        uses: ASzc/change-string-case-action@v2
+        uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ github.repository_owner }}
 
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2022.07.0
+        uses: home-assistant/builder@2022.09.0
         with:
           args: |
             ${{ env.BUILD_ARGS }} \
