@@ -102,7 +102,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="18.14.0_dfsg+_cs6.12.40431414-1"
+ARG ASTERISK_OPUS_VERSION="18.14.0_dfsg+_cs6.12.40431414"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
