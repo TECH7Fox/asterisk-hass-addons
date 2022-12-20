@@ -2,6 +2,11 @@
 
 # Changelog
 
+
+## 2.4.0
+
+- Add chan_sip on ports 52xx, but disabled in modules.conf for dahua vto compatibility (by @bdherouville)
+
 ## 2.3.4
 
 - Upgrade Asterisk from 18.15.0 to 20.0.1 (by @felipecrs)
