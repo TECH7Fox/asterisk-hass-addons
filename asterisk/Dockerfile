@@ -1,5 +1,5 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.1.3
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.0
 
 
 FROM $BUILD_FROM AS base
