@@ -2,6 +2,11 @@
 
 # Changelog
 
+## 2.3.4
+
+- Upgrade Asterisk from 18.15.0 to 20.0.1 (by @felipecrs)
+- Upgrade addon-debian-base from 6.1.3 to 6.2.0 (by @felipecrs)
+
 ## 2.3.3
 
 - Fix add-on failing to start sometimes (by @felipecrs)
