@@ -5,7 +5,7 @@
 
 ## 2.4.0
 
-- Add chan_sip on ports 52xx, but disabled in modules.conf for dahua vto compatibility (by @bdherouville)
+- Add `chan_sip` on ports 52xx, but disabled by default in `modules.conf` for Dahua VTO compatibility (by @bdherouville)
 
 ## 2.3.4
 
