@@ -1,7 +1,12 @@
 [general]
+dateformat=%F %T
 
 [logfiles]
-{{ if eq .log_level "fatal" -}}
+
+{{ if eq .log_level "security" -}}
+messages => security,notice,warning,error
+
+{{- else if eq .log_level "fatal" -}}
 console => error
 
 {{- else if eq .log_level "error" -}}
