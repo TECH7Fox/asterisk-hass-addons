@@ -37,7 +37,7 @@ schema:
   mailbox_password: password?
   mailbox_extension: str?
   mailbox_google_api_key: password?
-  log_level: list(all|trace|debug|info|notice|warning|error|fatal|off)
+  log_level: list(all|security|trace|debug|info|notice|warning|error|fatal|off)
 host_network: true
 init: false
 uart: true # chan-dongle requirement
