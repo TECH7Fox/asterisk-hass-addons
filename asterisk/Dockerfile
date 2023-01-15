@@ -136,11 +136,11 @@ RUN if [[ "${TARGETARCH}" == "amd64" || "${TARGETARCH}" == "i386" ]]; then \
         ./rtsp_sip_links.sh; \
     fi
 
-# copy patches specific for this addon
-COPY patches /usr/src/asterisk-patches
+# Copy patches specific for this addon
+COPY patches/asterisk/*.patch /usr/src/asterisk-patches/
 WORKDIR /usr/src/asterisk
-# patch: increase the number of format entries in SDPs to 128
-RUN patch -p0 --verbose < /usr/src/asterisk-patches/0000-increase_max_number_of_sdp_format_entries.patch;
+# Increase the number of format entries in SDPs to 128
+RUN patch -p1 < /usr/src/asterisk-patches/increase_max_number_of_sdp_format_entries.patch
 
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
@@ -249,7 +249,7 @@ RUN ./bootstrap; \
 
 ## Install googletts
 WORKDIR /usr/src/asterisk-googletts
-COPY patches/googletts_change_tmp_dir.patch .
+COPY patches/googletts/change_tmp_dir.patch .
 # https://github.com/zaf/asterisk-googletts/commits/master
 ARG GOOGLETTS_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
 RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${GOOGLETTS_VERSION}.tar.gz" | \
@@ -259,7 +259,7 @@ RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 ## Install speech-recog
 WORKDIR /usr/src/asterisk-speech-recog
-COPY patches/speech-recog_change_tmp_dir.patch .
+COPY patches/speech-recog/change_tmp_dir.patch .
 # https://github.com/zaf/asterisk-speech-recog/commits/master
 ARG SPEECH_RECOG_VERSION="dbc933bca1074514963a2294c52e617ef539a90a"
 RUN curl -fsSL "https://github.com/zaf/asterisk-speech-recog/archive/${SPEECH_RECOG_VERSION}.tar.gz" | \
