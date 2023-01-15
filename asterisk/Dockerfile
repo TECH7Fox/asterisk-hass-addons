@@ -125,6 +125,7 @@ COPY patches/app_rtsp_sip/*.patch ./
 # https://github.com/tommyjlong/app_rtsp_sip/commits/master
 ARG APP_RTSP_SIP_VERSION="d0fb18b4813e4ae8940029a8a62030443d9feaec"
 ARG TARGETARCH
+# hadolint ignore=DL3003,SC2164
 RUN if [[ "${TARGETARCH}" == "amd64" || "${TARGETARCH}" == "i386" ]]; then \
         curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
