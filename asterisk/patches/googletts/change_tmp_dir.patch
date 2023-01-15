@@ -1,0 +1,13 @@
+diff --git a/googletts.agi b/googletts.agi
+index d28edd5..5dac327 100755
+--- a/googletts.agi
++++ b/googletts.agi
+@@ -58,7 +58,7 @@ my $speed = 1;
+ my $usecache = 1;
+ 
+ # Cache directory path          #
+-my $cachedir = "/tmp";
++my $cachedir = "/data/tmp";
+ 
+ # Output audio sample rate      #
+ # Leave blank to auto-detect    #
