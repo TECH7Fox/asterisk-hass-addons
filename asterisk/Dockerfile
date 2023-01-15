@@ -120,13 +120,20 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
 ## Install app_rtsp_sip
+WORKDIR /usr/src/app_rtsp_sip
+COPY patches/app_rtsp_sip/*.patch ./
+# https://github.com/tommyjlong/app_rtsp_sip/commits/master
+ARG APP_RTSP_SIP_VERSION="d0fb18b4813e4ae8940029a8a62030443d9feaec"
 ARG TARGETARCH
-WORKDIR /usr/src/asterisk
-COPY patches/rtsp_sip_links.sh /usr/src/asterisk
-COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
-RUN if [ "${TARGETARCH}" = "amd64" ] || [ "${TARGETARCH}" = "i386" ]; \
-        then /usr/src/asterisk/rtsp_sip_links.sh; \
-        else rm -rf /usr/src/asterisk/apps/app_rtsp_sip.c; \
+RUN if [[ "${TARGETARCH}" == "amd64" || "${TARGETARCH}" == "i386" ]]; then \
+        curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
+        tar --strip-components 1 -xz; \
+        patch -p1 < disable_auth.patch; \
+        patch -p1 < remove_sudo.patch; \
+        cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
+        cp -f rtsp_sip_links.sh /usr/src/asterisk; \
+        cd /usr/src/asterisk; \
+        ./rtsp_sip_links.sh; \
     fi
 
 # copy patches specific for this addon
