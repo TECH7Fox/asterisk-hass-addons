@@ -286,3 +286,5 @@ FROM base
 ENV S6_SERVICES_READYTIME=50
 
 COPY --from=rootfs / /
+
+ENTRYPOINT [ "/stdin.sh" ]
