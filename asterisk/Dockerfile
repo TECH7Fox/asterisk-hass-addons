@@ -264,3 +264,5 @@ COPY rootfs /
 FROM base
 
 COPY --from=rootfs / /
+
+ENTRYPOINT [ "/stdin.sh" ]
