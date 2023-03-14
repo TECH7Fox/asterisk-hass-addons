@@ -1,0 +1,13 @@
+diff --git a/third-party/pjproject/patches/config_site.h b/third-party/pjproject/patches/config_site.h
+index 9f4d678782..507b8fb62b 100644
+--- a/third-party/pjproject/patches/config_site.h
++++ b/third-party/pjproject/patches/config_site.h
+@@ -75,7 +75,7 @@
+ #define PJ_ICE_MAX_CHECKS (PJ_ICE_MAX_CAND * PJ_ICE_MAX_CAND)
+ 
+ /* Increase limits to allow more formats */
+-#define	PJMEDIA_MAX_SDP_FMT   64
++#define	PJMEDIA_MAX_SDP_FMT   128
+ #define	PJMEDIA_MAX_SDP_BANDW   4
+ #define	PJMEDIA_MAX_SDP_ATTR   (PJMEDIA_MAX_SDP_FMT*3 + 4)
+ #define	PJMEDIA_MAX_SDP_MEDIA   16

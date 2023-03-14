@@ -1,0 +1,13 @@
+diff --git a/speech-recog.agi b/speech-recog.agi
+index 094702a..59e15f8 100755
+--- a/speech-recog.agi
++++ b/speech-recog.agi
+@@ -97,7 +97,7 @@ my $results    = 1;
+ my $beep       = "BEEP";
+ my $comp_level = -8;
+ my $ua_timeout = 30;
+-my $tmpdir     = "/tmp";
++my $tmpdir     = "/data/tmp";
+ my $url        = "https://speech.googleapis.com/v1/speech";
+ my $phrases    = "";
+ my @phrases    = [];

@@ -1,0 +1,55 @@
+diff --git a/app_rtsp_sip.c b/app_rtsp_sip.c
+old mode 100755
+new mode 100644
+index 42933af..79160cc
+--- a/app_rtsp_sip.c
++++ b/app_rtsp_sip.c
+@@ -2728,29 +2728,37 @@ static int main_loop(struct ast_channel *chan,char *ip, int rtsp_port, char *url
+ 					/* Check unathorized */
+ 					if (responseCode==401)
+ 					{
++						/* Create authentication header */
++						RtspPlayerBasicAuthorization(player,username,password);
++						/* Send again the describe */
++						RtspPlayerDescribe(player,url);
++						/* Enter loop again */
++						break;						
+ 						/* Check athentication method */
+-
++						
++						
++						// Commented out below...
+ 						/* 
+ 						 * PORT 17.3.  The Basic Realm header format may be device dependent.
+ 						 * Original code did not work for my cameras.
+ 						 */
+ 					     /*	if (CheckHeaderValue(buffer,bufferLen,"WWW-Authenticate","Basic realm=\"/\"")) */
+-						if (CheckHeaderValue(buffer,bufferLen,"WWW-Authenticate","Basic realm="))
+-						{
++						//if (CheckHeaderValue(buffer,bufferLen,"WWW-Authenticate","Basic realm="))
++						//{
+ 							/* Create authentication header */
+-							RtspPlayerBasicAuthorization(player,username,password);
++							//RtspPlayerBasicAuthorization(player,username,password);
+ 							/* Send again the describe */
+-							RtspPlayerDescribe(player,url);
++							//RtspPlayerDescribe(player,url);
+ 							/* Enter loop again */
+-							break;
+-						} else {
++							//break;
++						//} else {
+ 							/* Error */
+-							ast_log(LOG_ERROR,"-No Authenticate header found\n");	
++							//ast_log(LOG_ERROR,"-No Authenticate header found\n");	
+ 							/* End */
+-							player->end = 1;
++							//player->end = 1;
+ 							/* Exit */
+-							break;
+-						}
++							//break;
++						//}
+ 					}
+ 
+ 					/* On any other erro code */
