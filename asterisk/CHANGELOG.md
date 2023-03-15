@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 2.4.0
+
+- Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
+
 ## 2.3.5
 
 - Upgrade Asterisk from 20.0.1 to 20.1.0 (by @felipecrs)
