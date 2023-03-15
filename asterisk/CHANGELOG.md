@@ -6,6 +6,10 @@
 
 - Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
 
+### Breaking changes
+
+**Delete the old `sip.conf` and `modules.conf`.** This disables `chan_sip` by default and sets it on another port to prevent conflicts with `pjsip`.
+
 ## 2.3.5
 
 - Upgrade Asterisk from 20.0.1 to 20.1.0 (by @felipecrs)
