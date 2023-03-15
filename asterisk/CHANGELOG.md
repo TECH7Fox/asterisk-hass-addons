@@ -2,6 +2,17 @@
 
 # Changelog
 
+## 2.4.0
+
+- Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
+
+## 2.3.5
+
+- Upgrade Asterisk from 20.0.1 to 20.1.0 (by @felipecrs)
+- Fix tmp dir for googletts and speech-recog (by @felipecrs)
+  - Now they use `/data/tmp` instead of `tmp`, which is retained between restarts (but deleted upon uninstall) for add-ons.
+- Refactor the installation of all patches for easier maintenance (by @felipecrs)
+
 ## 2.3.4
 
 - Upgrade Asterisk from 18.15.0 to 20.0.1 (by @felipecrs)

@@ -102,13 +102,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="20.0.1_dfsg+_cs6.12.40431414"
+ARG ASTERISK_OPUS_VERSION="20.1.0_dfsg+_cs6.12.40431414"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="20.0.1"
+ARG ASTERISK_VERSION="20.1.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -120,20 +120,28 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
     patch -p1 < ../asterisk-opus*/asterisk.patch
 
 ## Install app_rtsp_sip
+WORKDIR /usr/src/app_rtsp_sip
+COPY patches/app_rtsp_sip/*.patch ./
+# https://github.com/tommyjlong/app_rtsp_sip/commits/master
+ARG APP_RTSP_SIP_VERSION="d0fb18b4813e4ae8940029a8a62030443d9feaec"
 ARG TARGETARCH
-WORKDIR /usr/src/asterisk
-COPY patches/rtsp_sip_links.sh /usr/src/asterisk
-COPY patches/app_rtsp_sip.c /usr/src/asterisk/apps
-RUN if [ "${TARGETARCH}" = "amd64" ] || [ "${TARGETARCH}" = "i386" ]; \
-        then /usr/src/asterisk/rtsp_sip_links.sh; \
-        else rm -rf /usr/src/asterisk/apps/app_rtsp_sip.c; \
+# hadolint ignore=DL3003,SC2164
+RUN if [[ "${TARGETARCH}" == "amd64" || "${TARGETARCH}" == "i386" ]]; then \
+        curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
+        tar --strip-components 1 -xz; \
+        patch -p1 < disable_auth.patch; \
+        patch -p1 < remove_sudo.patch; \
+        cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
+        cp -f rtsp_sip_links.sh /usr/src/asterisk; \
+        cd /usr/src/asterisk; \
+        ./rtsp_sip_links.sh; \
     fi
 
-# copy patches specific for this addon
-COPY patches /usr/src/asterisk-patches
+# Copy patches specific for this addon
+COPY patches/asterisk/*.patch /usr/src/asterisk-patches/
 WORKDIR /usr/src/asterisk
-# patch: increase the number of format entries in SDPs to 128
-RUN patch -p0 --verbose < /usr/src/asterisk-patches/0000-increase_max_number_of_sdp_format_entries.patch;
+# Increase the number of format entries in SDPs to 128
+RUN patch -p1 < /usr/src/asterisk-patches/increase_max_number_of_sdp_format_entries.patch
 
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
@@ -167,7 +175,8 @@ RUN \
         --enable chan_bridge_media \
         --enable chan_iax2 \
         --enable chan_pjsip \
-        --enable chan_rtp; \
+        --enable chan_rtp \
+        --enable chan_sip ; \
     # enable good things \
     menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts; \
     # applications \
@@ -242,18 +251,22 @@ RUN ./bootstrap; \
 
 ## Install googletts
 WORKDIR /usr/src/asterisk-googletts
+COPY patches/googletts/change_tmp_dir.patch .
 # https://github.com/zaf/asterisk-googletts/commits/master
 ARG GOOGLETTS_VERSION="5566ddc42e99d15cfaee2c4b8882e171ada2e479"
 RUN curl -fsSL "https://github.com/zaf/asterisk-googletts/archive/${GOOGLETTS_VERSION}.tar.gz" | \
-    tar --strip-components 1 -xz
+    tar --strip-components 1 -xz; \
+    patch -p1 < change_tmp_dir.patch
 RUN cp -f googletts.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 ## Install speech-recog
 WORKDIR /usr/src/asterisk-speech-recog
+COPY patches/speech-recog/change_tmp_dir.patch .
 # https://github.com/zaf/asterisk-speech-recog/commits/master
 ARG SPEECH_RECOG_VERSION="dbc933bca1074514963a2294c52e617ef539a90a"
 RUN curl -fsSL "https://github.com/zaf/asterisk-speech-recog/archive/${SPEECH_RECOG_VERSION}.tar.gz" | \
-    tar --strip-components 1 -xz
+    tar --strip-components 1 -xz; \
+    patch -p1 < change_tmp_dir.patch
 RUN cp -f speech-recog.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 
 # Debian has a symlink from /var/run to /run, so here we move contents

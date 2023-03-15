@@ -91,6 +91,15 @@ bashio::var.json \
     tempio \
         -template /usr/share/tempio/pjsip_default.conf.gtpl \
         -out /config/asterisk/pjsip_default.conf
+        
+ bashio::var.json \
+    auto_add "^${auto_add}" \
+    auto_add_secret "${auto_add_secret}" \
+    video_support "^${video_support}" \
+    persons "^${persons}" |
+    tempio \
+        -template /usr/share/tempio/sip_default.conf.gtpl \
+        -out /config/asterisk/sip_default.conf    
 
 rsync -a -v --ignore-existing /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
 cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
