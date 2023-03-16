@@ -2,36 +2,35 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "appPort": [
-    "7123:8123",
-    "7357:4357"
-  ],
+  "appPort": ["7123:8123", "7357:4357"],
   "postStartCommand": "bash devcontainer_bootstrap",
-  "runArgs": [
-    "--privileged"
-  ],
+  "runArgs": ["--privileged"],
   "containerEnv": {
     "GIT_EDITOR": "code --wait",
     "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
   },
-  "mounts": [
-    "type=volume,target=/var/lib/docker"
-  ],
-  "extensions": [
-    "timonwong.shellcheck",
-    "exiasr.hadolint",
-    "esbenp.prettier-vscode"
-  ],
-  "settings": {
-    "terminal.integrated.profiles.linux": {
-      "zsh": {
-        "path": "/usr/bin/zsh"
-      }
+  "mounts": ["type=volume,target=/var/lib/docker"],
+  "customizations": {
+    "settings": {
+      "terminal.integrated.profiles.linux": {
+        "zsh": {
+          "path": "/usr/bin/zsh"
+        }
+      },
+      "terminal.integrated.defaultProfile.linux": "zsh",
+      "editor.formatOnPaste": false,
+      "editor.formatOnType": false,
+      "editor.formatOnSave": true
     },
-    "terminal.integrated.defaultProfile.linux": "zsh",
-    "editor.formatOnPaste": false,
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "files.trimTrailingWhitespace": true
+    "vscode": {
+      "extensions": [
+        "timonwong.shellcheck",
+        "exiasr.hadolint",
+        "esbenp.prettier-vscode",
+        "ffloimair.asterisk-config",
+        "ms-azuretools.vscode-docker",
+        "foxundermoon.shell-format"
+      ]
+    }
   }
 }
