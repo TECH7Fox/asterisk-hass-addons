@@ -2,6 +2,8 @@
 
 # Changelog
 
+## 3.0.0
+
 ## 2.4.0
 
 - Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
@@ -99,7 +101,7 @@ More information at #124.
   - Addon size has been considerable increased
 - Upgrade Asterisk to 18.1.0 (#116) (by @nanosonde)
   - Now we build it from source, so we can always use the latest version and have more control about it
-- Migrate from `chan_sip` to `res_pjsip`  (#112) (by @nanosonde)
+- Migrate from `chan_sip` to `res_pjsip` (#112) (by @nanosonde)
   - This is a breaking change. Check below the upgrade guide.
 
 Lots of issues were fixed by the above.
