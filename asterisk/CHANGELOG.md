@@ -4,6 +4,11 @@
 
 ## 3.0.0
 
+### Upgrades
+
+- Bump Asterisk from 20.1.0 to 20.2.0
+- Bump debian-base from 6.2.0 to 6.2.3
+
 ## 2.4.0
 
 - Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
