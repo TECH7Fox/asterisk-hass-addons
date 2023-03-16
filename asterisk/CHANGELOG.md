@@ -6,7 +6,7 @@
 
 ### Breaking Changes
 
-We changed the way we handle the Asterisk config files and this will require manual action on your side. Now, Asterisk files you intend to modify should be placed under `/config/asterisk/custom`. For example, if you were previously editing `extensions.conf`, you should move it from `/config/asterisk/extensions.conf` to `/config/asterisk/custom/extensions.conf`.
+We changed the way we handle the Asterisk config files and this will require a manual action on your side. Now, Asterisk files you intend to modify should be placed under `/config/asterisk/custom`. For example, if you were previously editing `extensions.conf`, you should move it from `/config/asterisk/extensions.conf` to `/config/asterisk/custom/extensions.conf`.
 
 After moving all the files you need to `/config/asterisk/custom`, you can also cleanup the `/config/asterisk` folder by deleting everything under it, **except for the `custom` folder**.
 
