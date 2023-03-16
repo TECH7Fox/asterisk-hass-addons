@@ -11,5 +11,5 @@ bashio::var.json \
     extension "$(bashio::config 'mailbox_extension')" \
     api_key "$(bashio::config 'mailbox_google_api_key')" |
     tempio \
-    -template /usr/share/tempio/asterisk_mbox.ini.gtpl \
-    -out /config/asterisk/asterisk_mbox.ini
+        -template /usr/share/tempio/asterisk_mbox.ini.gtpl \
+        -out /config/asterisk/asterisk_mbox.ini
