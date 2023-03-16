@@ -6,7 +6,11 @@
 
 # shellcheck shell=bash
 
-if bashio::var.false "$(bashio::config 'mailbox')"; then
+# Load helper function
+# shellcheck source=/dev/null
+source /usr/lib/config.sh
+
+if bashio::var.false "$(config 'mailbox')"; then
     # Tell S6-Overlay not to restart this service
     s6-svc -O .
     exit 0

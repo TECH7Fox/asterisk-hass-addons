@@ -5,25 +5,18 @@
 
 # shellcheck shell=bash
 
+# Load helper function
+# shellcheck source=/dev/null
+source /usr/lib/config.sh
+
 if ! bashio::fs.directory_exists '/config/asterisk'; then
     mkdir -p /config/asterisk ||
         bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-# Try to read the configuration from the supervisor API.
-# If the supervisor is not available (the function returns an empty JSON), fallback to the `/data/options.json` file, and extract each option using jq
-# `bashio::config` try to load the given config key from the supervisor, otherwise it fallbacks to the value of the second parameter
-json_config=$(bashio::addon.config)
-if [[ "${json_config}" = "{}" ]]; then
-    json_config_file="/data/options.json"
-    
-    bashio::log.info "Loading configuration from $json_config_file"
-    json_config=$(cat $json_config_file)
-fi
-
 bashio::log.info "Configuring certificate..."
-certfile="/ssl/$(bashio::config 'certfile' "$(bashio::jq "${json_config}" .certfile)")"
-keyfile="/ssl/$(bashio::config 'keyfile' "$(bashio::jq "${json_config}" .keyfile)")"
+certfile="/ssl/$(config 'certfile')"
+keyfile="/ssl/$(config 'keyfile')"
 readonly certfile keyfile
 
 readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
@@ -31,7 +24,7 @@ readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
 
 mkdir -p /etc/asterisk/keys
 
-if bashio::var.true "$(bashio::config 'generate_ssl_cert' "$(bashio::jq "${json_config}" .generate_ssl_cert)")"; then
+if bashio::var.true "$(config 'generate_ssl_cert')"; then
     bashio::log.info "Generating a self-signed certificate..."
     
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
@@ -62,13 +55,13 @@ bashio::log.info "Configuring Asterisk..."
 # Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
 
 bashio::var.json \
-    password "$(bashio::config 'ami_password' "$(bashio::jq "${json_config}" .ami_password)")" |
+    password "$(config 'ami_password')" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /config/asterisk/manager.conf
 
 bashio::var.json \
-    log_level "$(bashio::config 'log_level' "$(bashio::jq "${json_config}" .log_level)")" |
+    log_level "$(config 'log_level')" |
     tempio \
         -template /usr/share/tempio/logger.conf.gtpl \
         -out /config/asterisk/logger.conf
@@ -105,9 +98,9 @@ function get_persons() {
     echo "$persons"
 }
 
-auto_add=$(bashio::config 'auto_add' "$(bashio::jq "${json_config}" .auto_add)")
-auto_add_secret=$(bashio::config 'auto_add_secret' "$(bashio::jq "${json_config}" .auto_add_secret)")
-video_support=$(bashio::config 'video_support' "$(bashio::jq "${json_config}" .video_support)")
+auto_add=$(config 'auto_add')
+auto_add_secret=$(config 'auto_add_secret')
+video_support=$(config 'video_support')
 if bashio::var.true "${auto_add}" && bashio::var.is_empty "${auto_add_secret}"; then
     bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
 fi
