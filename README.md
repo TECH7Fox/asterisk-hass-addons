@@ -8,6 +8,9 @@ The [Asterisk](https://github.com/asterisk/asterisk) add-on for Home Assistant, 
 
 See the documentation [here](asterisk/DOCS.md).
 
+### Wiki
+For info, examples and guides, visit the [**SIP-HASS docs**](https://tech7fox.github.io/sip-hass-docs/).
+
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
 ![Supports armhf Architecture][armhf-shield]
