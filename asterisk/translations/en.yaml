@@ -16,13 +16,13 @@ configuration:
   auto_add:
     name: Auto Add Extensions
     description: >-
-      Whether to enable the automatic creation of extensions for 
+      Whether to enable the automatic creation of extensions for
       every person registered in Home Assistant. They will have
       their number/username auto-generated starting from 100.
   generate_ssl_cert:
     name: Generate SSL Certifcate
     description: >-
-      Enables/disables the generation of a self-signed certificate 
+      Enables/disables the generation of a self-signed certificate
       for use with the SSL interfaces (WSS and TLS).
   certfile:
     name: Certificate File
