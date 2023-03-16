@@ -10,10 +10,20 @@ if ! bashio::fs.directory_exists '/config/asterisk'; then
         bashio::exit.nok 'Failed to create initial asterisk config folder'
 fi
 
-bashio::log.info "Configuring certificate..."
+# Try to read the configuration from the supervisor API.
+# If the supervisor is not available (the function returns an empty JSON), fallback to the `/data/options.json` file, and extract each option using jq
+# `bashio::config` try to load the given config key from the supervisor, otherwise it fallbacks to the value of the second parameter
+json_config=$(bashio::addon.config)
+if [[ "${json_config}" = "{}" ]]; then
+    json_config_file="/data/options.json"
+    
+    bashio::log.info "Loading configuration from $json_config_file"
+    json_config=$(cat $json_config_file)
+fi
 
-certfile="/ssl/$(bashio::config 'certfile')"
-keyfile="/ssl/$(bashio::config 'keyfile')"
+bashio::log.info "Configuring certificate..."
+certfile="/ssl/$(bashio::config 'certfile' "$(bashio::jq "${json_config}" .certfile)")"
+keyfile="/ssl/$(bashio::config 'keyfile' "$(bashio::jq "${json_config}" .keyfile)")"
 readonly certfile keyfile
 
 readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
@@ -21,7 +31,7 @@ readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
 
 mkdir -p /etc/asterisk/keys
 
-if bashio::var.true "$(bashio::config 'generate_ssl_cert')"; then
+if bashio::var.true "$(bashio::config 'generate_ssl_cert' "$(bashio::jq "${json_config}" .generate_ssl_cert)")"; then
     bashio::log.info "Generating a self-signed certificate..."
     
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
@@ -52,13 +62,13 @@ bashio::log.info "Configuring Asterisk..."
 # Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
 
 bashio::var.json \
-    password "$(bashio::config 'ami_password')" |
+    password "$(bashio::config 'ami_password' "$(bashio::jq "${json_config}" .ami_password)")" |
     tempio \
         -template /usr/share/tempio/manager.conf.gtpl \
         -out /config/asterisk/manager.conf
 
 bashio::var.json \
-    log_level "$(bashio::config 'log_level')" |
+    log_level "$(bashio::config 'log_level' "$(bashio::jq "${json_config}" .log_level)")" |
     tempio \
         -template /usr/share/tempio/logger.conf.gtpl \
         -out /config/asterisk/logger.conf
@@ -70,17 +80,45 @@ bashio::var.json \
     -template /usr/share/tempio/http.conf.gtpl \
     -out /config/asterisk/http.conf
 
-persons="$(curl -s -X GET \
-    -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
-    -H "Content-Type: application/json" \
-    http://supervisor/core/api/states |
-    jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
 
-auto_add=$(bashio::config 'auto_add')
-auto_add_secret=$(bashio::config 'auto_add_secret')
-video_support=$(bashio::config 'video_support')
+# Retrieve the list of persons from the HA API
+function get_persons() {
+    
+    # Load the base url for Home Assistant as an env variable. 
+    # If not defined (we are running as an add-on), fallback to the supervisor internal proxy URL
+    HOME_ASSISTANT_URL=${HOME_ASSISTANT_URL:-"http://supervisor/core"}
+
+    # Authentication to Home Assistant API: try to use SUPERVISOR_TOKEN if defined (we are running as an add-on),
+    # otherwise fallback to HOME_ASSISTANT_TOKEN (supplied manually by the user)
+    if bashio::var.defined SUPERVISOR_TOKEN; then
+        HOME_ASSISTANT_TOKEN=${SUPERVISOR_TOKEN}
+    elif ! bashio::var.defined HOME_ASSISTANT_TOKEN; then
+        bashio::exit.nok "Please define env variable HOME_ASSISTANT_TOKEN with a long-lived HA access-token"
+    fi
+
+    persons="$(curl -s -X GET \
+        -H "Authorization: Bearer ${HOME_ASSISTANT_TOKEN}" \
+        -H "Content-Type: application/json" \
+        "${HOME_ASSISTANT_URL}/api/states" |
+        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
+    
+    echo "$persons"
+}
+
+auto_add=$(bashio::config 'auto_add' "$(bashio::jq "${json_config}" .auto_add)")
+auto_add_secret=$(bashio::config 'auto_add_secret' "$(bashio::jq "${json_config}" .auto_add_secret)")
+video_support=$(bashio::config 'video_support' "$(bashio::jq "${json_config}" .video_support)")
 if bashio::var.true "${auto_add}" && bashio::var.is_empty "${auto_add_secret}"; then
     bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
+fi
+
+# If `auto_add` is enabled, retrieve the list of persons using HA API
+if bashio::var.true "${auto_add}"; then
+    bashio::log.debug "Retrieving the list of persons from HA"
+    persons=$(get_persons)
+else
+    # Define an empty array, so the subsequent template won't complain
+    persons=[]
 fi
 
 bashio::var.json \

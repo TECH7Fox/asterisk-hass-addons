@@ -6,6 +6,11 @@ FROM $BUILD_FROM AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
+# Add additional Debian APT mirror, since the default `deb.debian.org` randomly returns `502 connection timed out`
+RUN echo $'deb http://ftp.it.debian.org/debian/ bullseye main \n\
+deb http://debian.mirror.garr.it/debian-security/ bullseye-security main \n\
+deb http://ftp.it.debian.org/debian/ bullseye-updates main' > /etc/apt/sources.list.d/mirror.list
+
 # https://pypi.org/project/asterisk_mbox_server/#history
 ARG ASTERISK_MBOX_SERVER_VERSION="0.5.3"
 RUN export DEBIAN_FRONTEND=noninteractive; \
