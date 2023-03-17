@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 3.0.2
+
+- Fix `asterisk_mbox.ini` configuration again
+
 ## 3.0.1
 
 - Fix `asterisk_mbox.ini` configuration

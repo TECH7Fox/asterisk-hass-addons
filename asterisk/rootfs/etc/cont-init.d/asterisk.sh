@@ -10,6 +10,8 @@ readonly config_dir="/config/asterisk"
 readonly default_config_dir="${config_dir}/default"
 readonly custom_config_dir="${config_dir}/custom"
 
+readonly tempio_dir="/usr/share/tempio"
+
 # Ensure the config folders exist
 if ! mkdir -p "${default_config_dir}" "${custom_config_dir}"; then
     bashio::exit.nok "Failed to create Asterisk config folders at ${config_dir}"
@@ -56,20 +58,20 @@ bashio::log.info "Generating Asterisk config files from add-on configuration..."
 bashio::var.json \
     password "$(bashio::config 'ami_password')" |
     tempio \
-        -template /usr/share/tempio/manager.conf.gtpl \
+        -template "${tempio_dir}/manager.conf.gtpl" \
         -out "${etc_asterisk}/manager.conf"
 
 bashio::var.json \
     log_level "$(bashio::config 'log_level')" |
     tempio \
-        -template /usr/share/tempio/logger.conf.gtpl \
+        -template "${tempio_dir}/logger.conf.gtpl" \
         -out "${etc_asterisk}/logger.conf"
 
 bashio::var.json \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
     tempio \
-        -template /usr/share/tempio/http.conf.gtpl \
+        -template "${tempio_dir}/http.conf.gtpl" \
         -out "${etc_asterisk}/http.conf"
 
 persons="$(
@@ -93,7 +95,7 @@ bashio::var.json \
     video_support "^${video_support}" \
     persons "^${persons}" |
     tempio \
-        -template /usr/share/tempio/pjsip_default.conf.gtpl \
+        -template "${tempio_dir}/pjsip_default.conf.gtpl" \
         -out "${etc_asterisk}/pjsip_default.conf"
 
 bashio::var.json \
@@ -102,8 +104,17 @@ bashio::var.json \
     video_support "^${video_support}" \
     persons "^${persons}" |
     tempio \
-        -template /usr/share/tempio/sip_default.conf.gtpl \
+        -template "${tempio_dir}/sip_default.conf.gtpl" \
         -out "${etc_asterisk}/sip_default.conf"
+
+bashio::var.json \
+    port "$(bashio::config 'mailbox_port')" \
+    password "$(bashio::config 'mailbox_password')" \
+    extension "$(bashio::config 'mailbox_extension')" \
+    api_key "$(bashio::config 'mailbox_google_api_key')" |
+    tempio \
+        -template "${tempio_dir}/asterisk_mbox.ini.gtpl" \
+        -out "${etc_asterisk}/asterisk_mbox.ini"
 
 # Save default configs
 bashio::log.info "Saving default configs to ${default_config_dir}..."
