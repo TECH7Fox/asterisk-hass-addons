@@ -12,4 +12,4 @@ bashio::var.json \
     api_key "$(bashio::config 'mailbox_google_api_key')" |
     tempio \
         -template /usr/share/tempio/asterisk_mbox.ini.gtpl \
-        -out /config/asterisk/asterisk_mbox.ini
+        -out /etc/asterisk/asterisk_mbox.ini
