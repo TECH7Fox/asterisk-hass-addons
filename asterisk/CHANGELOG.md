@@ -20,6 +20,11 @@ This is no longer required, and now default files will be always upgraded, while
 - The custom Asterisk config files are now read from `/config/asterisk/custom` instead of from `/config/asterisk`.
 - You can now override/customize any Asterisk files (previously, the auto-generated Asterisk files could not be overriden).
 
+### Upgrades
+
+- Bump Asterisk from 20.1.0 to 20.2.0
+- Bump debian-base from 6.2.0 to 6.2.3
+
 ## 2.4.0
 
 - Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
