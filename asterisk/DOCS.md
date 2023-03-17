@@ -20,6 +20,18 @@ Follow these steps to get the add-on installed on your system:
 2. Check the add-on configuration by going to the **_Configuration_** tab. You need to at least fill the _AMI Password_ and the _Auto add secret_ (if you leave _Auto add extensions_ enabled).
 3. Start the add-on by clicking in the **_START_** button.
 
+## Configuring Asterisk
+
+The add-on copies all the default Asterisk config files to `/config/asterisk/default` on the add-on startup for your reference, and reads all customized config files from `/config/asterisk/custom`.
+
+For example, if you need to change something in the `/etc/asterisk/extensions.conf`, you can copy the reference `/config/asterisk/default/extensions.conf` to `/config/asterisk/custom/extensions.conf` and make your changes there.
+
+**Note**: _Remember to restart the add-on when the Asterisk configuration files are changed._
+
+## Configuring the add-on
+
+We expose some configuration options to simplify the setup of the Asterisk server inside of the add-on. See below for more information on each option we provide.
+
 **Note**: _Remember to restart the add-on when the configuration is changed._
 
 ### Option: `ami_password`
@@ -88,12 +100,8 @@ The log level to configure Asterisk to use. To know more about the existing pres
 - **_Port_**: `8089`
 - **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
 
-And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
+And add a extension. To see which extension every person has, you can look at `/config/asterisk/default/sip_default.conf`.
 
 ## Wiki
 
 For more information, visit the [SIP-HASS docs](https://tech7fox.github.io/sip-hass-docs/).
-
-## Troubleshoot
-
-If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on. This will make sure you have the latest configuration files.
