@@ -9,7 +9,7 @@ Follow these steps to get the add-on installed on your system:
 
 1. Click here:
 
-    [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FTECH7Fox%2Fasterisk-hass-addons)
+   [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FTECH7Fox%2Fasterisk-hass-addons)
 
 1. Scroll down the page to find the new repository, and click in the new add-on named **_Asterisk_**.
 1. Click in the **_INSTALL_** button.
@@ -20,46 +20,71 @@ Follow these steps to get the add-on installed on your system:
 2. Check the add-on configuration by going to the **_Configuration_** tab. You need to at least fill the _AMI Password_ and the _Auto add secret_ (if you leave _Auto add extensions_ enabled).
 3. Start the add-on by clicking in the **_START_** button.
 
+## Configuring Asterisk
+
+The add-on copies all the default Asterisk config files to `/config/asterisk/default` on the add-on startup for your reference, and reads all customized config files from `/config/asterisk/custom`.
+
+For example, if you need to change something in the `/etc/asterisk/extensions.conf`, you can copy the reference `/config/asterisk/default/extensions.conf` to `/config/asterisk/custom/extensions.conf` and make your changes there.
+
+**Note**: _Remember to restart the add-on when the Asterisk configuration files are changed._
+
+## Configuring the add-on
+
+We expose some configuration options to simplify the setup of the Asterisk server inside of the add-on. See below for more information on each option we provide.
+
 **Note**: _Remember to restart the add-on when the configuration is changed._
 
 ### Option: `ami_password`
+
 Set's the password for the Asterisk Manager Interface, to connect to the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration).
 
 ### Option: `video_support`
+
 Enables video support for the auto generated extensions.
 
 ### Option: `auto_add`
+
 Creates a extension for every [person](https://www.home-assistant.io/integrations/person/) registered in Home Assistant. They will have their number and username auto-generated starting from 100, with the `callerid` set to the person's name.
 
 ### Option: `auto_add_secret`
+
 The secret for the auto generated extensions.
 
 ### Option: `generate_ssl_cert`
+
 Enables/disables the generation of a self-signed certificate for use with the SSL interfaces (WSS and TLS).
 
 ### Option: `certfile`
+
 The certificate file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled.
 
 ### Option: `keyfile`
+
 The key file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled.
 
 ### Option: `mailbox_server`
+
 Enables the mailbox server to send voicemails to the Asterisk mailbox integration.
 
 ### Option: `mailbox_port`
+
 The port used by the mailbox server.
 
 ### Option: `mailbox_password`
+
 The password for the mailbox server.
 
 ### Option: `mailbox_extension`
+
 Which extension to get the voicemails from.
 
 ### Option: `api_key`
+
 The API Key for speech-to-text.
 You can get a key [here](https://cloud.google.com/speech-to-text). Google says it's free, but requires a billing account.
 
 ### Option: `log_level`
+
 The log level to configure Asterisk to use. To know more about the existing presets, check [`logger.conf`](./rootfs/usr/share/tempio/logger.conf.gtpl).
 
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
@@ -75,10 +100,8 @@ The log level to configure Asterisk to use. To know more about the existing pres
 - **_Port_**: `8089`
 - **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
 
-And add a extension. To see which extension every person has, you can look at `/config/asterisk/sip_default.conf`.
+And add a extension. To see which extension every person has, you can look at `/config/asterisk/default/sip_default.conf`.
 
 ## Wiki
-For more information, visit the [SIP-HASS docs](https://tech7fox.github.io/sip-hass-docs/).
 
-## Troubleshoot
-If you are having problems with the add-on, try deleting the `asterisk` folder located at `/config/` and restart the add-on. This will make sure you have the latest configuration files.
+For more information, visit the [SIP-HASS docs](https://tech7fox.github.io/sip-hass-docs/).
