@@ -287,7 +287,9 @@ FROM base
 
 # Fix container failing to start some times
 ENV S6_SERVICES_READYTIME=50
+# Without this, the STDIN script never gets executed
+ENV S6_CMD_WAIT_FOR_SERVICES=0
 
 COPY --from=rootfs / /
 
-ENTRYPOINT [ "/stdin.sh" ]
+CMD [ "/stdin.sh" ]
