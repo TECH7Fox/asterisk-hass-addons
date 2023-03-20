@@ -5,9 +5,16 @@
 
 # shellcheck shell=bash
 
-if ! bashio::fs.directory_exists '/config/asterisk'; then
-    mkdir -p /config/asterisk ||
-        bashio::exit.nok 'Failed to create initial asterisk config folder'
+readonly etc_asterisk="/etc/asterisk"
+readonly config_dir="/config/asterisk"
+readonly default_config_dir="${config_dir}/default"
+readonly custom_config_dir="${config_dir}/custom"
+
+readonly tempio_dir="/usr/share/tempio"
+
+# Ensure the config folders exist
+if ! mkdir -p "${default_config_dir}" "${custom_config_dir}"; then
+    bashio::exit.nok "Failed to create Asterisk config folders at ${config_dir}"
 fi
 
 bashio::log.info "Configuring certificate..."
@@ -16,14 +23,15 @@ certfile="/ssl/$(bashio::config 'certfile')"
 keyfile="/ssl/$(bashio::config 'keyfile')"
 readonly certfile keyfile
 
-readonly target_certfile="/etc/asterisk/keys/fullchain.pem"
-readonly target_keyfile="/etc/asterisk/keys/privkey.pem"
+readonly keys_dir="${etc_asterisk}/keys"
+readonly target_certfile="${keys_dir}/fullchain.pem"
+readonly target_keyfile="${keys_dir}/privkey.pem"
 
-mkdir -p /etc/asterisk/keys
+mkdir -p "${keys_dir}"
 
 if bashio::var.true "$(bashio::config 'generate_ssl_cert')"; then
     bashio::log.info "Generating a self-signed certificate..."
-    
+
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
         -subj "/C=NL/ST=Denial/L=Amsterdam/O=Dis/CN=Asterisk" \
         -keyout "${target_keyfile}" -out "${target_certfile}" >/dev/null
@@ -42,39 +50,37 @@ else
     cp -f "${keyfile}" "${target_keyfile}"
 fi
 
-cat "${target_keyfile}" <(echo) "${target_certfile}" > /etc/asterisk/keys/asterisk.pem
-chmod 600 /etc/asterisk/keys/*.pem
+cat "${target_keyfile}" <(echo) "${target_certfile}" >${keys_dir}/asterisk.pem
+chmod 600 "${keys_dir}"/*.pem
 
-cp -a -f /etc/asterisk/keys/. /config/asterisk/keys/ || bashio::exit.nok 'Failed to update certificate'
-
-bashio::log.info "Configuring Asterisk..."
-
-# Files that can't be changed by user go to /config/asterisk to prevent being overwritten.
+bashio::log.info "Generating Asterisk config files from add-on configuration..."
 
 bashio::var.json \
     password "$(bashio::config 'ami_password')" |
     tempio \
-        -template /usr/share/tempio/manager.conf.gtpl \
-        -out /config/asterisk/manager.conf
+        -template "${tempio_dir}/manager.conf.gtpl" \
+        -out "${etc_asterisk}/manager.conf"
 
 bashio::var.json \
     log_level "$(bashio::config 'log_level')" |
     tempio \
-        -template /usr/share/tempio/logger.conf.gtpl \
-        -out /config/asterisk/logger.conf
+        -template "${tempio_dir}/logger.conf.gtpl" \
+        -out "${etc_asterisk}/logger.conf"
 
 bashio::var.json \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
     tempio \
-    -template /usr/share/tempio/http.conf.gtpl \
-    -out /config/asterisk/http.conf
+        -template "${tempio_dir}/http.conf.gtpl" \
+        -out "${etc_asterisk}/http.conf"
 
-persons="$(curl -s -X GET \
-    -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
-    -H "Content-Type: application/json" \
-    http://supervisor/core/api/states |
-    jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
+persons="$(
+    curl -fsSL -X GET \
+        -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+        -H "Content-Type: application/json" \
+        http://supervisor/core/api/states |
+        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]'
+)"
 
 auto_add=$(bashio::config 'auto_add')
 auto_add_secret=$(bashio::config 'auto_add_secret')
@@ -89,8 +95,35 @@ bashio::var.json \
     video_support "^${video_support}" \
     persons "^${persons}" |
     tempio \
-        -template /usr/share/tempio/pjsip_default.conf.gtpl \
-        -out /config/asterisk/pjsip_default.conf
+        -template "${tempio_dir}/pjsip_default.conf.gtpl" \
+        -out "${etc_asterisk}/pjsip_default.conf"
 
-rsync -a -v --ignore-existing /etc/asterisk/. /config/asterisk/ || bashio::exit.nok 'Failed to make sample configs.' # Doesn't overwrite
-cp -a -f /config/asterisk/. /etc/asterisk/ || bashio::exit.nok 'Failed to get config from /config/asterisk.' # Does overwrite
+bashio::var.json \
+    auto_add "^${auto_add}" \
+    auto_add_secret "${auto_add_secret}" \
+    video_support "^${video_support}" \
+    persons "^${persons}" |
+    tempio \
+        -template "${tempio_dir}/sip_default.conf.gtpl" \
+        -out "${etc_asterisk}/sip_default.conf"
+
+bashio::var.json \
+    port "$(bashio::config 'mailbox_port')" \
+    password "$(bashio::config 'mailbox_password')" \
+    extension "$(bashio::config 'mailbox_extension')" \
+    api_key "$(bashio::config 'mailbox_google_api_key')" |
+    tempio \
+        -template "${tempio_dir}/asterisk_mbox.ini.gtpl" \
+        -out "${etc_asterisk}/asterisk_mbox.ini"
+
+# Save default configs
+bashio::log.info "Saving default configs to ${default_config_dir}..."
+if ! rsync --archive --delete "${etc_asterisk}/" "${default_config_dir}/"; then
+    bashio::exit.nok "Failed to copy default configs to ${default_config_dir}"
+fi
+
+# Restore custom configs
+bashio::log.info "Restoring custom configs from ${custom_config_dir}..."
+if ! rsync --archive --itemize-changes "${custom_config_dir}/" "${etc_asterisk}/"; then
+    bashio::exit.nok "Failed to copy custom configs from ${custom_config_dir} to ${etc_asterisk}"
+fi

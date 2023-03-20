@@ -1,5 +1,6 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.0
+# https://github.com/hassio-addons/addon-debian-base/releases
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.3
 
 
 FROM $BUILD_FROM AS base
@@ -108,7 +109,8 @@ RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstre
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="20.1.0"
+# https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
+ARG ASTERISK_VERSION="20.2.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -175,7 +177,8 @@ RUN \
         --enable chan_bridge_media \
         --enable chan_iax2 \
         --enable chan_pjsip \
-        --enable chan_rtp; \
+        --enable chan_rtp \
+        --enable chan_sip ; \
     # enable good things \
     menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts; \
     # applications \
