@@ -124,6 +124,7 @@ fi
 
 # Restore custom configs
 bashio::log.info "Restoring custom configs from ${custom_config_dir}..."
-if ! rsync --archive --itemize-changes "${custom_config_dir}/" "${etc_asterisk}/"; then
-    bashio::exit.nok "Failed to copy custom configs from ${custom_config_dir} to ${etc_asterisk}"
-fi
+for file in "${custom_config_dir}"/*; do
+    rel_file="$(basename "${file}")"
+    ln -svf "${custom_config_dir}/${rel_file}" "${etc_asterisk}/${rel_file}"
+done
