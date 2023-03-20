@@ -26,7 +26,7 @@ The add-on copies all the default Asterisk config files to `/config/asterisk/def
 
 For example, if you need to change something in the `/etc/asterisk/extensions.conf`, you can copy the reference `/config/asterisk/default/extensions.conf` to `/config/asterisk/custom/extensions.conf` and make your changes there.
 
-The way how this works is through symbolic links: if there is a custom config file, a symbolic link is created on top of the default config file pointing to the custom config file. Have in mind that this is only applicable for files under the root of `/config/asterisk/custom`. For example, the `/config/asterisk/custom/subdir/file.conf` **will not** be linked to `/etc/asterisk/subdir/file.conf`.
+The way how this works is through symbolic links: if there is a custom config file, a symbolic link is created on top of the default config file pointing to the custom config file. Have in mind that this is only applicable for files under the root of `/config/asterisk/custom`. For example, the `/config/asterisk/custom/subdir/file.conf` **will not** be linked to `/etc/asterisk/subdir/file.conf`. The same applies to files that starts with a dot, like `.gitignore`.
 
 **Note**: _Remember to restart the add-on when the Asterisk configuration files are changed._
 
