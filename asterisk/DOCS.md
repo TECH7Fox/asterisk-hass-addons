@@ -96,7 +96,7 @@ You can use the STDIN service to run any Asterisk CLI commands that you want. Fo
 ```yaml
 service: hassio.addon_stdin
   data:
-    addon: asterisk
+    addon: b35499aa_asterisk
     input: dialplan reload
 ```
 
