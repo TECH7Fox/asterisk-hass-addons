@@ -4,16 +4,25 @@
 
 ## 3.1.0
 
+### New Features
+
+- The add-on now supports the `hassio.stdin` Home Assistant service to execute any Asterisk CLI commands. For example, to reload changes from `/config/asterisk/custom/extensions.conf`:
+
+  ```yaml
+  service: hassio.addon_stdin
+    data:
+      addon: b35499aa_asterisk
+      input: dialplan reload
+  ```
+
+  This means that you can now use the full power of Asterisk CLI right from your Home Assistant automations!
+
+### Changes
+
 - Use symbolic links to map custom Asterisk config files
 
   - Previously, the custom Asterisk config files would be copied over the default files on container startup
   - With the new approach, for example, the Asterisk CLI command to reload extensions after changing the `/config/asterisk/custom/extensions.conf` will work without requiring to restart the whole add-on.
-
-    - For reference, the command to reload the Asterisk extensions is:
-
-      ```console
-      docker exec -it addon_b35499aa_asterisk asterisk -rx 'dialplan reload'
-      ```
 
 ## 3.0.2
 
