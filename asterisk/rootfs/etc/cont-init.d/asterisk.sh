@@ -140,8 +140,9 @@ for sound in "${additional_sounds[@]}"; do
     lang_file="${sound_dir}/.language"
 
     if [[ -f "${lang_file}" && "$(cat "${lang_file}")" == "${sound}" ]]; then
-        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
         bashio::log.info "Skipping sounds download for '${sound}'..."
+        rm -rf "${asterisk_sound_dir}"
+        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
     else
         bashio::log.info "Downloading '${sound}' sounds to '${sound_dir}'..."
 
