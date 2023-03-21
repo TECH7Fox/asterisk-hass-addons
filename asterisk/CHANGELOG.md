@@ -2,6 +2,26 @@
 
 # Changelog
 
+## 3.2.0
+
+### New Features
+
+There is now a new option for the add-on: _Additional Sounds Languages to Download_.
+
+With this option, you can specify a list of languages to download sounds from <https://www.asterisksounds.org/> on the add-on startup.
+
+These sounds will be downloaded to `/media/asterisk`, and the add-on will not download the sounds in case they were downloaded already.
+
+These sounds will be available to use in Asterisk by changing the language as you would do normally. For example, you can put `pt-BR` in the list of additional sounds to download, and then change the Asterisk configuration to use `pt_BR` as language.
+
+Finally, now the add-on is able to access files on `/media`, which means you can store your custom music and sounds there, and then refer to them in the Asterisk configuration files.
+
+### Changes
+
+All the available options will now appear in the add-on configuration page without having to click in _Show unused options_, which was an actually misleading name.
+
+Also, the default log level is now _INFO_ instead of _NOTICE_, which increases the logging a little bit.
+
 ## 3.1.0
 
 ### New Features
