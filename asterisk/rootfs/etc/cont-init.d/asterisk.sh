@@ -128,3 +128,57 @@ for file in "${custom_config_dir}"/*; do
     rel_file="$(basename "${file}")"
     ln -svf "${custom_config_dir}/${rel_file}" "${etc_asterisk}/${rel_file}"
 done
+
+# TODO: open issue in Bashio for set +e
+readarray -t additional_sounds < <(set +e && bashio::config 'additional_sounds')
+
+temp_dir="/tmp/sounds_download"
+for sound in "${additional_sounds[@]}"; do
+    sound_rel_dir="sounds/${sound//-/_}"
+    sound_dir="/media/asterisk/${sound_rel_dir}"
+    asterisk_sound_dir="/var/lib/asterisk/${sound_rel_dir}"
+    lang_file="${sound_dir}/.language"
+
+    if [[ -f "${lang_file}" && "$(cat "${lang_file}")" == "${sound}" ]]; then
+        bashio::log.info "Skipping sounds download for '${sound}'..."
+        rm -rf "${asterisk_sound_dir}"
+        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
+    else
+        bashio::log.info "Downloading '${sound}' sounds to '${sound_dir}'..."
+
+        bashio::log.info "Ensuring '${sound_dir}' is clean..."
+        rm -rf "${sound_dir}"
+        mkdir -p "${sound_dir}" "${temp_dir}"
+
+        cd "${temp_dir}" || exit 1
+
+        url="https://www.asterisksounds.org/${sound,,}/download/asterisk-sounds-extra-${sound}-sln16.zip"
+        bashio::log.info "Downloading ${url}..."
+        curl -fsSL --output extra.zip "${url}"
+        unzip -q extra.zip
+        rm -f extra.zip
+
+        url="https://www.asterisksounds.org/${sound,,}/download/asterisk-sounds-core-${sound}-sln16.zip"
+        bashio::log.info "Downloading ${url}..."
+        curl -fsSL --output core.zip "${url}"
+        unzip -q -o core.zip
+        rm -f core.zip
+
+        bashio::log.info "Converting sounds for '${sound}' (this can take a while)..."
+        readarray -d $'\0' -t files < <(find . -type f -name "*.sln16" -print0)
+        for file in "${files[@]}"; do
+            file_without_ext="${file%".sln16"}"
+            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t gsm -r 8k "${file_without_ext}.gsm"
+            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t raw -r 8k -e a-law "${file_without_ext}.alaw"
+            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t raw -r 8k -e mu-law "${file_without_ext}.ulaw"
+        done
+
+        cd - >/dev/null || exit 1
+
+        rsync -a "${temp_dir}/" "${sound_dir}/"
+        rm -rf "${asterisk_sound_dir}"
+        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
+
+        rm -rf "${temp_dir}"
+    fi
+done

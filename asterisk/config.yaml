@@ -1,5 +1,5 @@
 name: Asterisk
-version: 3.1.0
+version: 3.2.0
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/asterisk-hass-addons
@@ -13,30 +13,38 @@ arch:
 homeassistant_api: true
 map:
   - config:rw
+  - media:rw
   - ssl
 options:
+  ami_password: null
   video_support: true
   auto_add: true
+  auto_add_secret: ""
   generate_ssl_cert: false
   certfile: fullchain.pem
   keyfile: privkey.pem
+  additional_sounds: []
   mailbox: false
   mailbox_port: 12345
+  mailbox_password: ""
   mailbox_extension: "100"
-  log_level: notice
+  mailbox_google_api_key: ""
+  log_level: info
 schema:
   ami_password: password
   video_support: bool
   auto_add: bool
-  auto_add_secret: password?
+  auto_add_secret: password
+  additional_sounds:
+    - str
   generate_ssl_cert: bool
   certfile: str
   keyfile: str
   mailbox: bool
-  mailbox_port: port?
-  mailbox_password: password?
-  mailbox_extension: str?
-  mailbox_google_api_key: password?
+  mailbox_port: port
+  mailbox_password: password
+  mailbox_extension: str
+  mailbox_google_api_key: password
   log_level: list(all|trace|debug|info|notice|warning|error|fatal|off)
 host_network: true
 init: false

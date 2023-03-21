@@ -19,6 +19,11 @@ configuration:
       Whether to enable the automatic creation of extensions for
       every person registered in Home Assistant. They will have
       their number/username auto-generated starting from 100.
+  additional_sounds:
+    name: Additional Sounds Languages to Download
+    description: >-
+      The additional sounds languages to download from https://asterisksounds.org
+      on add-on startup, skipping when already downloaded. Example: pt-BR.
   generate_ssl_cert:
     name: Generate SSL Certifcate
     description: >-
