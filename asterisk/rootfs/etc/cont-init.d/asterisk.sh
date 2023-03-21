@@ -175,6 +175,7 @@ for sound in "${additional_sounds[@]}"; do
         cd - >/dev/null || exit 1
 
         rsync -a "${temp_dir}/" "${sound_dir}/"
+        rm -rf "${asterisk_sound_dir}"
         ln -svf "${sound_dir}" "${asterisk_sound_dir}"
 
         rm -rf "${temp_dir}"
