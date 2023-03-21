@@ -59,7 +59,9 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         # for speech-recog \
         libjson-perl \
         libio-socket-ssl-perl \
-        flac; \
+        flac \
+        # for downloading additional sounds \
+        unzip; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server=="${ASTERISK_MBOX_SERVER_VERSION}"; \
     \
@@ -276,20 +278,15 @@ RUN cp -f speech-recog.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 RUN mv -f "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
 
 
-FROM scratch AS rootfs
+FROM base
 
 COPY --from=build /opt/asterisk/ /
 
 COPY rootfs /
 
-
-FROM base
-
 # Fix container failing to start some times
 ENV S6_SERVICES_READYTIME=50
 # Without this, the STDIN script never gets executed
 ENV S6_CMD_WAIT_FOR_SERVICES=0
-
-COPY --from=rootfs / /
 
 CMD [ "/stdin.sh" ]

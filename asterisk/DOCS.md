@@ -52,6 +52,14 @@ Creates a extension for every [person](https://www.home-assistant.io/integration
 
 The secret for the auto generated extensions.
 
+### Option: `additional_sounds`
+
+The additional sounds languages to download from <https://asterisksounds.org> on add-on startup, skipping when already downloaded. Example: pt-BR.
+
+The sounds will be downloaded to `/media/asterisk`.
+
+If you want the add-on to re-download the sounds, you can simply remove the folder from `/media/asterisk` and restart it.
+
 ### Option: `generate_ssl_cert`
 
 Enables/disables the generation of a self-signed certificate for use with the SSL interfaces (WSS and TLS).
