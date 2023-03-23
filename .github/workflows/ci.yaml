@@ -37,6 +37,7 @@ jobs:
         id: images-cache-key
         run: |
           echo "images-cache-key=${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
+          echo 'image-cache-name=asterisk-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
 
       - name: Build
         uses: docker/build-push-action@v4
@@ -45,7 +46,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: asterisk
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache/${{ steps.images-cache-key.outputs.images-cache-name }},mode=max
 
       - name: Save images cache
         uses: actions/cache/save@v3
@@ -113,7 +114,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
-            type=local,src=/tmp/.buildx-cache
+            type=local,src=/tmp/.buildx-cache/asterisk-linux-amd64
+            type=local,src=/tmp/.buildx-cache/asterisk-linux-386
+            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm-v6
+            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm-v7
+            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm64
           cache-to: type=gha,mode=max
 
   cleanup:
