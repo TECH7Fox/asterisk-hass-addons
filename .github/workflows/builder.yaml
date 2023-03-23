@@ -15,16 +15,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         platform:
-          - "amd64"
-          - "386"
-          - "arm/v6"
-          - "arm/v7"
-          - "arm64"
+          - linux/amd64
+          - linux/386
+          - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,11 +32,45 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: asterisk
+          platforms: ${{ matrix.platform }}
+          tags: asterisk
+          cache-from: type=gha
+          cache-to: type=local,dest=/tmp/asterisk-cache,mode=max
+
+      - name: Upload cache
+        uses: actions/upload-artifact@v3
+        with:
+          name: asterisk-cache-${{ matrix.platform }}
+          path: /tmp/asterisk-cache
+          if-no-files-found: error
+          retention-days: 1
+
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Download cache
+        uses: actions/download-artifact@v3
+        with:
+          path: /tmp/asterisk-cache
+
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ github.repository_owner }}
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -60,9 +94,14 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: asterisk
-          platforms: linux/${{ matrix.platform }}
+          platforms: |
+            linux/amd64
+            linux/386
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64
           push: ${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
