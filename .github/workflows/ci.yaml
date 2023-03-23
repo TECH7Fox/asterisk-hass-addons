@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ env.IMAGES_CACHE_KEY }}
+          key: ${{ steps.images-cache-key.outputs.images-cache-key }}
     outputs:
       images-cache-key: ${{ steps.images-cache-key.outputs.images-cache-key }}
 
