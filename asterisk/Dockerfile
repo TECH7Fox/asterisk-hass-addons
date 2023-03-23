@@ -1,9 +1,5 @@
-ARG BUILD_ARCH=amd64
 # https://github.com/hassio-addons/addon-debian-base/releases
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.3
-
-
-FROM $BUILD_FROM AS base
+FROM ghcr.io/hassio-addons/debian-base:6.2.3 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 

@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 4.0.2
+
+- Fix add-on not starting for ARM users
+
 ## 4.0.1
 
 - Fix `auto_add_secret` validation always failing as if it was net set
