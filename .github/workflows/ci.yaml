@@ -46,7 +46,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Set images cache name
-        id: images-cache-name
+        id: image-cache-name
         run: |
           echo 'image-cache-name=asterisk-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
 
@@ -57,13 +57,13 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: asterisk
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/.buildx-cache/${{ steps.images-cache-name.outputs.images-cache-name }},mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache/${{ steps.image-cache-name.outputs.image-cache-name }},mode=max
 
       - name: Save images cache
         uses: actions/cache/save@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-${{ steps.images-cache-name.outputs.images-cache-name }}
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-${{ steps.image-cache-name.outputs.image-cache-name }}
 
   push:
     runs-on: ubuntu-latest
