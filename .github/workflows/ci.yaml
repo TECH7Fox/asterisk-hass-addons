@@ -65,6 +65,9 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ needs.prep.outputs.images-cache-key }}-${{ steps.image-cache-name.outputs.image-cache-name }}
 
+      - run: |
+          du -h --max-depth=2 /tmp/.buildx-cache
+
   push:
     runs-on: ubuntu-latest
     needs:
@@ -82,8 +85,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}
-          restore-keys: ${{ needs.prep.outputs.images-cache-key }}-asterisk-
+          key: does-not-exist
+          restore-keys: ${{ needs.prep.outputs.images-cache-key }}
           fail-on-cache-miss: true
 
       - run: |
