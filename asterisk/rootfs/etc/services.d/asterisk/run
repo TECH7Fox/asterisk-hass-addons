@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bashio
 # ==============================================================================
-# Start the asterisk service
+# Start the Asterisk service
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 

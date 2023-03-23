@@ -6,13 +6,12 @@
 
 # shellcheck shell=bash
 
-if bashio::var.false "$(bashio::config 'mailbox')"; then
+if [[ -f "/tmp/disable-asterisk-mailbox" ]]; then
     # Tell S6-Overlay not to restart this service
     s6-svc -O .
     exit 0
 fi
 
-bashio::log.info "Starting Asterisk Mailbox"
+bashio::log.info "Starting Asterisk Mailbox..."
 
-## Run Asterisk_mbox
 exec asterisk-mbox-server --cfg /etc/asterisk/asterisk_mbox.ini

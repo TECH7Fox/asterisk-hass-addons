@@ -14,6 +14,8 @@ Follow these steps to get the add-on installed on your system:
 1. Scroll down the page to find the new repository, and click in the new add-on named **_Asterisk_**.
 1. Click in the **_INSTALL_** button.
 
+Or you can also use it as a standalone docker container. See [4.0.0 release notes](./CHANGELOG.md#400) for more information.
+
 ## Using
 
 1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl/` directory.
@@ -40,17 +42,19 @@ We expose some configuration options to simplify the setup of the Asterisk serve
 
 Set's the password for the Asterisk Manager Interface, to connect to the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration).
 
-### Option: `video_support`
-
-Enables video support for the auto generated extensions.
-
 ### Option: `auto_add`
 
 Creates a extension for every [person](https://www.home-assistant.io/integrations/person/) registered in Home Assistant. They will have their number and username auto-generated starting from 100, with the `callerid` set to the person's name.
 
+**This is enabled by default for add-on users but disabled by default for container users.**
+
 ### Option: `auto_add_secret`
 
-The secret for the auto generated extensions.
+The secret for the auto generated extensions, when `auto_add` is enabled.
+
+### Option: `video_support`
+
+Enables video support for the auto generated extensions, when `auto_add` is enabled.
 
 ### Option: `additional_sounds`
 
@@ -66,15 +70,15 @@ Enables/disables the generation of a self-signed certificate for use with the SS
 
 ### Option: `certfile`
 
-The certificate file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled.
+The certificate file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled. If an absolute path is provided, it will be used as-is.
 
 ### Option: `keyfile`
 
-The key file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled.
+The key file to use for SSL in your `/ssl/` folder, when `generate_ssl_cert` is disabled. If an absolute path is provided, it will be used as-is.
 
-### Option: `mailbox_server`
+### Option: `mailbox`
 
-Enables the mailbox server to send voicemails to the Asterisk mailbox integration.
+Enables the mailbox server to send voicemails to the Asterisk Mailbox integration.
 
 ### Option: `mailbox_port`
 
@@ -88,9 +92,9 @@ The password for the mailbox server.
 
 Which extension to get the voicemails from.
 
-### Option: `api_key`
+### Option: `mailbox_google_api_key`
 
-The API Key for speech-to-text.
+The API Key for the speech-to-text used by Asterisk Mailbox.
 You can get a key [here](https://cloud.google.com/speech-to-text). Google says it's free, but requires a billing account.
 
 ### Option: `log_level`
@@ -108,16 +112,18 @@ service: hassio.addon_stdin
     input: dialplan reload
 ```
 
+**This is only possible when using as an add-on.**
+
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
-- **_Host_**: `localhost`
+- **_Host_**: `localhost` (when running as an add-on)
 - **_Port_**: `5038`
 - **_Username_**: `admin`
-- **_Password_**: whatever you set in the AMI Password configuration
+- **_Password_**: whatever you set in the `ami_password` configuration
 
 ## Configuring the [SIP.js card](https://github.com/TECH7Fox/HA-SIP)
 
-- **_Host_**: `localhost`
+- **_Host_**: `localhost` (when running as an add-on)
 - **_Port_**: `8089`
 - **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
 

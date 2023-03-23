@@ -1,0 +1,13 @@
+services:
+  asterisk:
+    image: ghcr.io/tech7fox/amd64-addon-asterisk:latest
+    build:
+      context: ./asterisk
+    tty: true
+    network_mode: host
+    environment:
+      # Required to get the list of persons from Home Assistant
+      HA_TOKEN: ""
+    volumes:
+      - ./config:/config
+      - ./media:/media

@@ -2,6 +2,38 @@
 
 # Changelog
 
+## 4.0.0
+
+### Breaking Changes
+
+Some default options for the add-on configuration have been switched:
+
+- `generate_ssl_cert` is now enabled by default.
+- `video_support` is now disabled by default. It barely worked anyway.
+
+Make sure to check the add-on configuration page after updating the add-on to ensure your configuration is still correct.
+
+### New Features
+
+Now the add-on can be run as a standalone docker container:
+
+```console
+docker pull ghcr.io/tech7fox/asterisk-hass-addon:4.0.0
+```
+
+- An example `docker-compose.yml` file is available [here](../docker-compose.yaml).
+- Make sure to mount a `config` folder to `/config` and a `media` folder to `/media` to ensure the add-on can access your configuration and media files.
+- To configure the add-on options you can use the `/config/config.json` file. The default options can be seen [here](./rootfs/usr/share/asterisk/config.json).
+- If you enable `auto_add` to automatically create extensions for every Person in your Home Assistant, make sure to also set:
+  - The `HA_TOKEN` environment variable with your Home Assistant long-lived access token
+  - The `HA_URL`, unless <https://homeassistant.local:8123> resolves to your Home Assistant instance
+
+Also, you can now use absolute paths in the `certfile` and `keyfile` options.
+
+### Cleanups
+
+The add-on no longer sends discovery information for the Asterisk integration in Home Assistant. This never worked anyway, and if in the future it does, we can restore it.
+
 ## 3.2.0
 
 ### New Features
