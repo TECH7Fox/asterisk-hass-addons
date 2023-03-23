@@ -15,7 +15,11 @@ Make sure to check the add-on configuration page after updating the add-on to en
 
 ### New Features
 
-Now the add-on can be run as a standalone docker container.
+Now the add-on can be run as a standalone docker container:
+
+```console
+docker pull ghcr.io/tech7fox/asterisk-hass-addon:4.0.0
+```
 
 - An example `docker-compose.yml` file is available [here](../docker-compose.yaml).
 - Make sure to mount a `config` folder to `/config` and a `media` folder to `/media` to ensure the add-on can access your configuration and media files.

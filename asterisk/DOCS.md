@@ -14,6 +14,8 @@ Follow these steps to get the add-on installed on your system:
 1. Scroll down the page to find the new repository, and click in the new add-on named **_Asterisk_**.
 1. Click in the **_INSTALL_** button.
 
+Or you can also use it as a standalone docker container. See [4.0.0 release notes](./CHANGELOG.md#400) for more information.
+
 ## Using
 
 1. The certificate to your registered domain should already be created via the [Duck DNS](https://github.com/home-assistant/hassio-addons/tree/master/duckdns) or [Let's Encrypt](https://github.com/home-assistant/hassio-addons/tree/master/letsencrypt) add-on or another method. Make sure that the certificate files exist in the `/ssl/` directory.
