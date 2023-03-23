@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
