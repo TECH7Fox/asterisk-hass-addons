@@ -1,118 +1,59 @@
-name: Builder
-
-env:
-  BUILD_ARGS: ""
-  MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
+name: ci
 
 on:
   push:
     branches:
-      - main
+      - "main"
+    tags:
+      - "v*"
   pull_request:
     branches:
-      - main
-      - develop
+      - "main"
 
 jobs:
-  init:
+  docker:
     runs-on: ubuntu-latest
-    name: Initialize builds
-    outputs:
-      changed_addons: ${{ steps.changed_addons.outputs.addons }}
-      changed: ${{ steps.changed_addons.outputs.changed }}
     steps:
-      - name: Check out the repository
+      - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Get changed files
-        id: changed_files
-        uses: jitterbit/get-changed-files@v1
-
-      - name: Find add-on directories
-        id: addons
-        uses: home-assistant/actions/helpers/find-addons@master
-
-      - name: Get changed add-ons
-        id: changed_addons
-        run: |
-          declare -a changed_addons
-          for addon in ${{ steps.addons.outputs.addons }}; do
-            if [[ "${{ steps.changed_files.outputs.all }}" =~ $addon ]]; then
-              for file in ${{ env.MONITORED_FILES }}; do
-                  if [[ "${{ steps.changed_files.outputs.all }}" =~ $addon/$file ]]; then
-                    if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
-                      changed_addons+=("\"${addon}\",");
-                    fi
-                  fi
-              done
-            fi
-          done
-
-          changed=$(echo ${changed_addons[@]} | rev | cut -c 2- | rev)
-
-          if [[ -n ${changed} ]]; then
-            echo "Changed add-ons: $changed";
-            echo "::set-output name=changed::true";
-            echo "::set-output name=addons::[$changed]";
-          else
-            echo "No add-on had any monitored files changed (${{ env.MONITORED_FILES }})";
-          fi
-  build:
-    needs: init
-    runs-on: ubuntu-latest
-    if: needs.init.outputs.changed == 'true'
-    name: Build ${{ matrix.arch }} ${{ matrix.addon }} add-on
-    strategy:
-      fail-fast: false
-      matrix:
-        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
-        arch: ["aarch64", "amd64", "armhf", "armv7", "i386"]
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Get information
-        id: info
-        uses: home-assistant/actions/helpers/info@master
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Get lowercase GitHub username
+        id: repository_owner
+        uses: ASzc/change-string-case-action@v5
         with:
-          path: "./${{ matrix.addon }}"
+          string: ${{ github.repository_owner }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
 
-      - name: Check if add-on should be built
-        id: check
-        run: |
-          if [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
-             echo "::set-output name=build_arch::true";
-             echo "::set-output name=image::$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)";
-             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-                 echo "BUILD_ARGS=--version pr-${{ github.event.number }}" >> $GITHUB_ENV;
-             fi
-           else
-             echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
-             echo "::set-output name=build_arch::false";
-          fi
-
-      - name: Login to GitHub Container Registry
+      - name: Login to DockerHub
+        if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get lowercase GitHub username
-        id: repository_owner
-        uses: ASzc/change-string-case-action@v5
+      - name: Build and push
+        uses: docker/build-push-action@v4
         with:
-          string: ${{ github.repository_owner }}
-
-      - name: Build ${{ matrix.addon }} add-on
-        if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2023.03.0
-        with:
-          args: |
-            ${{ env.BUILD_ARGS }} \
-            --${{ matrix.arch }} \
-            --target /data/${{ matrix.addon }} \
-            --image "${{ steps.check.outputs.image }}" \
-            --docker-hub "ghcr.io/${{ steps.repository_owner.outputs.lowercase }}" \
-            --addon
+          context: asterisk
+          platforms: |
+            linux/amd64
+            linux/386
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64
+          push: ${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
