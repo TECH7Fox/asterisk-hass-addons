@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}
+          key: ${{ needs.prep.outputs.images-cache-key }}-${{ steps.images-cache-name.outputs.images-cache-name }}
 
   push:
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}
+          restore-keys: ${{ needs.prep.outputs.images-cache-key }}-asterisk-
           fail-on-cache-miss: true
 
       - name: Get lowercase GitHub username
