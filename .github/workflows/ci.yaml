@@ -86,6 +86,9 @@ jobs:
           restore-keys: ${{ needs.prep.outputs.images-cache-key }}-asterisk-
           fail-on-cache-miss: true
 
+      - run: |
+          du -h --max-depth=2 /tmp/.buildx-cache
+
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
