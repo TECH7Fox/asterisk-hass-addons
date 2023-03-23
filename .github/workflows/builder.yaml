@@ -4,11 +4,14 @@ on:
   push:
     branches:
       - "main"
-    tags:
-      - "v*"
   pull_request:
     branches:
       - "main"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version for generating a new release
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -38,7 +41,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
+            type=semver,pattern={{version}},value=${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
 
       - name: Login to DockerHub
         if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
@@ -63,3 +66,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Automatically update asterisk/config.yaml version with the inputs.version and push it
+      - name: Update version in config.yaml
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          sed -i "s/version: .*/version: ${{ inputs.version }}/" asterisk/config.yaml
+          git config --local user.email "${{ github.repository_owner }}@github.com"
+          git config --local user.name "dependabot[bot]"
+          git add asterisk/config.yaml
+          git commit -m "Update version in config.yaml"
+          git push
