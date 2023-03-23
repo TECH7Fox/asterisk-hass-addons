@@ -81,12 +81,39 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Restore images cache
+      - name: Restore images cache (asterisk-linux-amd64)
         uses: actions/cache/restore@v3
         with:
           path: /tmp/.buildx-cache
-          key: does-not-exist
-          restore-keys: ${{ needs.prep.outputs.images-cache-key }}
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-amd64
+          fail-on-cache-miss: true
+
+      - name: Restore images cache (asterisk-linux-386)
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-386
+          fail-on-cache-miss: true
+
+      - name: Restore images cache (asterisk-linux-arm-v6)
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v6
+          fail-on-cache-miss: true
+
+      - name: Restore images cache (asterisk-linux-arm-v7)
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v7
+          fail-on-cache-miss: true
+
+      - name: Restore images cache (asterisk-linux-arm64)
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm64
           fail-on-cache-miss: true
 
       - run: |
