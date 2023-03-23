@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-${{ steps.image-cache-name.outputs.image-cache-name }}
+          key: ${{ needs.prep.outputs.images-cache-key }}-${{ steps.image-cache-name.outputs.image-cache-name }}
 
   push:
     runs-on: ubuntu-latest
