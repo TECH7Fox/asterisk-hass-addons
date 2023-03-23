@@ -6,8 +6,8 @@
 # shellcheck shell=bash
 
 if [[ "${1}" -ne 0 ]] && [[ "${1}" -ne 256 ]]; then
-  bashio::log.warning "asterisk crashed, halting add-on"
+  bashio::log.warning "Asterisk crashed, halting add-on..."
   /run/s6/basedir/bin/halt
 fi
 
-bashio::log.info "asterisk stopped, restarting..."
+bashio::log.info "Asterisk stopped, restarting..."

@@ -1,6 +1,14 @@
 #!/usr/bin/with-contenv bashio
 # shellcheck shell=bash
 
+function is_addon() {
+    [[ -n "${SUPERVISOR_TOKEN:-}" ]]
+}
+
+if ! is_addon; then
+    exec sleep infinity
+fi
+
 bashio::log.info 'Starting the STDIN service for Home Assistant...'
 
 # shellcheck disable=SC2162

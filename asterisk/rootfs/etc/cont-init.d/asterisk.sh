@@ -5,6 +5,33 @@
 
 # shellcheck shell=bash
 
+function is_addon() {
+    [[ -n "${SUPERVISOR_TOKEN:-}" ]]
+}
+
+if is_addon; then
+    readonly ha_url="http://supervisor/core"
+else
+    readonly default_ha_url="http://homeassistant.local:8123"
+    readonly ha_url="${HA_URL:-"${default_ha_url}"}"
+
+    readonly addon_config_path="/config/config.json"
+    readonly default_addon_config_path="/etc/asterisk-addon/default_config.json"
+    if [[ -f "${addon_config_path}" ]]; then
+        addon_config=$(
+            jq --slurp 'reduce .[] as $item ({}; . * $item)' "${default_addon_config_path}" "${addon_config_path}"
+        )
+    else
+        addon_config=$(cat "${default_addon_config_path}")
+    fi
+
+    # Overrides calling the Supervisor API on bashio::config calls
+    function bashio::addon.config() {
+        echo "${addon_config}"
+    }
+fi
+readonly ha_token="${HA_TOKEN:-"${SUPERVISOR_TOKEN:-}"}"
+
 readonly etc_asterisk="/etc/asterisk"
 readonly config_dir="/config/asterisk"
 readonly default_config_dir="${config_dir}/default"
@@ -18,8 +45,19 @@ if ! mkdir -p "${default_config_dir}" "${custom_config_dir}"; then
 fi
 
 bashio::log.info "Configuring certificate..."
-certfile="/ssl/$(config 'certfile')"
-keyfile="/ssl/$(config 'keyfile')"
+certfile_config=$(bashio::config 'certfile')
+keyfile_config=$(bashio::config 'keyfile')
+if [[ "${certfile_config}" == /* ]]; then
+    certfile="${certfile_config}"
+else
+    certfile="/ssl/${certfile_config}"
+fi
+if [[ "${keyfile_config}" == /* ]]; then
+    keyfile="${keyfile_config}"
+else
+    keyfile="/ssl/${keyfile_config}"
+fi
+unset certfile_config keyfile_config
 readonly certfile keyfile
 
 readonly keys_dir="${etc_asterisk}/keys"
@@ -28,7 +66,7 @@ readonly target_keyfile="${keys_dir}/privkey.pem"
 
 mkdir -p "${keys_dir}"
 
-if bashio::var.true "$(config 'generate_ssl_cert')"; then
+if bashio::var.true "$(bashio::config 'generate_ssl_cert')"; then
     bashio::log.info "Generating a self-signed certificate..."
 
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
@@ -54,14 +92,18 @@ chmod 600 "${keys_dir}"/*.pem
 
 bashio::log.info "Generating Asterisk config files from add-on configuration..."
 
+if bashio::config.is_empty 'ami_password'; then
+    bashio::exit.nok "'ami_password' must be set"
+fi
+
 bashio::var.json \
-    password "$(config 'ami_password')" |
+    password "$(bashio::config 'ami_password')" |
     tempio \
         -template "${tempio_dir}/manager.conf.gtpl" \
         -out "${etc_asterisk}/manager.conf"
 
 bashio::var.json \
-    log_level "$(config 'log_level')" |
+    log_level "$(bashio::config 'log_level')" |
     tempio \
         -template "${tempio_dir}/logger.conf.gtpl" \
         -out "${etc_asterisk}/logger.conf"
@@ -73,49 +115,31 @@ bashio::var.json \
         -template "${tempio_dir}/http.conf.gtpl" \
         -out "${etc_asterisk}/http.conf"
 
-persons="$(
-    curl -fsSL -X GET \
-        -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
-        -H "Content-Type: application/json" \
-        http://supervisor/core/api/states |
-        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]'
-)"
+auto_add=$(bashio::config 'auto_add')
+auto_add_secret=$(bashio::config 'auto_add_secret')
+video_support=$(bashio::config 'video_support')
 
-# Retrieve the list of persons from the HA API
-function get_persons() {
-
-    # Load the base url for Home Assistant as an env variable.
-    # If not defined (we are running as an add-on), fallback to the supervisor internal proxy URL
-    HOME_ASSISTANT_URL=${HOME_ASSISTANT_URL:-"http://supervisor/core"}
-
-    # Authentication to Home Assistant API: try to use SUPERVISOR_TOKEN if defined (we are running as an add-on),
-    # otherwise fallback to HOME_ASSISTANT_TOKEN (supplied manually by the user)
-    if bashio::var.defined SUPERVISOR_TOKEN; then
-        HOME_ASSISTANT_TOKEN=${SUPERVISOR_TOKEN}
-    elif ! bashio::var.defined HOME_ASSISTANT_TOKEN; then
-        bashio::exit.nok "Please define env variable HOME_ASSISTANT_TOKEN with a long-lived HA access-token"
+# If `auto_add` is enabled, retrieve the list of persons using the Home Assistant API
+if bashio::var.true "${auto_add}"; then
+    if bashio::config.is_empty "${auto_add_secret}"; then
+        bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
     fi
 
-    persons="$(curl -s -X GET \
-        -H "Authorization: Bearer ${HOME_ASSISTANT_TOKEN}" \
-        -H "Content-Type: application/json" \
-        "${HOME_ASSISTANT_URL}/api/states" |
-        jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]')"
-
-    echo "$persons"
-}
-
-auto_add=$(config 'auto_add')
-auto_add_secret=$(config 'auto_add_secret')
-video_support=$(config 'video_support')
-if bashio::var.true "${auto_add}" && bashio::var.is_empty "${auto_add_secret}"; then
-    bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
-fi
-
-# If `auto_add` is enabled, retrieve the list of persons using HA API
-if bashio::var.true "${auto_add}"; then
-    bashio::log.debug "Retrieving the list of persons from HA"
-    persons=$(get_persons)
+    bashio::log.info "Retrieving the list of persons from Home Assistant"
+    if ! is_addon && bashio::var.is_empty "${ha_token}"; then
+        message="Please define the HA_TOKEN env variable with a long-lived Home Assistant access token so the container can get the list of persons from Home Assistant."
+        if [[ -z "${HA_URL:-}" ]]; then
+            message="${message} Optionally, you can also define the HA_URL env variable to point to your Home Assistant URL if it differs from ${default_ha_url}."
+        fi
+        bashio::exit.nok "${message}"
+    fi
+    persons=$(
+        curl -fsSL -X GET \
+            -H "Authorization: Bearer ${ha_token}" \
+            -H "Content-Type: application/json" \
+            "${ha_url}/api/states" |
+            jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]'
+    )
 else
     # Define an empty array, so the subsequent template won't complain
     persons=[]
@@ -147,6 +171,10 @@ bashio::var.json \
     tempio \
         -template "${tempio_dir}/asterisk_mbox.ini.gtpl" \
         -out "${etc_asterisk}/asterisk_mbox.ini"
+
+if bashio::var.false "$(bashio::config 'mailbox')"; then
+    touch /tmp/disable-asterisk-mailbox
+fi
 
 # Save default configs
 bashio::log.info "Saving default configs to ${default_config_dir}..."

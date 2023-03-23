@@ -19,5 +19,8 @@
   },
   "docker.languageserver.formatter.ignoreMultilineInstructions": true,
   "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "files.associations": {
+    "*.json.example": "json"
+  }
 }

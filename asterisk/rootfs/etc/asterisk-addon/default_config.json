@@ -1,0 +1,16 @@
+{
+  "ami_password": null,
+  "video_support": false,
+  "auto_add": false,
+  "auto_add_secret": "",
+  "generate_ssl_cert": true,
+  "certfile": "/config/ssl/fullchain.pem",
+  "keyfile": "/config/ssl/privkey.pem",
+  "additional_sounds": [],
+  "mailbox": false,
+  "mailbox_port": 12345,
+  "mailbox_password": "",
+  "mailbox_extension": "100",
+  "mailbox_google_api_key": "",
+  "log_level": "info"
+}

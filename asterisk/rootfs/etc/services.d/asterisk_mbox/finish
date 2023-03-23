@@ -1,13 +1,17 @@
 #!/usr/bin/with-contenv bashio
 # ==============================================================================
-# Take down the S6 supervision tree when asterisk mailbox fails
+# Take down the S6 supervision tree when Asterisk Mailbox fails
 # ==============================================================================
 
 # shellcheck shell=bash
 
+if [[ -f "/tmp/disable-asterisk-mailbox" ]]; then
+  exit 0
+fi
+
 if [[ "${1}" -ne 0 ]] && [[ "${1}" -ne 256 ]]; then
-  bashio::log.warning "asterisk mailbox crashed, halting add-on"
+  bashio::log.warning "Asterisk Mailbox crashed, halting add-on..."
   /run/s6/basedir/bin/halt
 fi
 
-bashio::log.info "asterisk mailbox stopped, restarting..."
+bashio::log.info "Asterisk Mailbox stopped, restarting..."
