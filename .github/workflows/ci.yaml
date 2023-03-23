@@ -180,4 +180,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete '${{ needs.prep.outputs.images-cache-key }}' --repo '${{ github.repository }}' --confirm
+          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-amd64'
+          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-386'
+          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v6'
+          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v7'
+          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm64'
