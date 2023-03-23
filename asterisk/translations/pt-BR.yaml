@@ -16,13 +16,18 @@ configuration:
   auto_add:
     name: Adicionar extensões automaticamente
     description: >-
-      Se deve habilitar a criação automática de extensões para 
+      Se deve habilitar a criação automática de extensões para
       cada pessoa registrada no Home Assistant. Eles terão
       seu número/nome de usuário gerado automaticamente a partir de 100.
+  additional_sounds:
+    name: Idiomas de Sons Adicionais para baixar
+    description: >-
+      Os idiomas de sons adicionais para baixar de https://asterisksounds.org
+      na inicialização do add-on, pulando quando já estiver baixado. Exemplo: pt-BR.
   generate_ssl_cert:
     name: Gerar Certificado SSL
     description: >-
-      Habilita/desabilita a geração de um certificado autoassinado 
+      Habilita/desabilita a geração de um certificado autoassinado
       para uso com as interfaces SSL (WSS e TLS).
   certfile:
     name: Arquivo de certificado

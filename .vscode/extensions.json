@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "ffloimair.asterisk-config",
+    "ms-azuretools.vscode-docker",
+    "foxundermoon.shell-format",
+    "esbenp.prettier-vscode"
+  ]
+}

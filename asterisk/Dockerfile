@@ -1,5 +1,6 @@
 ARG BUILD_ARCH=amd64
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.0
+# https://github.com/hassio-addons/addon-debian-base/releases
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/${BUILD_ARCH}:6.2.3
 
 
 FROM $BUILD_FROM AS base
@@ -63,7 +64,9 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         # for speech-recog \
         libjson-perl \
         libio-socket-ssl-perl \
-        flac; \
+        flac \
+        # for downloading additional sounds \
+        unzip; \
     \
     pip3 install --no-cache-dir asterisk_mbox_server=="${ASTERISK_MBOX_SERVER_VERSION}"; \
     \
@@ -113,7 +116,8 @@ RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstre
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
-ARG ASTERISK_VERSION="20.1.0"
+# https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
+ARG ASTERISK_VERSION="20.2.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -279,16 +283,15 @@ RUN cp -f speech-recog.agi "${INSTALL_DIR}/var/lib/asterisk/agi-bin"
 RUN mv -f "${INSTALL_DIR}/var/run" "${INSTALL_DIR}/run"
 
 
-FROM scratch AS rootfs
+FROM base
 
 COPY --from=build /opt/asterisk/ /
 
 COPY rootfs /
 
-
-FROM base
-
 # Fix container failing to start some times
 ENV S6_SERVICES_READYTIME=50
+# Without this, the STDIN script never gets executed
+ENV S6_CMD_WAIT_FOR_SERVICES=0
 
-COPY --from=rootfs / /
+CMD [ "/stdin.sh" ]

@@ -2,6 +2,79 @@
 
 # Changelog
 
+## 3.2.0
+
+### New Features
+
+There is now a new option for the add-on: _Additional Sounds Languages to Download_.
+
+With this option, you can specify a list of languages to download sounds from <https://www.asterisksounds.org/> on the add-on startup.
+
+These sounds will be downloaded to `/media/asterisk`, and the add-on will not download the sounds in case they were downloaded already.
+
+These sounds will be available to use in Asterisk by changing the language as you would do normally. For example, you can put `pt-BR` in the list of additional sounds to download, and then change the Asterisk configuration to use `pt_BR` as language.
+
+Finally, now the add-on is able to access files on `/media`, which means you can store your custom music and sounds there, and then refer to them in the Asterisk configuration files.
+
+### Changes
+
+All the available options will now appear in the add-on configuration page without having to click in _Show unused options_, which was an actually misleading name.
+
+Also, the default log level is now _INFO_ instead of _NOTICE_, which increases the logging a little bit.
+
+## 3.1.0
+
+### New Features
+
+- The add-on now supports the `hassio.stdin` Home Assistant service to execute any Asterisk CLI commands. For example, to reload changes from `/config/asterisk/custom/extensions.conf`:
+
+  ```yaml
+  service: hassio.addon_stdin
+    data:
+      addon: b35499aa_asterisk
+      input: dialplan reload
+  ```
+
+  This means that you can now use the full power of Asterisk CLI right from your Home Assistant automations!
+
+### Changes
+
+- Use symbolic links to map custom Asterisk config files
+
+  - Previously, the custom Asterisk config files would be copied over the default files on container startup
+  - With the new approach, for example, the Asterisk CLI command to reload extensions after changing the `/config/asterisk/custom/extensions.conf` will work without requiring to restart the whole add-on.
+
+## 3.0.2
+
+- Fix `asterisk_mbox.ini` configuration again
+
+## 3.0.1
+
+- Fix `asterisk_mbox.ini` configuration
+
+## 3.0.0
+
+### Breaking Changes
+
+We changed the way we handle the Asterisk config files and this will require a manual action on your side. Now, Asterisk files you intend to modify should be placed under `/config/asterisk/custom`. For example, if you were previously editing `extensions.conf`, you should move it from `/config/asterisk/extensions.conf` to `/config/asterisk/custom/extensions.conf`.
+
+After moving all the files you need to `/config/asterisk/custom`, you can also cleanup the `/config/asterisk` folder by deleting everything under it, **except for the `custom` folder**.
+
+### New Features
+
+Previously, both the default and custom Asterisk config files were being written and read from `/config/asterisk`, which posed some issues related to upgrading the add-on as the config files written by an old version of the add-on would get read by the new version of the add-on as if they were user customized files. This also meant that, if users wanted to receive the new Asterisk default config files, they would have to delete everything from `/config/asterisk` that was not customized manually before starting the container.
+
+This is no longer required, and now default files will be always upgraded, while still retaining custom files between upgrades. This will require a manual action from you if you are upgrading this add-on from previous versions, see above.
+
+- The default Asterisk config files are now copied to `/config/asterisk/default` on every container start. The files on this folder should be used for reference only, as any changes made in this folder will be overwritten in the container startup.
+- The custom Asterisk config files are now read from `/config/asterisk/custom` instead of from `/config/asterisk`.
+- You can now override/customize any Asterisk files (previously, the auto-generated Asterisk files could not be overriden).
+
+### Upgrades
+
+- Bump Asterisk from 20.1.0 to 20.2.0
+- Bump debian-base from 6.2.0 to 6.2.3
+
 ## 2.4.0
 
 - Add `chan_sip` (disabled by default) for Dahua VTO compatibility (by @bdherouville)
@@ -99,7 +172,7 @@ More information at #124.
   - Addon size has been considerable increased
 - Upgrade Asterisk to 18.1.0 (#116) (by @nanosonde)
   - Now we build it from source, so we can always use the latest version and have more control about it
-- Migrate from `chan_sip` to `res_pjsip`  (#112) (by @nanosonde)
+- Migrate from `chan_sip` to `res_pjsip` (#112) (by @nanosonde)
   - This is a breaking change. Check below the upgrade guide.
 
 Lots of issues were fixed by the above.
