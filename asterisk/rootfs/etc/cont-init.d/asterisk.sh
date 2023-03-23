@@ -121,7 +121,7 @@ video_support=$(bashio::config 'video_support')
 
 # If `auto_add` is enabled, retrieve the list of persons using the Home Assistant API
 if bashio::var.true "${auto_add}"; then
-    if bashio::config.is_empty "${auto_add_secret}"; then
+    if bashio::config.is_empty 'auto_add_secret'; then
         bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
     fi
 
