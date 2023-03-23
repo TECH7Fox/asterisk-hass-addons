@@ -1,9 +1,9 @@
 build_from:
-  aarch64: ghcr.io/hassio-addons/debian-base/aarch64:6.2.3
-  amd64: ghcr.io/hassio-addons/debian-base/amd64:6.2.3
-  armhf: ghcr.io/hassio-addons/debian-base/armhf:6.2.3
-  armv7: ghcr.io/hassio-addons/debian-base/armv7:6.2.3
-  i386: ghcr.io/hassio-addons/debian-base/i386:6.2.3
+  aarch64: ghcr.io/hassio-addons/debian-base:6.2.3
+  amd64: ghcr.io/hassio-addons/debian-base:6.2.3
+  armhf: ghcr.io/hassio-addons/debian-base:6.2.3
+  armv7: ghcr.io/hassio-addons/debian-base:6.2.3
+  i386: ghcr.io/hassio-addons/debian-base:6.2.3
 labels:
   org.opencontainers.image.title: "Home Assistant Add-on: Asterisk"
   org.opencontainers.image.description: "PBX server for SIP devices like doorbells and phones."
