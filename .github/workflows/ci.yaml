@@ -33,27 +33,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set cache name
-        id: cache-name
+      - name: Set cache key
         run: |
-          echo 'cache-name=asterisk-cache-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "DOCKER_CACHE_KEY=${GITHUB_RUN_ID}" >> $GITHUB_ENV
 
-      - name: Build and push
+      - name: Build
         uses: docker/build-push-action@v4
         with:
           context: asterisk
           platforms: ${{ matrix.platform }}
           tags: asterisk
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/asterisk-cache,mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
-      - name: Upload cache
-        uses: actions/upload-artifact@v3
+      - name: Cache Docker layers
+        uses: actions/cache@v3
         with:
-          name: asterisk-cache-${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/asterisk-cache
-          if-no-files-found: error
-          retention-days: 1
+          path: /tmp/.buildx-cache
+          key: ${{ env.DOCKER_CACHE_KEY }}
 
   push:
     runs-on: ubuntu-latest
@@ -66,10 +63,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Download cache
-        uses: actions/download-artifact@v3
+      - name: Cache Docker layers
+        uses: actions/cache@v3
         with:
-          path: /tmp/asterisk-cache
+          path: /tmp/.buildx-cache
+          restore-keys: ${{ env.DOCKER_CACHE_KEY }}
 
       - name: Get lowercase GitHub username
         id: repository_owner
@@ -110,9 +108,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
-            type=local,src=/tmp/asterisk-cache/asterisk-cache-asterisk-cache-linux-amd64
-            type=local,src=/tmp/asterisk-cache/asterisk-cache-asterisk-cache-linux-386
-            type=local,src=/tmp/asterisk-cache/asterisk-cache-asterisk-cache-linux-arm-v6
-            type=local,src=/tmp/asterisk-cache/asterisk-cache-asterisk-cache-linux-arm-v7
-            type=local,src=/tmp/asterisk-cache/asterisk-cache-asterisk-cache-linux-arm64
+            type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
