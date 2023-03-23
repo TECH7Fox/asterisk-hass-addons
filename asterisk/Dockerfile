@@ -291,3 +291,9 @@ ENV S6_CMD_WAIT_FOR_SERVICES=0
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/stdin.sh" ]
+
+LABEL \
+    org.opencontainers.image.title="Home Assistant Add-on: Asterisk" \
+    org.opencontainers.image.description="PBX server for SIP devices like doorbells and phones." \
+    org.opencontainers.image.source="https://github.com/TECH7Fox/asterisk-hass-addons" \
+    org.opencontainers.image.licenses="MIT"
