@@ -15,64 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prep:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set images cache key
-        id: images-cache-key
-        run: |
-          echo "images-cache-key=${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
-    outputs:
-      images-cache-key: ${{ steps.images-cache-key.outputs.images-cache-key }}
-
-  build:
-    runs-on: ubuntu-latest
-    needs:
-      - prep
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/386
-          - linux/arm/v6
-          - linux/arm/v7
-          - linux/arm64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Set images cache name
-        id: image-cache-name
-        run: |
-          echo 'image-cache-name=asterisk-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
-
-      - name: Build
-        uses: docker/build-push-action@v4
-        with:
-          context: asterisk
-          platforms: ${{ matrix.platform }}
-          tags: asterisk
-          cache-from: type=gha
-          cache-to: type=local,dest=/tmp/.buildx-cache/${{ steps.image-cache-name.outputs.image-cache-name }},mode=max
-
-      - name: Save images cache
-        uses: actions/cache/save@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-${{ steps.image-cache-name.outputs.image-cache-name }}
-
-      - run: |
-          du -h --max-depth=2 /tmp/.buildx-cache
-
   push:
     runs-on: ubuntu-latest
-    needs:
-      - prep
-      - build
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -80,51 +24,11 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Restore images cache (asterisk-linux-amd64)
-        uses: actions/cache/restore@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-amd64
-          fail-on-cache-miss: true
-
-      - name: Restore images cache (asterisk-linux-386)
-        uses: actions/cache/restore@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-386
-          fail-on-cache-miss: true
-
-      - name: Restore images cache (asterisk-linux-arm-v6)
-        uses: actions/cache/restore@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v6
-          fail-on-cache-miss: true
-
-      - name: Restore images cache (asterisk-linux-arm-v7)
-        uses: actions/cache/restore@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v7
-          fail-on-cache-miss: true
-
-      - name: Restore images cache (asterisk-linux-arm64)
-        uses: actions/cache/restore@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm64
-          fail-on-cache-miss: true
-
-      - run: |
-          du -h --max-depth=2 /tmp/.buildx-cache
-
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ github.repository_owner }}
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -157,31 +61,5 @@ jobs:
           push: ${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: |
-            type=local,src=/tmp/.buildx-cache/asterisk-linux-amd64
-            type=local,src=/tmp/.buildx-cache/asterisk-linux-386
-            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm-v6
-            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm-v7
-            type=local,src=/tmp/.buildx-cache/asterisk-linux-arm64
+          cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  cleanup:
-    needs:
-      - prep
-      - build
-      - push
-    runs-on: ubuntu-latest
-    if: always()
-    permissions:
-      actions: write
-    steps:
-      - name: Clean cache
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install actions/gh-actions-cache
-          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-amd64'
-          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-386'
-          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v6'
-          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm-v7'
-          gh actions-cache delete --repo '${{ github.repository }}' --confirm '${{ needs.prep.outputs.images-cache-key }}-asterisk-linux-arm64'
