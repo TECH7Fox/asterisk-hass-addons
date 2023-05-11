@@ -15,9 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TMP_LOCAL_IMAGE: localhost:5000/tech7fox/asterisk-hass-addon
-  REGISTRY_IMAGE: ghcr.io/tech7fox/asterisk-hass-addon
-  REGISTRY_TAG: pr-251
+  TMP_LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
 
 jobs:
   build:
@@ -86,6 +84,10 @@ jobs:
       - name: Push images to local registry
         run: |
           docker push -a ${{ env.TMP_LOCAL_IMAGE }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: network=host
       - name: Login to GitHub Container Registry
         if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: docker/login-action@v2
@@ -93,10 +95,38 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create manifest list and push
+      - name: Temp Dockerfile
         run: |
-          docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:${{ env.REGISTRY_TAG }} \
-            $(docker image ls --format '{{.Repository}}:{{.Tag}}' '${{ env.TMP_LOCAL_IMAGE }}' | tr '\n' ' ')
+          mkdir -p /tmp/dkfilectx
+          echo "FROM ${{ env.TMP_LOCAL_IMAGE }}" > /tmp/dkfilectx/Dockerfile
+      - name: Get lowercase GitHub username
+        id: repository_owner
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository_owner }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+      - name: Push
+        uses: docker/build-push-action@v4
+        with:
+          context: /tmp/dkfilectx
+          platforms: |
+            linux/amd64
+            linux/386
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ env.REGISTRY_TAG }}
+          docker buildx imagetools inspect $(echo -n ${{ steps.meta.outputs.tags }} | head -1)
