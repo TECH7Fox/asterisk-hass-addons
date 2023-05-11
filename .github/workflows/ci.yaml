@@ -16,7 +16,7 @@ concurrency:
 
 env:
   TMP_LOCAL_IMAGE: localhost:5000/tech7fox/asterisk-hass-addon
-  REGISTRY_IMAGE: tech7fox/asterisk-hass-addon
+  REGISTRY_IMAGE: ghcr.io/tech7fox/asterisk-hass-addon
   REGISTRY_TAG: pr-251
 
 jobs:
