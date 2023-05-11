@@ -49,7 +49,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: asterisk
           platforms: ${{ matrix.platform }}
           tags: ${{ env.TAG }}
           outputs: type=docker,dest=/tmp/images/${{ env.TARFILE }}
