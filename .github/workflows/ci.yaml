@@ -78,12 +78,17 @@ jobs:
           path: /tmp/images
       - name: Load images
         run: |
-          for image in /tmp/images/*.tar; do
-            docker load -i $image
+          platforms=(
+            linux/amd64
+            linux/386
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64
+          )
+          for platform in "${platforms[@]}"; do
+            docker load -i /tmp/images/${platform//\//-}.tar
+            docker push ${{ env.TMP_LOCAL_IMAGE }}/${platform}
           done
-      - name: Push images to local registry
-        run: |
-          docker push -a ${{ env.TMP_LOCAL_IMAGE }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
