@@ -16,7 +16,7 @@ concurrency:
 
 env:
   TMP_LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
-  LOCAL_IMAGE: asterisk-hass-addon
+  LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
 
 jobs:
   build:
