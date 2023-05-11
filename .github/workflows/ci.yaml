@@ -53,11 +53,14 @@ jobs:
           outputs: type=docker,dest=/tmp/images/${{ env.TARFILE }}
           cache-from: type=gha,scope=${{ env.SCOPE }}
           cache-to: type=gha,scope=${{ env.SCOPE }},mode=max
+      - name: Compress image
+        run: |
+          gzip -9 /tmp/images/${{ env.TARFILE }}
       - name: Upload image
         uses: actions/upload-artifact@v3
         with:
           name: images
-          path: /tmp/images/${{ env.TARFILE }}
+          path: /tmp/images/${{ env.TARFILE }}.gz
           if-no-files-found: error
           retention-days: 1
 
@@ -85,10 +88,12 @@ jobs:
             linux/arm/v7
             linux/arm64
           )
-          for platform in "${platforms[@]}"; do
-            docker load -i /tmp/images/${platform//\//-}.tar
-            docker push ${{ env.TMP_LOCAL_IMAGE }}/${platform}
-          done
+          function load_image() {
+            docker load --input /tmp/images/${1//\//-}.tar.gz
+            docker push --quiet ${{ env.TMP_LOCAL_IMAGE }}/${1}
+          }
+          export -f load_image
+          parallel -j0 load_image ::: "${platforms[@]}"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
@@ -103,7 +108,7 @@ jobs:
       - name: Temp Dockerfile
         run: |
           mkdir -p /tmp/dkfilectx
-          printf '%s\n' 'ARG TARGETPLATFORM' 'FROM ${{ env.TMP_LOCAL_IMAGE }}:${TARGETPLATFORM}' > /tmp/dkfilectx/Dockerfile
+          printf '%s\n' 'ARG TARGETPLATFORM' 'FROM ${{ env.TMP_LOCAL_IMAGE }}/${TARGETPLATFORM}' > /tmp/dkfilectx/Dockerfile
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
