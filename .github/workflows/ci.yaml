@@ -16,7 +16,6 @@ concurrency:
 
 env:
   TMP_LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
-  LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
 
 jobs:
   build:
@@ -87,7 +86,7 @@ jobs:
           docker push -a ${{ env.TMP_LOCAL_IMAGE }}
       - name: Create manifest list and push to local registry
         run: |
-          docker buildx imagetools create -t ${{ env.LOCAL_IMAGE }}:latest \
+          docker buildx imagetools create -t ${{ env.TMP_LOCAL_IMAGE }}:latest \
             $(docker image ls --format '{{.Repository}}:{{.Tag}}' '${{ env.TMP_LOCAL_IMAGE }}' | tr '\n' ' ')
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -103,7 +102,7 @@ jobs:
       - name: Temp Dockerfile
         run: |
           mkdir -p /tmp/dkfilectx
-          echo "FROM ${{ env.LOCAL_IMAGE }}:latest" > /tmp/dkfilectx/Dockerfile
+          echo "FROM ${{ env.TMP_LOCAL_IMAGE }}:latest" > /tmp/dkfilectx/Dockerfile
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
