@@ -38,7 +38,7 @@ jobs:
           platform=${{ matrix.platform }}
           platform=${platform//\//-}
           echo "TARFILE=${platform}.tar" >> $GITHUB_ENV
-          echo "TAG=${{ env.TMP_LOCAL_IMAGE }}/${{ matrix.platform }}" >> $GITHUB_ENV
+          echo "TAG=${{ env.TMP_LOCAL_IMAGE }}:${platform}" >> $GITHUB_ENV
           echo "SCOPE=${{ env.GITHUB_REF_NAME }}-${platform}" >> $GITHUB_ENV
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -98,7 +98,7 @@ jobs:
       - name: Temp Dockerfile
         run: |
           mkdir -p /tmp/dkfilectx
-          printf '%s\n' 'ARG TARGETPLATFORM' 'FROM ${{ env.TMP_LOCAL_IMAGE }}:${TARGETPLATFORM}' > /tmp/dkfilectx/Dockerfile
+          echo "FROM ${{ env.TMP_LOCAL_IMAGE }}" > /tmp/dkfilectx/Dockerfile
       - name: Get lowercase GitHub username
         id: repository_owner
         uses: ASzc/change-string-case-action@v5
