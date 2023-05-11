@@ -89,12 +89,11 @@ jobs:
             linux/arm64
           )
           function load_image() {
-            set -eux
             docker load --input /tmp/images/${1//\//-}.tar.gz
             docker push --quiet ${{ env.TMP_LOCAL_IMAGE }}/${1}
           }
           export -f load_image
-          parallel load_image ::: "${platforms[@]}"
+          parallel -j0 load_image ::: "${platforms[@]}"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
