@@ -140,8 +140,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Create manifest list and push
+      - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -r '"-t " + (.tags | join(" -t "))' <<< '${{ needs.prepare.outputs.meta-json }}') \
