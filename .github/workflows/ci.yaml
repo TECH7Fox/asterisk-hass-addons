@@ -92,7 +92,6 @@ jobs:
             echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
 
             printf '%s\n' \
-              "type=gha,scope=${{ github.ref_name }}-${platform}" \
               "type=gha,scope=${{ github.base_ref }}-${platform}" \
               >> "${GITHUB_OUTPUT}"
 
