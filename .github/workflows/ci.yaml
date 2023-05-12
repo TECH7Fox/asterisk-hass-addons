@@ -14,12 +14,38 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  TMP_LOCAL_IMAGE: localhost:5000/asterisk-hass-addon
-
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get lowercase GitHub username
+        id: repository_owner
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository_owner }}
+      - name: Set image
+        id: image
+        run: |
+          echo 'image=ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon' >> "${GITHUB_OUTPUT}"
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ steps.image.outputs.image }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+      meta-version: ${{ steps.meta.outputs.version }}
+      meta-labels: ${{ steps.meta.outputs.labels }}
+      meta-json: ${{ steps.meta.outputs.json }}
   build:
     runs-on: ubuntu-latest
+    needs:
+      - prepare
     strategy:
       fail-fast: false
       matrix:
@@ -32,66 +58,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Prepare
-        run: |
-          mkdir -p /tmp/images
-          platform=${{ matrix.platform }}
-          platform=${platform//\//-}
-          echo "TARFILE=${platform}.tar" >> $GITHUB_ENV
-          echo "TAG=${{ env.TMP_LOCAL_IMAGE }}:${platform}" >> $GITHUB_ENV
-          echo "SCOPE=${{ env.GITHUB_REF_NAME }}-${platform}" >> $GITHUB_ENV
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Build
-        uses: docker/build-push-action@v4
-        with:
-          context: asterisk
-          platforms: ${{ matrix.platform }}
-          tags: ${{ env.TAG }}
-          outputs: type=docker,dest=/tmp/images/${{ env.TARFILE }}
-          cache-from: type=gha,scope=${{ env.SCOPE }}
-          cache-to: type=gha,scope=${{ env.SCOPE }},mode=max
-      - name: Upload image
-        uses: actions/upload-artifact@v3
-        with:
-          name: images
-          path: /tmp/images/${{ env.TARFILE }}
-          if-no-files-found: error
-          retention-days: 1
-
-  push:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
-    steps:
-      - name: Download images
-        uses: actions/download-artifact@v3
-        with:
-          name: images
-          path: /tmp/images
-      - name: Load images
-        run: |
-          for image in /tmp/images/*.tar; do
-            docker load -i $image
-          done
-      - name: Push images to local registry
-        run: |
-          docker push -a ${{ env.TMP_LOCAL_IMAGE }}
-      - name: Create manifest list and push to local registry
-        run: |
-          docker buildx imagetools create -t ${{ env.TMP_LOCAL_IMAGE }}:latest \
-            $(docker image ls --format '{{.Repository}}:{{.Tag}}' '${{ env.TMP_LOCAL_IMAGE }}' | tr '\n' ' ')
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: network=host
       - name: Login to GitHub Container Registry
         if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: docker/login-action@v2
@@ -99,38 +69,61 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Temp Dockerfile
+      - name: Set cache scope
+        id: scope
         run: |
-          mkdir -p /tmp/dkfilectx
-          echo "FROM ${{ env.TMP_LOCAL_IMAGE }}:latest" > /tmp/dkfilectx/Dockerfile
-      - name: Get lowercase GitHub username
-        id: repository_owner
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ${{ github.repository_owner }}
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-      - name: Push
+          platform='${{ matrix.platform }}'
+          platform="${platform//\//-}"
+          echo "scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v4
         with:
-          context: /tmp/dkfilectx
-          platforms: |
-            linux/amd64
-            linux/386
-            linux/arm/v6
-            linux/arm/v7
-            linux/arm64
-          push: ${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          context: asterisk
+          platforms: ${{ matrix.platform }}
+          labels: ${{ needs.prepare.outputs.meta-labels }}
+          outputs: type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ steps.scope.outputs.scope }}
+          cache-to: type=gha,scope=${{ steps.scope.outputs.scope }},mode=max
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest='${{ steps.build.outputs.digest }}'
+          touch "/tmp/digests/${digest#sha256:}"
+      - name: Upload digest
+        uses: actions/upload-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  push:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -r '"-t " + (.tags | join(" -t "))' <<< '${{ needs.prepare.outputs.meta-json }}') \
+            $(printf '${{ needs.prepare.outputs.image }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect $(echo -n ${{ steps.meta.outputs.tags }} | head -1)
+          docker buildx imagetools inspect '${{ needs.prepare.outputs.image }}:${{ needs.prepare.outputs.meta-version }}'
