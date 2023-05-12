@@ -72,16 +72,12 @@ jobs:
       - name: Set cache flags
         id: cache-flags
         run: |
-          # Replace slashes with dashes
-          platform='${{ matrix.platform }}'
-          platform="${platform//\//-}"
-
           # Set the cache-to output
-          echo "cache-to=type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+          echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
 
           # Set the cache-from output
           if [[ '${{ github.event_name }}' == 'push' ]]; then
-            echo "cache-from=type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+            echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
           else
             # Use cache from target branch too when building a pull request
 
@@ -92,7 +88,8 @@ jobs:
             echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
 
             printf '%s\n' \
-              "type=gha,scope=${{ github.base_ref }}-${platform}" \
+              "type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}" \
+              "type=gha,scope=${{ github.base_ref }}-${{ matrix.platform }}" \
               >> "${GITHUB_OUTPUT}"
 
             echo "${EOF}" >> "${GITHUB_OUTPUT}"
