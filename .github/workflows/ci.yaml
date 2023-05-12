@@ -76,25 +76,28 @@ jobs:
           platform='${{ matrix.platform }}'
           platform="${platform//\//-}"
 
-          # Set cache-to output
-          echo "cache-to=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+          # Set the cache-to output
+          echo "cache-to=type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
 
-          # Set the cache-from output to a multiline string
-          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-
-          echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
-
-          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+          # Set the cache-from output
+          if [[ '${{ github.event_name }}' == 'push' ]]; then
+            echo "cache-from=type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+          else
             # Use cache from target branch too when building a pull request
+
+            # In this case, it has to be a multiline string
+            # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+
+            echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
+
             printf '%s\n' \
               "type=gha,scope=${{ github.ref_name }}-${platform}" \
               "type=gha,scope=${{ github.base_ref }}-${platform}" \
               >> "${GITHUB_OUTPUT}"
-          else
-            echo "type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+
+            echo "${EOF}" >> "${GITHUB_OUTPUT}"
           fi
-          echo "${EOF}" >> "${GITHUB_OUTPUT}"
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v4
