@@ -69,12 +69,32 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set cache scope
-        id: scope
+      - name: Set cache flags
+        id: cache-flags
         run: |
+          # Replace slashes with dashes
           platform='${{ matrix.platform }}'
           platform="${platform//\//-}"
-          echo "scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+
+          # Set cache-to output
+          echo "cache-to=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+
+          # Set the cache-from output to a multiline string
+          # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+
+          echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
+
+          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            # Use cache from target branch too when building a pull request
+            printf '%s\n' \
+              "type=gha,scope=${{ github.ref_name }}-${platform}" \
+              "type=gha,scope=${{ github.base_ref }}-${platform}" \
+              >> "${GITHUB_OUTPUT}"
+          else
+            echo "type=gha,scope=${{ github.ref_name }}-${platform}" >> "${GITHUB_OUTPUT}"
+          fi
+          echo "${EOF}" >> "${GITHUB_OUTPUT}"
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v4
@@ -82,9 +102,12 @@ jobs:
           context: asterisk
           platforms: ${{ matrix.platform }}
           labels: ${{ needs.prepare.outputs.meta-labels }}
-          outputs: type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=gha,scope=${{ steps.scope.outputs.scope }}
-          cache-to: type=gha,scope=${{ steps.scope.outputs.scope }},mode=max
+          outputs: |
+            type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: |
+            ${{ steps.cache-flags.outputs.cache-from }}
+          cache-to: |
+            ${{ steps.cache-flags.outputs.cache-to }}
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
