@@ -2,7 +2,7 @@
 
 # Changelog
 
-## 4.0.3
+## 4.0.4
 
 - Added IPv6 support
 
