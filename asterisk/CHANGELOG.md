@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 4.0.4
+
+- Added IPv6 support
+
 ## 4.0.3
 
 - Upgrade Asterisk from 20.2.0 to 20.2.1
