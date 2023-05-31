@@ -4,6 +4,10 @@
 
 ## 4.0.3
 
+- Added IPv6 support
+
+## 4.0.3
+
 - Upgrade Asterisk from 20.2.0 to 20.2.1
 - Upgrade debian-base from 6.2.3 to 6.2.5
 
