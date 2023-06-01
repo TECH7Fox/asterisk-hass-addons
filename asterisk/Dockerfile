@@ -3,8 +3,6 @@ FROM ghcr.io/hassio-addons/debian-base:6.2.7 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
-# https://pypi.org/project/asterisk_mbox_server/#history
-ARG ASTERISK_MBOX_SERVER_VERSION="0.5.3"
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
     apt-get install -y --no-install-recommends --no-install-suggests \
@@ -57,9 +55,12 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libio-socket-ssl-perl \
         flac \
         # for downloading additional sounds \
-        unzip; \
-    \
-    pip3 install --no-cache-dir asterisk_mbox_server=="${ASTERISK_MBOX_SERVER_VERSION}"; \
+        unzip;
+
+# https://pypi.org/project/asterisk_mbox_server/#history
+ARG ASTERISK_MBOX_SERVER_VERSION="99038a4aa69d30b1deaf7895a868d68f47a3acba"
+RUN \
+    pip3 install --no-cache-dir https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
     \
     # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
