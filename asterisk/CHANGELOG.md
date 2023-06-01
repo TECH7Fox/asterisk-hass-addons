@@ -2,12 +2,9 @@
 
 # Changelog
 
-## 4.0.5
-
-- Update asterisk_mbox_server
-
 ## 4.0.4
 
+- Update asterisk_mbox_server
 - Added IPv6 support
 
 ## 4.0.3
