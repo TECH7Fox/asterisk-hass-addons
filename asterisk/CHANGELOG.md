@@ -6,6 +6,7 @@
 
 - Update asterisk_mbox_server
 - Added IPv6 support
+- Patch upstream asterisk issue
 
 ## 4.0.3
 
