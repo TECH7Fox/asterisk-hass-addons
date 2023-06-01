@@ -143,6 +143,9 @@ WORKDIR /usr/src/asterisk
 # Increase the number of format entries in SDPs to 128
 RUN patch -p1 < /usr/src/asterisk-patches/increase_max_number_of_sdp_format_entries.patch
 
+# Temporary patch to fix upstream bug
+RUN patch -p1 < /usr/src/asterisk-patches/follow_redirects.patch
+
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
     ./bootstrap.sh; \
