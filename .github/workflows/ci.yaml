@@ -27,7 +27,8 @@ jobs:
         id: set-outputs
         run: |
           echo 'image=ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon' >> "${GITHUB_OUTPUT}"
-          echo 'push=${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }} >> "${GITHUB_OUTPUT}"
+          # Only enable push on push events or pull requests coming from the same repository, except from dependabot
+          echo 'push=${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}' >> "${GITHUB_OUTPUT}"
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
