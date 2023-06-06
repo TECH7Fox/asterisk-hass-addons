@@ -124,7 +124,6 @@ jobs:
           retention-days: 1
 
   push:
-    if: needs.prepare.outputs.push == 'true'
     needs:
       - prepare
       - build
@@ -138,16 +137,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
+        if: needs.prepare.outputs.push == 'true'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create manifest list and push
+        if: needs.prepare.outputs.push == 'true'
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -r '"-t " + (.tags | join(" -t "))' <<< '${{ needs.prepare.outputs.meta-json }}') \
             $(printf '${{ needs.prepare.outputs.image }}@sha256:%s ' *)
       - name: Inspect image
+        if: needs.prepare.outputs.push == 'true'
         run: |
           docker buildx imagetools inspect '${{ needs.prepare.outputs.image }}:${{ needs.prepare.outputs.meta-version }}'
