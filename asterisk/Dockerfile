@@ -3,7 +3,7 @@ FROM ghcr.io/hassio-addons/debian-base:6.2.7 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
-# https://pypi.org/project/asterisk_mbox_server/#history
+# https://github.com/PhracturedBlue/asterisk_mbox_server/commits/master
 ARG ASTERISK_MBOX_SERVER_VERSION="99038a4aa69d30b1deaf7895a868d68f47a3acba"
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
