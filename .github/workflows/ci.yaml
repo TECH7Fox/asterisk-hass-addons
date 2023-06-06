@@ -23,29 +23,31 @@ jobs:
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ github.repository_owner }}
-      - name: Set image
-        id: image
+      - name: Set outputs
+        id: set-outputs
         run: |
           echo 'image=ghcr.io/${{ steps.repository_owner.outputs.lowercase }}/asterisk-hass-addon' >> "${GITHUB_OUTPUT}"
+          echo 'push=${{ github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }} >> "${GITHUB_OUTPUT}"
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ steps.image.outputs.image }}
+            ${{ steps.set-outputs.outputs.image }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
     outputs:
-      image: ${{ steps.image.outputs.image }}
+      image: ${{ steps.set-outputs.outputs.image }}
+      push: ${{ steps.set-outputs.outputs.push }}
       meta-version: ${{ steps.meta.outputs.version }}
       meta-labels: ${{ steps.meta.outputs.labels }}
       meta-json: ${{ steps.meta.outputs.json }}
   build:
-    runs-on: ubuntu-latest
     needs:
       - prepare
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -63,7 +65,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
-        if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+        if: needs.prepare.outputs.push == 'true'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -102,7 +104,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ needs.prepare.outputs.meta-labels }}
           outputs: |
-            type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=true
+            type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.push }}
           cache-from: |
             ${{ steps.cache-flags.outputs.cache-from }}
           cache-to: |
@@ -121,10 +123,11 @@ jobs:
           retention-days: 1
 
   push:
-    runs-on: ubuntu-latest
+    if: needs.prepare.outputs.push == 'true'
     needs:
       - prepare
       - build
+    runs-on: ubuntu-latest
     steps:
       - name: Download digests
         uses: actions/download-artifact@v3
@@ -134,7 +137,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
-        if: github.event_name == 'push' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
