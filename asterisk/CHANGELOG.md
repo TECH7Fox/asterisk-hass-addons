@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 4.0.5
+
+- Upgrade Asterisk from 20.2.1 to 20.4.0
+
 ## 4.0.4
 
 - Update asterisk_mbox_server
