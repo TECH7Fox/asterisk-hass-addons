@@ -1,5 +1,5 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:7.0.0 AS base
+FROM ghcr.io/hassio-addons/debian-base:7.0.1 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
@@ -29,7 +29,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libspeexdsp1 \
         libsqlite3-0 \
         libsrtp2-1 \
-        libssl1.1 \
+        libssl3 \
         libvorbis0a \
         libvorbisenc2 \
         libvorbisfile3 \
@@ -38,7 +38,6 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libncurses5 ncurses-bin ncurses-term \
         procps \
         python3-pip \
-        python-setuptools \
         rsync \
         sipgrep \
         tcpdump \
@@ -59,7 +58,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         # for downloading additional sounds \
         unzip; \
     \
-    pip3 install --no-cache-dir https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
+    pip3 install --no-cache-dir --break-system-packages https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
     \
     # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \

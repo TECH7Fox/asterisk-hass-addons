@@ -2,6 +2,11 @@
 
 # Changelog
 
+## 4.0.5
+
+- Upgrade hassio-addons/debian-base from 6.2.7 to 7.0.1
+  - This upgrades Debian 11 to Debian 12
+
 ## 4.0.4
 
 - Update asterisk_mbox_server
