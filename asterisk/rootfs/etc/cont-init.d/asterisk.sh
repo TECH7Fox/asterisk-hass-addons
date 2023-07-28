@@ -210,8 +210,6 @@ for sound in "${additional_sounds[@]}"; do
 
     if [[ -f "${lang_file}" && "$(cat "${lang_file}")" == "${sound}" ]]; then
         bashio::log.info "Skipping sounds download for '${sound}'..."
-        rm -rf "${asterisk_sound_dir}"
-        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
     else
         bashio::log.info "Downloading '${sound}' sounds to '${sound_dir}'..."
 
@@ -244,10 +242,10 @@ for sound in "${additional_sounds[@]}"; do
 
         cd - >/dev/null || exit 1
 
+        chmod 0755 -R "${temp_dir}"
         rsync -a "${temp_dir}/" "${sound_dir}/"
-        rm -rf "${asterisk_sound_dir}"
-        ln -svf "${sound_dir}" "${asterisk_sound_dir}"
-
         rm -rf "${temp_dir}"
     fi
+    rm -rf "${asterisk_sound_dir}"
+    ln -svf "${sound_dir}" "${asterisk_sound_dir}"
 done

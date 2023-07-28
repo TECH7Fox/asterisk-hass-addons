@@ -22,7 +22,8 @@
 - Ensure Asterisk Mailbox Server is started with `--verbose` if log level is debug or higher
 - Fix Asterisk Mailbox Server media directory to `/media/asterisk/voicemail/default/<mailbox-extension>/` for persistency
 - Fix Asterisk Mailbox Server cache file to `/data/tmp` for persistency
-- Fix to the `/data` directory (and also `/media` when needed) are created on startup, useful when running the add-on as a standalone docker container.
+- Fix to the `/data` directory (and also `/media` when needed) are created on startup, useful when running the add-on as a standalone docker container
+- Fix the permissions of downloaded sounds to be `0755` to be as indicated by <https://asterisksounds.org>, although on my tests it was working before as well.
 
 ### Upgrades
 
