@@ -91,6 +91,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libsqlite3-dev \
         libsrtp2-dev \
         libssl-dev \
+        libunbound-dev \
         libvorbis-dev \
         libxml2-dev \
         libxslt1-dev \
@@ -153,6 +154,7 @@ RUN \
         --with-opus \
         --with-opusfile \
         --with-resample \
+        --with-unbound \
         --without-asound \
         --without-bluetooth \
         --without-dahdi \
