@@ -19,6 +19,7 @@
 ### Bug Fixes
 
 - Fix Asterisk Mailbox Server missing `lame`
+- Ensure Asterisk Mailbox Server is started with `--verbose` if log level is debug or higher
 - Fix Asterisk Mailbox Server media directory to `/media/asterisk/voicemail/default/<mailbox-extension>/` for persistency
 - Fix Asterisk Mailbox Server cache file to `/data/tmp` for persistency
 - Fix to the `/data` directory (and also `/media` when needed) are created on startup, useful when running the add-on as a standalone docker container.
