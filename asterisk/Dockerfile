@@ -56,7 +56,9 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libio-socket-ssl-perl \
         flac \
         # for downloading additional sounds \
-        unzip; \
+        unzip \
+        # for asterisk_mbox_server
+        lame; \
     \
     pip3 install --no-cache-dir --break-system-packages https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
     \

@@ -4,6 +4,8 @@
 
 ## 4.1.0
 
+### New Features
+
 - Add `res_resolver_unbound` module, which allows to change the DNS server for Asterisk. Example:
 
   ```ini
@@ -13,6 +15,15 @@
   nameserver = 127.0.0.1
   resolv =
   ```
+
+### Bug Fixes
+
+- Fix Asterisk Mailbox Server missing `lame`
+- Fix Asterisk Mailbox Server media directory to `/media/asterisk/voicemail/default/<mailbox-extension>/` for persistency
+- Fix Asterisk Mailbox Server cache file to `/data/tmp` for persistency
+- Fix to the `/data` directory (and also `/media` when needed) are created on startup, useful when running the add-on as a standalone docker container.
+
+### Upgrades
 
 - Upgrade hassio-addons/debian-base from 6.2.7 to 7.0.1
   - This upgrades Debian 11 to Debian 12
