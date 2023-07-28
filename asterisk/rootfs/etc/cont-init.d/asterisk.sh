@@ -172,14 +172,6 @@ bashio::var.json \
         -template "${tempio_dir}/asterisk_mbox.ini.gtpl" \
         -out "${etc_asterisk}/asterisk_mbox.ini"
 
-bashio::var.json \
-    log_level "$(bashio::config 'log_level')" |
-    tempio \
-        -template "${tempio_dir}/asterisk_mbox_service_run.gtpl" \
-        -out "/etc/services.d/asterisk_mbox/run"
-
-chmod +x "/etc/services.d/asterisk_mbox/run"
-
 if bashio::var.false "$(bashio::config 'mailbox')"; then
     touch /tmp/disable-asterisk-mailbox
 fi
