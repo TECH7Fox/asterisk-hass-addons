@@ -2,10 +2,21 @@
 
 # Changelog
 
-## 4.0.5
+## 4.1.0
+
+- Add `res_resolver_unbound` module, which allows to change the DNS server for Asterisk. Example:
+
+  ```ini
+  ; /config/asterisk/custom/resolver_unbound.conf
+
+  [general]
+  nameserver = 127.0.0.1
+  resolv =
+  ```
 
 - Upgrade hassio-addons/debian-base from 6.2.7 to 7.0.1
   - This upgrades Debian 11 to Debian 12
+- Upgrade Asterisk from 20.2.1 to 20.4.0
 
 ## 4.0.4
 
