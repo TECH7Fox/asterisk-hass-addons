@@ -92,7 +92,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libsqlite3-dev \
         libsrtp2-dev \
         libssl-dev \
-        libunbound-dev \
+        libunbound8 \
         libvorbis-dev \
         libxml2-dev \
         libxslt1-dev \
