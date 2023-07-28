@@ -176,17 +176,6 @@ if bashio::var.false "$(bashio::config 'mailbox')"; then
     touch /tmp/disable-asterisk-mailbox
 fi
 
-# Enable voicemail persistence
-media_voicemail_dir="/media/asterisk/voicemail"
-media_voicemail_extension_dir="${media_voicemail_dir}/default/$(bashio::config 'mailbox_extension')/"
-asterisk_dir="/var/spool/asterisk"
-asterisk_voicemail_dir="${asterisk_dir}/voicemail"
-
-mkdir -p "${media_voicemail_extension_dir}/"{"INBOX","Old","Urgent"}
-
-rm -rf "${asterisk_voicemail_dir}"
-ln -s "${media_voicemail_dir}" "${asterisk_voicemail_dir}"
-
 # Save default configs
 bashio::log.info "Saving default configs to ${default_config_dir}..."
 if ! rsync --archive --delete "${etc_asterisk}/" "${default_config_dir}/"; then
