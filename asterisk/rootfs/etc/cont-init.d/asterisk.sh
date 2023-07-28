@@ -44,6 +44,13 @@ if ! mkdir -p "${default_config_dir}" "${custom_config_dir}"; then
     bashio::exit.nok "Failed to create Asterisk config folders at ${config_dir}"
 fi
 
+# Needed for google-tts cache, speech-recog cache, and mbox cache
+readonly cache_dir="/data/tmp"
+# Ensure the cache folder exists
+if ! mkdir -p "${cache_dir}"; then
+    bashio::exit.nok "Failed to create Asterisk cache folder at ${cache_dir}"
+fi
+
 bashio::log.info "Configuring certificate..."
 certfile_config=$(bashio::config 'certfile')
 keyfile_config=$(bashio::config 'keyfile')
@@ -172,7 +179,9 @@ bashio::var.json \
         -template "${tempio_dir}/asterisk_mbox.ini.gtpl" \
         -out "${etc_asterisk}/asterisk_mbox.ini"
 
-if bashio::var.false "$(bashio::config 'mailbox')"; then
+if bashio::var.true "$(bashio::config 'mailbox')"; then
+    mkdir -p /media/asterisk
+else
     touch /tmp/disable-asterisk-mailbox
 fi
 
