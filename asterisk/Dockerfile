@@ -1,9 +1,9 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:6.2.7 AS base
+FROM ghcr.io/hassio-addons/debian-base:7.0.1 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
-# https://pypi.org/project/asterisk_mbox_server/#history
+# https://github.com/PhracturedBlue/asterisk_mbox_server/commits/master
 ARG ASTERISK_MBOX_SERVER_VERSION="99038a4aa69d30b1deaf7895a868d68f47a3acba"
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
@@ -29,7 +29,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libspeexdsp1 \
         libsqlite3-0 \
         libsrtp2-1 \
-        libssl1.1 \
+        libssl3 \
         libvorbis0a \
         libvorbisenc2 \
         libvorbisfile3 \
@@ -38,7 +38,6 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libncurses5 ncurses-bin ncurses-term \
         procps \
         python3-pip \
-        python-setuptools \
         rsync \
         sipgrep \
         tcpdump \
@@ -59,7 +58,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         # for downloading additional sounds \
         unzip; \
     \
-    pip3 install --no-cache-dir https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
+    pip3 install --no-cache-dir --break-system-packages https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
     \
     # Dependencies only used to build asterisk_mbox_server \
     apt-get purge -y --auto-remove gcc g++ libc6-dev python3-dev; \
@@ -91,6 +90,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libsqlite3-dev \
         libsrtp2-dev \
         libssl-dev \
+        libunbound-dev \
         libvorbis-dev \
         libxml2-dev \
         libxslt1-dev \
@@ -101,14 +101,14 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="20.2.1_dfsg+_cs6.13.40431413"
+ARG ASTERISK_OPUS_VERSION="20.3.0_dfsg+_cs6.13.40431413"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
 # https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
-ARG ASTERISK_VERSION="20.2.1"
+ARG ASTERISK_VERSION="20.4.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -143,9 +143,6 @@ WORKDIR /usr/src/asterisk
 # Increase the number of format entries in SDPs to 128
 RUN patch -p1 < /usr/src/asterisk-patches/increase_max_number_of_sdp_format_entries.patch
 
-# Temporary patch to fix upstream bug
-RUN patch -p1 < /usr/src/asterisk-patches/follow_redirects.patch
-
 RUN \
     # Recreate the configure script as we patched it above for the new formats \
     ./bootstrap.sh; \
@@ -156,6 +153,7 @@ RUN \
         --with-opus \
         --with-opusfile \
         --with-resample \
+        --with-unbound \
         --without-asound \
         --without-bluetooth \
         --without-dahdi \
