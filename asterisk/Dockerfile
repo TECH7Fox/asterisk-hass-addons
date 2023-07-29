@@ -36,6 +36,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libxml2 \
         libxslt1.1 \
         libncurses5 ncurses-bin ncurses-term \
+        # for res_resolver_unbound \
+        libunbound8 \
         procps \
         python3-pip \
         rsync \
@@ -57,7 +59,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         flac \
         # for downloading additional sounds \
         unzip \
-        # for asterisk_mbox_server
+        # for asterisk_mbox_server \
         lame; \
     \
     pip3 install --no-cache-dir --break-system-packages https://github.com/PhracturedBlue/asterisk_mbox_server/archive/${ASTERISK_MBOX_SERVER_VERSION}.tar.gz; \
@@ -92,6 +94,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libsqlite3-dev \
         libsrtp2-dev \
         libssl-dev \
+        # for res_resolver_unbound \
         libunbound-dev \
         libvorbis-dev \
         libxml2-dev \

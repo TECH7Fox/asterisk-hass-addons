@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 4.1.1
+
+- Fix missing `libunbound8` library for `res_resolver_unbound`
+
 ## 4.1.0
 
 ### New Features
