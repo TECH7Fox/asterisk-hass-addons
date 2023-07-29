@@ -61,6 +61,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          # Needed to calculate branch for tag
+          fetch-depth: 0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -80,7 +83,15 @@ jobs:
 
           # Set the cache-from output
           if [[ '${{ github.event_name }}' == 'push' ]]; then
-            echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
+            if [[ '${{ github.ref }}' == 'refs/tags/v'* ]]; then
+              # Use cache from the branch when building a tag
+              branch="$(git branch -r --contains '${{ github.ref }}')"
+              branch="${branch##*/}"
+              echo "cache-from=type=gha,scope=${branch}-${{ matrix.platform }}" >> "${GITHUB_OUTPUT}"
+            else
+              # Use cache from the same branch when not building a tag
+              echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
+            fi
           else
             # Use cache from target branch too when building a pull request
 
