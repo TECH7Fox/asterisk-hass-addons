@@ -2,6 +2,13 @@
 
 # Changelog
 
+## 4.1.2
+
+### Upgrades
+
+- Upgrade Asterisk from 20.4.0 to 20.5.2
+- Upgrade hassio-addons/debian-base from 7.0.1 to 7.1.0
+
 ## 4.1.1
 
 - Fix missing `libunbound8` library for `res_resolver_unbound`
