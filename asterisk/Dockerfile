@@ -106,14 +106,14 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="20.3.0_dfsg+_cs6.13.40431413"
+ARG ASTERISK_OPUS_VERSION="20.5.2~dfsg+_cs6.13.40431414"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
 # https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
-ARG ASTERISK_VERSION="20.4.0"
+ARG ASTERISK_VERSION="20.5.2"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -286,8 +286,6 @@ COPY --from=build /opt/asterisk/ /
 
 COPY rootfs /
 
-# Fix container failing to start some times
-ENV S6_SERVICES_READYTIME=50
 # Without this, the STDIN script never gets executed
 ENV S6_CMD_WAIT_FOR_SERVICES=0
 
