@@ -2,6 +2,18 @@
 
 # Changelog
 
+## 4.2.0
+
+### New Features
+
+- Include `app_rtsp_sip` in ARM builds
+
+### Upgrades
+
+- Upgrade Asterisk from 20.5.2 to 20.6.0
+- Upgrade asterisk-chan-dongle to latest revision
+- Upgrade asterisk-googletts to latest revision
+
 ## 4.1.2
 
 ### Upgrades
