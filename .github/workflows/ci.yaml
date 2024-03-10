@@ -75,10 +75,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set cache flags
-        id: cache-flags
+      - name: Set vars
+        id: vars
         run: |
-          echo "platform-normalized=$(echo '${{ matrix.platform }}' | tr / -)" >> "${GITHUB_OUTPUT}
+          echo "artifact-name=digest-$(echo '${{ matrix.platform }}' | tr / -)" >> "${GITHUB_OUTPUT}"
 
           # Set the cache-to output
           echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
@@ -120,9 +120,9 @@ jobs:
           outputs: |
             type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.push }}
           cache-from: |
-            ${{ steps.cache-flags.outputs.cache-from }}
+            ${{ steps.vars.outputs.cache-from }}
           cache-to: |
-            ${{ steps.cache-flags.outputs.cache-to }}
+            ${{ steps.vars.outputs.cache-to }}
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
@@ -131,7 +131,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digest-${{ steps.cache-flags.outputs.platform-normalized }}
+          name: ${{ steps.vars.outputs.artifact-name }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
