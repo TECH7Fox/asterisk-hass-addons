@@ -52,12 +52,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch:
-          - amd64
-          - '386'
-          - arm/v6
-          - arm/v7
-          - arm64
+        platform:
+          - linux/amd64
+          - linux/386
+          - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -79,7 +79,7 @@ jobs:
         id: cache-flags
         run: |
           # Set the cache-to output
-          echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.arch }}' >> "${GITHUB_OUTPUT}"
+          echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
 
           # Set the cache-from output
           if [[ '${{ github.event_name }}' == 'push' ]]; then
@@ -87,10 +87,10 @@ jobs:
               # Use cache from the branch when building a tag
               branch="$(git branch -r --contains '${{ github.ref }}')"
               branch="${branch##*/}"
-              echo "cache-from=type=gha,scope=${branch}-${{ matrix.arch }}" >> "${GITHUB_OUTPUT}"
+              echo "cache-from=type=gha,scope=${branch}-${{ matrix.platform }}" >> "${GITHUB_OUTPUT}"
             else
               # Use cache from the same branch when not building a tag
-              echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.arch }}' >> "${GITHUB_OUTPUT}"
+              echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
             fi
           else
             # Use cache from target branch too when building a pull request
@@ -102,8 +102,8 @@ jobs:
             echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
 
             printf '%s\n' \
-              "type=gha,scope=${{ github.ref_name }}-${{ matrix.arch }}" \
-              "type=gha,scope=${{ github.base_ref }}-${{ matrix.arch }}" \
+              "type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}" \
+              "type=gha,scope=${{ github.base_ref }}-${{ matrix.platform }}" \
               >> "${GITHUB_OUTPUT}"
 
             echo "${EOF}" >> "${GITHUB_OUTPUT}"
@@ -113,7 +113,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: asterisk
-          platforms: linux/${{ matrix.arch }}
+          platforms: ${{ matrix.platform }}
           labels: ${{ needs.prepare.outputs.meta-labels }}
           outputs: |
             type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.push }}
@@ -129,7 +129,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digest-${{ matrix.arch }}
+          name: digest-${{ steps.build.outputs.digest }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
