@@ -78,6 +78,8 @@ jobs:
       - name: Set cache flags
         id: cache-flags
         run: |
+          echo "platform-normalized=$(echo '${{ matrix.platform }}' | tr / -)" >> "${GITHUB_OUTPUT}
+
           # Set the cache-to output
           echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
 
@@ -129,7 +131,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digest-${{ steps.build.outputs.digest }}
+          name: digest-${{ steps.cache-flags.outputs.platform-normalized }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
