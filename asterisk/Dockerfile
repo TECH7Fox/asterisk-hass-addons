@@ -131,16 +131,17 @@ COPY patches/app_rtsp_sip/*.patch ./
 ARG APP_RTSP_SIP_VERSION="d0fb18b4813e4ae8940029a8a62030443d9feaec"
 ARG TARGETARCH
 # hadolint ignore=DL3003,SC2164
-RUN if [[ "${TARGETARCH}" == "amd64" || "${TARGETARCH}" == "i386" ]]; then \
-        curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
+RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
-        patch -p1 < disable_auth.patch; \
-        patch -p1 < remove_sudo.patch; \
-        cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
-        cp -f rtsp_sip_links.sh /usr/src/asterisk; \
-        cd /usr/src/asterisk; \
-        ./rtsp_sip_links.sh; \
-    fi
+    patch -p1 < disable_auth.patch; \
+    patch -p1 < remove_sudo.patch; \
+    if [[ "${TARGETARCH}" == arm* ]]; then \
+        patch -p1 < fix_arm.patch; \
+    fi; \
+    cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
+    cp -f rtsp_sip_links.sh /usr/src/asterisk; \
+    cd /usr/src/asterisk; \
+    ./rtsp_sip_links.sh
 
 # Copy patches specific for this addon
 COPY patches/asterisk/*.patch /usr/src/asterisk-patches/
