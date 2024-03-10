@@ -75,9 +75,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set cache flags
-        id: cache-flags
+      - name: Set vars
+        id: vars
         run: |
+          echo "artifact-name=digest-$(echo '${{ matrix.platform }}' | tr / -)" >> "${GITHUB_OUTPUT}"
+
           # Set the cache-to output
           echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.platform }}' >> "${GITHUB_OUTPUT}"
 
@@ -118,18 +120,18 @@ jobs:
           outputs: |
             type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.push }}
           cache-from: |
-            ${{ steps.cache-flags.outputs.cache-from }}
+            ${{ steps.vars.outputs.cache-from }}
           cache-to: |
-            ${{ steps.cache-flags.outputs.cache-to }}
+            ${{ steps.vars.outputs.cache-to }}
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
           digest='${{ steps.build.outputs.digest }}'
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: digests
+          name: ${{ steps.vars.outputs.artifact-name }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -141,9 +143,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: digests
+          pattern: digest-*
+          merge-multiple: true
           path: /tmp/digests
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
