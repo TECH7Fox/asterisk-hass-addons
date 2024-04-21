@@ -2,6 +2,14 @@
 
 # Changelog
 
+## 4.2.1
+
+### Bug Fixes
+
+- Use `friendly_name` instead of `id` as caller id (by @OnFreund at #322)
+- Fix `/config/asterisk/custom` files being overwritten on container restart (by @felipecrs at #323, fixes #309)
+  - PS: this bug did not affect people running the add-on with Home Assistant Supervisor, only for people running the add-on as a standalone docker container.
+
 ## 4.2.0
 
 ### New Features
