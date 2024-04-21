@@ -103,18 +103,23 @@ if bashio::config.is_empty 'ami_password'; then
     bashio::exit.nok "'ami_password' must be set"
 fi
 
+# deleting the target before writing to it ensures we don't write to a
+# symlinked file, like when the container is restarted
+rm -f "${etc_asterisk}/manager.conf"
 bashio::var.json \
     password "$(bashio::config 'ami_password')" |
     tempio \
         -template "${tempio_dir}/manager.conf.gtpl" \
         -out "${etc_asterisk}/manager.conf"
 
+rm -f "${etc_asterisk}/logger.conf"
 bashio::var.json \
     log_level "$(bashio::config 'log_level')" |
     tempio \
         -template "${tempio_dir}/logger.conf.gtpl" \
         -out "${etc_asterisk}/logger.conf"
 
+rm -f "${etc_asterisk}/http.conf"
 bashio::var.json \
     certfile "${target_certfile}" \
     keyfile "${target_keyfile}" |
@@ -152,6 +157,7 @@ else
     persons=[]
 fi
 
+rm -f "${etc_asterisk}/pjsip_default.conf"
 bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
@@ -161,6 +167,7 @@ bashio::var.json \
         -template "${tempio_dir}/pjsip_default.conf.gtpl" \
         -out "${etc_asterisk}/pjsip_default.conf"
 
+rm -f "${etc_asterisk}/sip_default.conf"
 bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
@@ -170,6 +177,7 @@ bashio::var.json \
         -template "${tempio_dir}/sip_default.conf.gtpl" \
         -out "${etc_asterisk}/sip_default.conf"
 
+rm -f "${etc_asterisk}/asterisk_mbox.ini"
 bashio::var.json \
     port "$(bashio::config 'mailbox_port')" \
     password "$(bashio::config 'mailbox_password')" \
