@@ -145,7 +145,7 @@ if bashio::var.true "${auto_add}"; then
             -H "Authorization: Bearer ${ha_token}" \
             -H "Content-Type: application/json" \
             "${ha_url}/api/states" |
-            jq -c '[.[] | select(.entity_id | contains("person.")).attributes.id]'
+            jq -c '[.[] | select(.entity_id | contains("person.")).attributes.friendly_name]'
     )
 else
     # Define an empty array, so the subsequent template won't complain
