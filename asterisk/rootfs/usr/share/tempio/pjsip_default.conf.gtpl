@@ -44,7 +44,7 @@ rewrite_contact=yes
 direct_media=no
 context=default
 disallow=all
-allow=ulaw,alaw,speex,gsm,g726,g723,g722,opus
+allow=opus,ulaw,alaw,speex,gsm,g726,g723,g722
 {{ if .video_support -}}
 allow=h264,vp8,vp9
 {{- end }}
