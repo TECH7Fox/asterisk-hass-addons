@@ -2,6 +2,17 @@
 
 # Changelog
 
+## 4.3.0
+
+### Improvements
+
+- Prefer Opus over other codecs (by @OnFreund at #331)
+
+### Upgrades
+
+- Upgrade Asterisk from 20.6.0 to 20.8.1
+- Upgrade debian-base from 7.3.3 to 7.3.4
+
 ## 4.2.1
 
 ### Bug Fixes
