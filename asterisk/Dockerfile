@@ -1,5 +1,5 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:7.3.4 AS base
+FROM ghcr.io/hassio-addons/debian-base:7.3.5 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
