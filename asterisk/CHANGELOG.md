@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 4.5.0
+
+### New Features
+
+- Add watchdog support to port 5060
+
 ## 4.4.0
 
 ### New Features
