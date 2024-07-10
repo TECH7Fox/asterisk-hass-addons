@@ -101,7 +101,7 @@ You can get a key [here](https://cloud.google.com/speech-to-text). Google says i
 
 The log level to configure Asterisk to use. To know more about the existing presets, check [`logger.conf`](./rootfs/usr/share/tempio/logger.conf.gtpl).
 
-### STDIN service
+## STDIN service
 
 You can use the STDIN service to run any Asterisk CLI commands that you want. For example:
 
@@ -113,6 +113,10 @@ service: hassio.addon_stdin
 ```
 
 **This is only possible when using as an add-on.**
+
+## Startup script
+
+If the add-on finds a script at `/config/asterisk/startup.sh` it will run it before starting Asterisk. You can use this to install custom packages, dependancies, etc.
 
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
