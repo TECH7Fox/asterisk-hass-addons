@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 4.4.0
+
+### New Features
+
+- Add custom startup script support
+
 ## 4.3.0
 
 ### Improvements
