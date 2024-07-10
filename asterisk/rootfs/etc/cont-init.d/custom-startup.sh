@@ -6,8 +6,7 @@
 # shellcheck shell=bash
 
 readonly custom_startup="/config/asterisk/startup.sh"
-if [[ -f "${custom_startup}" ]]; then
+if bashio::fs.file_exists "${custom_startup}"; then
     bashio::log.info "Running custom startup script..."
-    bashio::log.debug "Executing ${custom_startup}"
-    source "${custom_startup}"
+    source "${custom_startup}" || bashio::log.error "Failed executing ${custom_startup}"
 fi
