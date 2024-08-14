@@ -12,7 +12,7 @@ arch:
   - i386
 homeassistant_api: true
 map:
-  - config:rw
+  - addon_config:rw
   - media:rw
   - ssl
 options:
