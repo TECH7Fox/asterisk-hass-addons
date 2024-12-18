@@ -2,7 +2,12 @@
 
 # Changelog
 
-## 4.5.0
+## 5.0.0
+
+### Breaking Changes
+
+- `chan_sip` was [removed](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-chan_sip/) in Asterisk 21, thus it is no longer supported by this add-on.
+  You should [migrate](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-res_pjsip/Migrating-from-chan_sip-to-res_pjsip/) to `res_pjsip` if you were using `chan_sip`.
 
 ### Upgrades
 

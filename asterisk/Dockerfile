@@ -182,8 +182,7 @@ RUN \
         --enable chan_bridge_media \
         --enable chan_iax2 \
         --enable chan_pjsip \
-        --enable chan_rtp \
-        --enable chan_sip ; \
+        --enable chan_rtp; \
     # enable good things \
     menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts; \
     # applications \
@@ -212,7 +211,6 @@ RUN \
     menuselect/menuselect --disable pbx_spool menuselect.makeopts; \
     # resource modules \
     menuselect/menuselect --disable res_config_sqlite3 menuselect.makeopts; \
-    menuselect/menuselect --disable res_monitor menuselect.makeopts; \
     menuselect/menuselect --disable res_adsi menuselect.makeopts; \
     # utilities \
     menuselect/menuselect --disable astdb2sqlite3 menuselect.makeopts; \
@@ -241,7 +239,7 @@ RUN \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
-## Install chan-gongle
+## Install chan-dongle
 WORKDIR /usr/src/asterisk-chan-dongle
 # https://github.com/wdoekes/asterisk-chan-dongle/commits/master
 ARG CHAN_DONGLE_VERSION="13450af5f648ddf4bc279c08e53917f503253bdd"
