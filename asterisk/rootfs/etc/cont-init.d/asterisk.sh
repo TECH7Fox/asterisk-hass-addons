@@ -137,24 +137,29 @@ if bashio::var.true "${auto_add}"; then
         bashio::exit.nok "'auto_add_secret' must be set when 'auto_add' is enabled"
     fi
 
-    bashio::log.info "Retrieving the list of persons from Home Assistant"
+    bashio::log.info "Retrieving the list of browser_mod browsers from Home Assistant"
     if ! is_addon && bashio::var.is_empty "${ha_token}"; then
-        message="Please define the HA_TOKEN env variable with a long-lived Home Assistant access token so the container can get the list of persons from Home Assistant."
+        message="Please define the HA_TOKEN env variable with a long-lived Home Assistant access token so the container can get the list of browsers from Home Assistant."
         if [[ -z "${HA_URL:-}" ]]; then
             message="${message} Optionally, you can also define the HA_URL env variable to point to your Home Assistant URL if it differs from ${default_ha_url}."
         fi
         bashio::exit.nok "${message}"
     fi
-    persons=$(
-        curl -fsSL -X GET \
-            -H "Authorization: Bearer ${ha_token}" \
-            -H "Content-Type: application/json" \
-            "${ha_url}/api/states" |
-            jq -c '[.[] | select(.entity_id | contains("person.")).attributes.friendly_name]'
+    browsers=$(
+        curl -fsSL -X POST \
+	          -H "Authorization: Bearer ${ha_token}" \
+	          -H "Content-Type: application/json" \
+	          -d '{"template": "{%- set devices = integration_entities(\"browser_mod\") | map(\"device_id\") | unique | reject(\"eq\",None) | list %}{%- set ns = namespace(devices = []) %}{%- for device in devices %}   {%- set ns.devices = ns.devices +  [ device_attr(device, \"name\") ] %}{%- endfor %}{{ ns.devices | tojson }}"}' \
+	          "${ha_url}/api/template"
     )
+
+    if browsers !== "[]"; then
+      bashio::var.is_empty "${browsers}")
+      browsers="${browsers/][/, }"
+    fi
 else
     # Define an empty array, so the subsequent template won't complain
-    persons=[]
+    browsers=[]
 fi
 
 rm -f "${etc_asterisk}/pjsip_default.conf"
@@ -162,7 +167,7 @@ bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
     video_support "^${video_support}" \
-    persons "^${persons}" |
+    persons "^${browsers}" |
     tempio \
         -template "${tempio_dir}/pjsip_default.conf.gtpl" \
         -out "${etc_asterisk}/pjsip_default.conf"
@@ -172,7 +177,7 @@ bashio::var.json \
     auto_add "^${auto_add}" \
     auto_add_secret "${auto_add_secret}" \
     video_support "^${video_support}" \
-    persons "^${persons}" |
+    persons "^${browsers}" |
     tempio \
         -template "${tempio_dir}/sip_default.conf.gtpl" \
         -out "${etc_asterisk}/sip_default.conf"
