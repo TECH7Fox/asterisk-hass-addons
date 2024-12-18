@@ -167,16 +167,6 @@ bashio::var.json \
         -template "${tempio_dir}/pjsip_default.conf.gtpl" \
         -out "${etc_asterisk}/pjsip_default.conf"
 
-rm -f "${etc_asterisk}/sip_default.conf"
-bashio::var.json \
-    auto_add "^${auto_add}" \
-    auto_add_secret "${auto_add_secret}" \
-    video_support "^${video_support}" \
-    persons "^${persons}" |
-    tempio \
-        -template "${tempio_dir}/sip_default.conf.gtpl" \
-        -out "${etc_asterisk}/sip_default.conf"
-
 rm -f "${etc_asterisk}/asterisk_mbox.ini"
 bashio::var.json \
     port "$(bashio::config 'mailbox_port')" \
