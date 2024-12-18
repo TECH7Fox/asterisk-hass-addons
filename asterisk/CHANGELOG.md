@@ -2,6 +2,13 @@
 
 # Changelog
 
+## 4.5.0
+
+### Upgrades
+
+- Upgrade Asterisk from 20.8.1 to 22.1.0
+- Upgrade debian-base from 7.4.0 to 7.6.2
+
 ## 4.4.0
 
 ### New Features
