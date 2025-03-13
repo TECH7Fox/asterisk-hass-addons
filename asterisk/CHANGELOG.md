@@ -8,7 +8,7 @@
 
 - Migrate Asterisk files out of Home Assistant config directory
   - This ensures the add-on backup and restore includes the Asterisk files
-  - Apart from this migration, if your Asterisk files refer to files in the Home Assistant config dir, like scripts, their references must be **manually changed** from `/config/` to `/homeassistant/`.
+  - Apart from the automatic migration, if your Asterisk files refer to files in the Home Assistant config dir, like scripts, their references must be **manually changed** from `/config/` to `/homeassistant/`.
 
     Note: this breaking change was realized after 5.1.0 was initially released. Otherwise, this release would have been 6.0.0.
 
