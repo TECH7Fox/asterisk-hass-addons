@@ -9,6 +9,11 @@
 - Migrate Asterisk files out of Home Assistant config directory
   - This ensures the add-on backup and restore includes the Asterisk files
 
+### Upgrades
+
+- Upgrade Asterisk from 22.1.0 to 22.2.0
+- Upgrade debian-base from 7.6.2 to 7.7.1
+
 ## 5.0.0
 
 ### Breaking Changes
