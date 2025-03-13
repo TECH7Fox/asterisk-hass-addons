@@ -24,11 +24,11 @@ Or you can also use it as a standalone docker container. See [4.0.0 release note
 
 ## Configuring Asterisk
 
-The add-on copies all the default Asterisk config files to `/config/asterisk/default` on the add-on startup for your reference, and reads all customized config files from `/config/asterisk/custom`.
+The add-on copies all the default Asterisk config files to `/addon_configs/b35499aa-asterisk/asterisk/default` on the add-on startup for your reference, and reads all customized config files from `/addon_configs/b35499aa-asterisk/asterisk/custom`.
 
-For example, if you need to change something in the `/etc/asterisk/extensions.conf`, you can copy the reference `/config/asterisk/default/extensions.conf` to `/config/asterisk/custom/extensions.conf` and make your changes there.
+For example, if you need to change something in the `/etc/asterisk/extensions.conf`, you can copy the reference `/addon_configs/b35499aa-asterisk/asterisk/default/extensions.conf` to `/addon_configs/b35499aa-asterisk/asterisk/custom/extensions.conf` and make your changes there.
 
-The way how this works is through symbolic links: if there is a custom config file, a symbolic link is created on top of the default config file pointing to the custom config file. Have in mind that this is only applicable for files under the root of `/config/asterisk/custom`. For example, the `/config/asterisk/custom/subdir/file.conf` **will not** be linked to `/etc/asterisk/subdir/file.conf`. The same applies to files that starts with a dot, like `.gitignore`.
+The way how this works is through symbolic links: if there is a custom config file, a symbolic link is created on top of the default config file pointing to the custom config file. Have in mind that this is only applicable for files under the root of `/addon_configs/b35499aa-asterisk/asterisk/custom`. For example, the `/addon_configs/b35499aa-asterisk/asterisk/custom/subdir/file.conf` **will not** be linked to `/etc/asterisk/subdir/file.conf`. The same applies to files that starts with a dot, like `.gitignore`.
 
 **Note**: _Remember to restart the add-on when the Asterisk configuration files are changed._
 
@@ -116,7 +116,7 @@ service: hassio.addon_stdin
 
 ## Startup script
 
-If the add-on finds a script at `/config/asterisk/startup.sh` it will run it before starting Asterisk. You can use this to install custom packages, dependancies, etc.
+If the add-on finds a script at `/addon_configs/b35499aa-asterisk/asterisk/startup.sh` it will run it before starting Asterisk. You can use this to install custom packages, dependancies, etc.
 
 ## Configuring the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration)
 
@@ -131,7 +131,7 @@ If the add-on finds a script at `/config/asterisk/startup.sh` it will run it bef
 - **_Port_**: `8089`
 - **_Video_**: `false` _Video is not working at the moment, this will be fixed soon. For now you could use the camera entity instead._
 
-And add a extension. To see which extension every person has, you can look at `/config/asterisk/default/sip_default.conf`.
+And add a extension. To see which extension every person has, you can look at `/addon_configs/b35499aa-asterisk/asterisk/default/sip_default.conf`.
 
 ## Wiki
 

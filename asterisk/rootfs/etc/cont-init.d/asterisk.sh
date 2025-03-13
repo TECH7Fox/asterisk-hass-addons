@@ -11,6 +11,11 @@ function is_addon() {
 
 if is_addon; then
     readonly ha_url="http://supervisor/core"
+
+    if [[ ! -d /config/asterisk && -d /homeassistant/asterisk ]]; then
+        bashio::log.info "Migrating Asterisk files out of Home Assistant config directory..."
+        mv -fv /homeassistant/asterisk /config/ || bashio::exit.nok "Failed to move Asterisk files out of Home Assistant config directory"
+    fi
 else
     readonly default_ha_url="http://homeassistant.local:8123"
     readonly ha_url="${HA_URL:-"${default_ha_url}"}"
