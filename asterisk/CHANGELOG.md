@@ -2,6 +2,13 @@
 
 # Changelog
 
+## 5.1.0
+
+### Changes
+
+- Migrate Asterisk files out of Home Assistant config directory
+  - This ensures the add-on backup and restore includes the Asterisk files
+
 ## 5.0.0
 
 ### Breaking Changes
