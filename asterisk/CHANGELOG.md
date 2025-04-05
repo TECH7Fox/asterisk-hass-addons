@@ -2,6 +2,10 @@
 
 # Changelog
 
+## 5.2.0
+
+- Enable HAOS Ingress
+
 ## 5.1.0
 
 ### Breaking Changes
