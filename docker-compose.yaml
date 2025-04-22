@@ -1,6 +1,6 @@
 services:
   asterisk:
-    image: ghcr.io/tech7fox/amd64-addon-asterisk:latest
+    image: ghcr.io/tech7fox/asterisk-hass-addon:latest
     build:
       context: ./asterisk
     tty: true
