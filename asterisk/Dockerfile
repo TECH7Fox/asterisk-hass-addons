@@ -288,6 +288,9 @@ COPY rootfs /
 # Without this, the STDIN script never gets executed
 ENV S6_CMD_WAIT_FOR_SERVICES=0
 
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=30s --start-interval=5s \
+    CMD asterisk -rx "core waitfullybooted" >/dev/null || exit 1
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/stdin.sh" ]
 
