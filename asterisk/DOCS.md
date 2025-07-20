@@ -64,6 +64,10 @@ The sounds will be downloaded to `/media/asterisk`.
 
 If you want the add-on to re-download the sounds, you can simply remove the folder from `/media/asterisk` and restart it.
 
+### Option: `register_ingress_entry`
+
+Whether to register the ingress entry for the add-on as a Home Assistant entity or not. This is useful for the SIP card to avoid needing to manually expose Asterisk's WebSockets interface.
+
 ### Option: `generate_ssl_cert`
 
 Enables/disables the generation of a self-signed certificate for use with the SSL interfaces (WSS and TLS).

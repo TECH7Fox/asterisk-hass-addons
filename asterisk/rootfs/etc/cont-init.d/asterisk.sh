@@ -151,10 +151,7 @@ if bashio::var.true "${auto_add}"; then
         bashio::exit.nok "${message}"
     fi
     persons=$(
-        curl -fsSL -X GET \
-            -H "Authorization: Bearer ${ha_token}" \
-            -H "Content-Type: application/json" \
-            "${ha_url}/api/states" |
+        curl -fsSL -H "Authorization: Bearer ${ha_token}" "${ha_url}/api/states" |
             jq -c '[.[] | select(.entity_id | contains("person.")).attributes.friendly_name]'
     )
 else
