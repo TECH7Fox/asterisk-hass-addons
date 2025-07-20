@@ -39,6 +39,6 @@ jobs:
           path: "./${{ matrix.path }}"
 
       - name: 🚀 Run Hadolint
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@refs/pull/94/merge
         with:
           dockerfile: "./${{ matrix.path }}/Dockerfile"
