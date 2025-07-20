@@ -2,6 +2,37 @@
 
 # Changelog
 
+## 5.2.0
+
+- Enable HAOS Ingress
+
+## 5.1.0
+
+### Breaking Changes
+
+- Migrate Asterisk files out of Home Assistant config directory
+  - This ensures the add-on backup and restore includes the Asterisk files
+  - Apart from the automatic migration, if your Asterisk files refer to files in the Home Assistant config dir, like scripts, their references must be **manually changed** from `/config/` to `/homeassistant/`.
+
+    Note: this breaking change was realized after 5.1.0 was initially released. Otherwise, this release would have been 6.0.0.
+
+### Upgrades
+
+- Upgrade Asterisk from 22.1.0 to 22.2.0
+- Upgrade debian-base from 7.6.2 to 7.7.1
+
+## 5.0.0
+
+### Breaking Changes
+
+- `chan_sip` was [removed](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-chan_sip/) in Asterisk 21, thus it is no longer supported by this add-on.
+  You should [migrate](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-res_pjsip/Migrating-from-chan_sip-to-res_pjsip/) to `res_pjsip` if you were using `chan_sip`.
+
+### Upgrades
+
+- Upgrade Asterisk from 20.8.1 to 22.1.0
+- Upgrade debian-base from 7.4.0 to 7.6.2
+
 ## 4.4.0
 
 ### New Features
