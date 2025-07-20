@@ -24,6 +24,12 @@ configuration:
     description: >-
       Os idiomas de sons adicionais para baixar de https://asterisksounds.org
       na inicialização do add-on, pulando quando já estiver baixado. Exemplo: pt-BR.
+  register_ingress_entry:
+    name: Registrar Entrada do Ingress
+    description: >-
+      Se deve registrar a entrada do ingress para o add-on como uma entidade do
+      Home Assistant ou não. Isso é útil para o cartão SIP para evitar a
+      necessidade de expor manualmente a interface WebSockets do Asterisk.
   generate_ssl_cert:
     name: Gerar Certificado SSL
     description: >-

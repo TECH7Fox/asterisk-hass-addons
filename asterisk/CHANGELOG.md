@@ -7,6 +7,7 @@
 ### New Features
 
 - Add health check for the add-on ([#344](https://github.com/TECH7Fox/asterisk-hass-addons/pull/344))
+- Allow to disable ingress entry registration ([#393](https://github.com/TECH7Fox/asterisk-hass-addons/pull/393))
 
 ### Upgrades
 
@@ -27,6 +28,7 @@
 ### Breaking Changes
 
 - Migrate Asterisk files out of Home Assistant config directory
+
   - This ensures the add-on backup and restore includes the Asterisk files
   - Apart from the automatic migration, if your Asterisk files refer to files in the Home Assistant config dir, like scripts, their references must be **manually changed** from `/config/` to `/homeassistant/`.
 
