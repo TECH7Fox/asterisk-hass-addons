@@ -1,5 +1,8 @@
 name: Asterisk
-version: 4.4.0
+version: 5.2.0
+breaking_versions:
+  - 5.1.0
+  - 5.0.0
 slug: asterisk
 description: PBX server for SIP devices like doorbells and phones
 url: https://github.com/TECH7Fox/asterisk-hass-addons
@@ -12,9 +15,11 @@ arch:
   - i386
 homeassistant_api: true
 map:
-  - config:rw
+  - addon_config:rw
   - media:rw
   - ssl
+  # To allow the add-on migrate from home assistant config to add-on config
+  - homeassistant_config:rw
 options:
   ami_password: null
   auto_add: true
@@ -50,3 +55,5 @@ host_network: true
 init: false
 uart: true # chan-dongle requirement
 stdin: true
+ingress: true
+ingress_port: 8088
