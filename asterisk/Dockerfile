@@ -133,6 +133,7 @@ ARG TARGETARCH
 # hadolint ignore=DL3003,SC2164
 RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
+    patch -p1 < remove_sudo.patch; \
     cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
     cp -f rtsp_sip_links.sh /usr/src/asterisk; \
     cd /usr/src/asterisk; \
