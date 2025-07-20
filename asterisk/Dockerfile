@@ -126,18 +126,11 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
 
 ## Install app_rtsp_sip
 WORKDIR /usr/src/app_rtsp_sip
-COPY patches/app_rtsp_sip/*.patch ./
 # https://github.com/tommyjlong/app_rtsp_sip/commits/master
 ARG APP_RTSP_SIP_VERSION="5b5cd25a68d19631240106623b36e5e146242af5"
-ARG TARGETARCH
-# hadolint ignore=DL3003,SC2164
 RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
-    patch -p1 < remove_sudo.patch; \
-    cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
-    cp -f rtsp_sip_links.sh /usr/src/asterisk; \
-    cd /usr/src/asterisk; \
-    ./rtsp_sip_links.sh
+    cp -f app_rtsp_sip.c /usr/src/asterisk/apps
 
 # Copy patches specific for this addon
 COPY patches/asterisk/*.patch /usr/src/asterisk-patches/

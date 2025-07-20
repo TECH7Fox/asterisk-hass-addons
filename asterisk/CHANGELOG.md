@@ -2,6 +2,22 @@
 
 # Changelog
 
+## 5.3.0
+
+### New Features
+
+- Add health check for the add-on ([#344](https://github.com/TECH7Fox/asterisk-hass-addons/pull/344))
+
+### Upgrades
+
+- Update Asterisk from 22.2.0 to 22.4.1
+- Update debian-base from 7.7.1 to 7.8.3
+- Update app_rtsp_sip from 1.0 to 2.0 (closes [#374](https://github.com/TECH7Fox/asterisk-hass-addons/pull/374))
+
+### Documentation
+
+- Fix add-on configuration path in documentation from `/addon_configs/b35499aa-asterisk` to `/addon_configs/b35499aa_asterisk`.
+
 ## 5.2.0
 
 - Enable HAOS Ingress
