@@ -2,6 +2,12 @@
 
 # Changelog
 
+## 5.3.1
+
+### Changes
+
+- Remove console connection logs ([#395](https://github.com/TECH7Fox/asterisk-hass-addons/pull/395))
+
 ## 5.3.0
 
 ### New Features
