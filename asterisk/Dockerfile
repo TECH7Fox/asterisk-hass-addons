@@ -1,5 +1,5 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:7.8.3 AS base
+FROM ghcr.io/hassio-addons/debian-base:8.0.0 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
@@ -35,7 +35,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libvorbisfile3 \
         libxml2 \
         libxslt1.1 \
-        libncurses5 ncurses-bin ncurses-term \
+        libncurses6 ncurses-bin ncurses-term \
         # for res_resolver_unbound \
         libunbound8 \
         procps \
