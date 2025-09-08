@@ -1,5 +1,5 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:7.8.3 AS base
+FROM ghcr.io/hassio-addons/debian-base:8.0.0 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
@@ -16,7 +16,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         file \
         ca-certificates \
         curl \
-        libcurl4 \
+        libcurl4t64 \
         libedit2 \
         libgsm1 \
         libogg0 \
@@ -24,18 +24,18 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libopusfile0 \
         libpopt0 \
         libresample1 \
-        libspandsp2 \
+        libspandsp2t64 \
         libspeex1 \
         libspeexdsp1 \
         libsqlite3-0 \
         libsrtp2-1 \
-        libssl3 \
+        libssl3t64 \
         libvorbis0a \
         libvorbisenc2 \
         libvorbisfile3 \
         libxml2 \
         libxslt1.1 \
-        libncurses5 ncurses-bin ncurses-term \
+        libncurses6 ncurses-bin ncurses-term \
         # for res_resolver_unbound \
         libunbound8 \
         procps \
