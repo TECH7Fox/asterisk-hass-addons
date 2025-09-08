@@ -3,6 +3,7 @@ services:
     image: ghcr.io/tech7fox/asterisk-hass-addon:latest
     build:
       context: ./asterisk
+    pull_policy: build
     tty: true
     network_mode: host
     environment:
