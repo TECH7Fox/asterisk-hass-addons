@@ -2,15 +2,97 @@
 
 # Changelog
 
+## 6.0.0
+
+### Breaking Changes
+
+- Drop support for `i386` and `armhf` architectures like other other community add-ons ([#315](https://github.com/TECH7Fox/asterisk-hass-addons/pull/315))
+
+## 5.3.1
+
+### Changes
+
+- Remove console connection logs ([#395](https://github.com/TECH7Fox/asterisk-hass-addons/pull/395))
+
+## 5.3.0
+
+### New Features
+
+- Add health check for the add-on ([#344](https://github.com/TECH7Fox/asterisk-hass-addons/pull/344))
+- Allow to disable ingress entry registration ([#393](https://github.com/TECH7Fox/asterisk-hass-addons/pull/393))
+
+### Upgrades
+
+- Update Asterisk from 22.2.0 to 22.4.1
+- Update debian-base from 7.7.1 to 7.8.3
+- Update app_rtsp_sip from 1.0 to 2.0 (closes [#374](https://github.com/TECH7Fox/asterisk-hass-addons/pull/374))
+
+### Documentation
+
+- Fix add-on configuration path in documentation from `/addon_configs/b35499aa-asterisk` to `/addon_configs/b35499aa_asterisk`.
+
+## 5.2.0
+
+- Enable HAOS Ingress
+
+## 5.1.0
+
+### Breaking Changes
+
+- Migrate Asterisk files out of Home Assistant config directory
+
+  - This ensures the add-on backup and restore includes the Asterisk files
+  - Apart from the automatic migration, if your Asterisk files refer to files in the Home Assistant config dir, like scripts, their references must be **manually changed** from `/config/` to `/homeassistant/`.
+
+    Note: this breaking change was realized after 5.1.0 was initially released. Otherwise, this release would have been 6.0.0.
+
+### Upgrades
+
+- Upgrade Asterisk from 22.1.0 to 22.2.0
+- Upgrade debian-base from 7.6.2 to 7.7.1
+
 ## 5.0.0
 
 ### Breaking Changes
 
-- Drop support for i386 and armhf architectures as all other community add-ons have beeen doing this
+- `chan_sip` was [removed](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-chan_sip/) in Asterisk 21, thus it is no longer supported by this add-on.
+  You should [migrate](https://docs.asterisk.org/Configuration/Channel-Drivers/SIP/Configuring-res_pjsip/Migrating-from-chan_sip-to-res_pjsip/) to `res_pjsip` if you were using `chan_sip`.
+
+### Upgrades
+
+- Upgrade Asterisk from 20.8.1 to 22.1.0
+- Upgrade debian-base from 7.4.0 to 7.6.2
+
+## 4.4.0
 
 ### New Features
 
-- Include `app_rtsp_sip` for ARM builds
+- Add custom startup script support
+
+## 4.3.0
+
+### Improvements
+
+- Prefer Opus over other codecs (by @OnFreund at #331)
+
+### Upgrades
+
+- Upgrade Asterisk from 20.6.0 to 20.8.1
+- Upgrade debian-base from 7.3.3 to 7.3.4
+
+## 4.2.1
+
+### Bug Fixes
+
+- Use `friendly_name` instead of `id` as caller id (by @OnFreund at #322)
+- Fix `/config/asterisk/custom` files being overwritten on container restart (by @felipecrs at #323, fixes #309)
+  - PS: this bug did not affect people running the add-on with Home Assistant Supervisor, only for people running the add-on as a standalone docker container.
+
+## 4.2.0
+
+### New Features
+
+- Include `app_rtsp_sip` in ARM builds
 
 ### Upgrades
 

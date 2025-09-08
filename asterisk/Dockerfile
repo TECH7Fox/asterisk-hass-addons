@@ -1,5 +1,5 @@
 # https://github.com/hassio-addons/addon-debian-base/releases
-FROM ghcr.io/hassio-addons/debian-base:7.3.3 AS base
+FROM ghcr.io/hassio-addons/debian-base:7.8.3 AS base
 
 SHELL [ "/bin/bash", "-euxo", "pipefail", "-c" ]
 
@@ -106,14 +106,14 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
 # (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="20.6.0_dfsg+_cs6.13.40431414"
+ARG ASTERISK_OPUS_VERSION="22.4.1_dfsg+_cs6.15.60671435"
 WORKDIR /usr/src/asterisk-opus
 RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
 # https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
-ARG ASTERISK_VERSION="20.6.0"
+ARG ASTERISK_VERSION="22.4.1"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -126,22 +126,11 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
 
 ## Install app_rtsp_sip
 WORKDIR /usr/src/app_rtsp_sip
-COPY patches/app_rtsp_sip/*.patch ./
 # https://github.com/tommyjlong/app_rtsp_sip/commits/master
-ARG APP_RTSP_SIP_VERSION="d0fb18b4813e4ae8940029a8a62030443d9feaec"
-ARG TARGETARCH
-# hadolint ignore=DL3003,SC2164
+ARG APP_RTSP_SIP_VERSION="5b5cd25a68d19631240106623b36e5e146242af5"
 RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
-    patch -p1 < disable_auth.patch; \
-    patch -p1 < remove_sudo.patch; \
-    if [[ "${TARGETARCH}" == arm* ]]; then \
-        patch -p1 < fix_arm.patch; \
-    fi; \
-    cp -f app_rtsp_sip.c /usr/src/asterisk/apps; \
-    cp -f rtsp_sip_links.sh /usr/src/asterisk; \
-    cd /usr/src/asterisk; \
-    ./rtsp_sip_links.sh
+    cp -f app_rtsp_sip.c /usr/src/asterisk/apps
 
 # Copy patches specific for this addon
 COPY patches/asterisk/*.patch /usr/src/asterisk-patches/
@@ -182,8 +171,7 @@ RUN \
         --enable chan_bridge_media \
         --enable chan_iax2 \
         --enable chan_pjsip \
-        --enable chan_rtp \
-        --enable chan_sip ; \
+        --enable chan_rtp; \
     # enable good things \
     menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts; \
     # applications \
@@ -212,7 +200,6 @@ RUN \
     menuselect/menuselect --disable pbx_spool menuselect.makeopts; \
     # resource modules \
     menuselect/menuselect --disable res_config_sqlite3 menuselect.makeopts; \
-    menuselect/menuselect --disable res_monitor menuselect.makeopts; \
     menuselect/menuselect --disable res_adsi menuselect.makeopts; \
     # utilities \
     menuselect/menuselect --disable astdb2sqlite3 menuselect.makeopts; \
@@ -241,7 +228,7 @@ RUN \
     # install example configuration \
     DESTDIR="${INSTALL_DIR}" make samples
 
-## Install chan-gongle
+## Install chan-dongle
 WORKDIR /usr/src/asterisk-chan-dongle
 # https://github.com/wdoekes/asterisk-chan-dongle/commits/master
 ARG CHAN_DONGLE_VERSION="13450af5f648ddf4bc279c08e53917f503253bdd"
@@ -289,6 +276,9 @@ COPY rootfs /
 
 # Without this, the STDIN script never gets executed
 ENV S6_CMD_WAIT_FOR_SERVICES=0
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=30s --start-interval=5s \
+    CMD asterisk -rx "core waitfullybooted" >/dev/null || exit 1
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/stdin.sh" ]

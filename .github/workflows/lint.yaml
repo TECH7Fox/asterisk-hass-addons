@@ -16,7 +16,7 @@ jobs:
       addons: ${{ steps.addons.outputs.addons_list }}
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🔍 Find add-on directories
         id: addons
@@ -31,16 +31,14 @@ jobs:
         path: ${{ fromJson(needs.find.outputs.addons) }}
     steps:
       - name: ⤵️ Check out code from GitHub
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🚀 Run Home Assistant Add-on Lint
-        # TODO: revert to a released version once the PR is merged
-        # https://github.com/frenck/action-addon-linter/pull/172
-        uses: frenck/action-addon-linter@refs/pull/172/merge
+        uses: frenck/action-addon-linter@v2.18.0
         with:
           path: "./${{ matrix.path }}"
 
       - name: 🚀 Run Hadolint
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@refs/pull/94/merge
         with:
           dockerfile: "./${{ matrix.path }}/Dockerfile"
