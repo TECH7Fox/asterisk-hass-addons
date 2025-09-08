@@ -16,7 +16,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         file \
         ca-certificates \
         curl \
-        libcurl4 \
+        libcurl4t64 \
         libedit2 \
         libgsm1 \
         libogg0 \
@@ -24,12 +24,12 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         libopusfile0 \
         libpopt0 \
         libresample1 \
-        libspandsp2 \
+        libspandsp2t64 \
         libspeex1 \
         libspeexdsp1 \
         libsqlite3-0 \
         libsrtp2-1 \
-        libssl3 \
+        libssl3t64 \
         libvorbis0a \
         libvorbisenc2 \
         libvorbisfile3 \
