@@ -219,17 +219,13 @@ for sound in "${additional_sounds[@]}"; do
 
         cd "${temp_dir}" || exit 1
 
-        url="https://www.asterisksounds.org/${sound,,}/download/asterisk-sounds-extra-${sound}-sln16.zip"
+        url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-${sound}-sln16-current.tar.gz"
         bashio::log.info "Downloading ${url}..."
-        curl -fsSL --output extra.zip "${url}"
-        unzip -q extra.zip
-        rm -f extra.zip
+        curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
 
-        url="https://www.asterisksounds.org/${sound,,}/download/asterisk-sounds-core-${sound}-sln16.zip"
+        url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-core-sounds-${sound}-sln16-current.tar.gz"
         bashio::log.info "Downloading ${url}..."
-        curl -fsSL --output core.zip "${url}"
-        unzip -q -o core.zip
-        rm -f core.zip
+        curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
 
         bashio::log.info "Converting sounds for '${sound}' (this can take a while)..."
         readarray -d $'\0' -t files < <(find . -type f -name "*.sln16" -print0)

@@ -22,8 +22,9 @@ configuration:
   additional_sounds:
     name: Idiomas de Sons Adicionais para baixar
     description: >-
-      Os idiomas de sons adicionais para baixar de https://asterisksounds.org
-      na inicialização do add-on, pulando quando já estiver baixado. Exemplo: pt-BR.
+      Os idiomas de sons adicionais para baixar de
+      https://downloads.asterisk.org/pub/telephony/sounds/ na inicialização do
+      add-on, pulando quando já estiver baixado. Exemplo: fr, en_GB.
   register_ingress_entry:
     name: Registrar Entrada do Ingress
     description: >-
