@@ -1,10 +1,15 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
+<!-- markdownlint-disable MD024 MD059 -->
 
 # Changelog
 
-## 5.3.1
+## 5.3.2
 
-### Changes
+- Replace <https://asterisksounds.org> (retired) with <https://downloads.asterisk.org/pub/telephony/sounds/> ([#401](https://github.com/TECH7Fox/asterisk-hass-addons/pull/401))
+- Update debian-base from 7.8.3 to 8.0.0 (Debian 13 Trixie) ([#400](https://github.com/TECH7Fox/asterisk-hass-addons/pull/400))
+- Update Asterisk from 22.4.1 to 22.5.2 ([#402](https://github.com/TECH7Fox/asterisk-hass-addons/pull/402))
+
+## 5.3.1
 
 - Remove console connection logs ([#395](https://github.com/TECH7Fox/asterisk-hass-addons/pull/395))
 
@@ -174,7 +179,7 @@ docker pull ghcr.io/tech7fox/asterisk-hass-addon:4.0.0
 
 - An example `docker-compose.yml` file is available [here](../docker-compose.yaml).
 - Make sure to mount a `config` folder to `/config` and a `media` folder to `/media` to ensure the add-on can access your configuration and media files.
-- To configure the add-on options you can use the `/config/config.json` file. The default options can be seen [here](./rootfs/usr/share/asterisk/config.json).
+- To configure the add-on options you can use the `/config/config.json` file. The default options can be seen [here](./rootfs/etc/asterisk-addon/default_config.json).
 - If you enable `auto_add` to automatically create extensions for every Person in your Home Assistant, make sure to also set:
   - The `HA_TOKEN` environment variable with your Home Assistant long-lived access token
   - The `HA_URL`, unless <https://homeassistant.local:8123> resolves to your Home Assistant instance
@@ -399,7 +404,7 @@ Then, you can go ahead and upgrade. Next time you start the addon, it will recre
 ## 1.2.0
 
 - Add an option to disable SSL (#66)
-  - Useful for setting up Asterisk to work behind a reverse proxy like NGINX. Here is one example on how to configure NGINX to proxy the Asterisk WebSockets interface: https://warlord0blog.wordpress.com/2020/04/16/asterisk-webrtc/
+  - Useful for setting up Asterisk to work behind a reverse proxy like NGINX. Here is one example on how to configure NGINX to proxy the Asterisk WebSockets interface: <https://warlord0blog.wordpress.com/2020/04/16/asterisk-webrtc/>
   - PS: This was not tested, so any feedback is welcome.
 - Add initial support for Ingress (#57)
   - Work is still required from other components like the integration and the card to effectively be able to use it.
