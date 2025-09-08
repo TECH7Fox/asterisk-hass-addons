@@ -22,8 +22,9 @@ configuration:
   additional_sounds:
     name: Additional Sounds Languages to Download
     description: >-
-      The additional sounds languages to download from https://asterisksounds.org
-      on add-on startup, skipping when already downloaded. Example: pt-BR.
+      The additional sounds languages to download from
+      https://downloads.asterisk.org/pub/telephony/sounds/ on add-on startup,
+      skipping when already downloaded. Examples: fr, en_GB.
   register_ingress_entry:
     name: Register Ingress Entry
     description: >-
