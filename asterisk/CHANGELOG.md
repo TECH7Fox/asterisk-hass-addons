@@ -7,7 +7,7 @@
 
 ### Breaking Changes
 
-- Drop support for `i386` and `armhf` architectures like other other community add-ons ([#315](https://github.com/TECH7Fox/asterisk-hass-addons/pull/315))
+- Drop support for `armhf`, `armv7`, and `i386` systems following the [Add-on Debian Base](https://github.com/hassio-addons/addon-debian-base/pull/204) ([#315](https://github.com/TECH7Fox/asterisk-hass-addons/pull/315))
 
 ## 5.3.2
 
