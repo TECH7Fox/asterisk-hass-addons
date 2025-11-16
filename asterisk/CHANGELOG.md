@@ -9,10 +9,6 @@
 
 - Drop support for `armhf`, `armv7`, and `i386` systems following the [Add-on Debian Base](https://github.com/hassio-addons/addon-debian-base/pull/204) ([#315](https://github.com/TECH7Fox/asterisk-hass-addons/pull/315))
 
-### Upgrades
-
-- Update Asterisk from 22.5.2 to 22.6.0 ([#414](https://github.com/TECH7Fox/asterisk-hass-addons/pull/414))
-
 ## 5.3.2
 
 - Replace <https://asterisksounds.org> (retired) with <https://downloads.asterisk.org/pub/telephony/sounds/> ([#401](https://github.com/TECH7Fox/asterisk-hass-addons/pull/401))
