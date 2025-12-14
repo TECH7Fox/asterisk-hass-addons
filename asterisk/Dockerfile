@@ -127,7 +127,7 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
 ## Install app_rtsp_sip
 WORKDIR /usr/src/app_rtsp_sip
 # https://github.com/tommyjlong/app_rtsp_sip/commits/master
-ARG APP_RTSP_SIP_VERSION="5b5cd25a68d19631240106623b36e5e146242af5"
+ARG APP_RTSP_SIP_VERSION="42299f029638eb832654939a66786b1803131d7d"
 RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
     cp -f app_rtsp_sip.c /usr/src/asterisk/apps

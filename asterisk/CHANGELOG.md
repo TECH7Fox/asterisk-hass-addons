@@ -3,6 +3,12 @@
 
 # Changelog
 
+## 6.1.0
+
+### Upgrades
+
+- Update app_rtsp_sip from 2.0 to 3.1
+
 ## 6.0.0
 
 ### Breaking Changes
