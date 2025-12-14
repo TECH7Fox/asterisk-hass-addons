@@ -9,6 +9,10 @@
 
 - Drop support for `armhf`, `armv7`, and `i386` systems following the [Add-on Debian Base](https://github.com/hassio-addons/addon-debian-base/pull/204) ([#315](https://github.com/TECH7Fox/asterisk-hass-addons/pull/315))
 
+### New Features
+
+- Enable SIP MESSAGE support via `res_pjsip_message` module for text messaging between SIP endpoints
+
 ### Upgrades
 
 - Update Asterisk from 22.5.2 to 22.6.0 ([#414](https://github.com/TECH7Fox/asterisk-hass-addons/pull/414))

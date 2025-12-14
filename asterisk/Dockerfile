@@ -199,6 +199,7 @@ RUN \
     # pbx modules \
     menuselect/menuselect --disable pbx_spool menuselect.makeopts; \
     # resource modules \
+    menuselect/menuselect --enable res_pjsip_message menuselect.makeopts; \
     menuselect/menuselect --disable res_config_sqlite3 menuselect.makeopts; \
     menuselect/menuselect --disable res_adsi menuselect.makeopts; \
     # utilities \
