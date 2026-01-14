@@ -105,15 +105,15 @@ You can get a key [here](https://cloud.google.com/speech-to-text). Google says i
 
 The log level to configure Asterisk to use. To know more about the existing presets, check [`logger.conf`](./rootfs/usr/share/tempio/logger.conf.gtpl).
 
-## STDIN service
+## STDIN action
 
-You can use the STDIN service to run any Asterisk CLI commands that you want. For example:
+You can use the STDIN action to run any Asterisk CLI commands that you want. For example:
 
 ```yaml
-service: hassio.addon_stdin
-  data:
-    addon: b35499aa_asterisk
-    input: dialplan reload
+action: hassio.addon_stdin
+data:
+  addon: b35499aa_asterisk
+  input: dialplan reload
 ```
 
 **This is only possible when using as an add-on.**
