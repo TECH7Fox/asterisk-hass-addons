@@ -5,6 +5,10 @@
 
 ## 6.1.0
 
+### New Features
+
+- Enable `res_pjsip_messaging` module for SIP MESSAGE support ([#423](https://github.com/TECH7Fox/asterisk-hass-addons/pull/423))
+
 ### Upgrades
 
 - Update Asterisk from 22.6.0 to 22.8.2 ([#431](https://github.com/TECH7Fox/asterisk-hass-addons/pull/431))
