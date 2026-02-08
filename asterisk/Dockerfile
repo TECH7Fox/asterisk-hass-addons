@@ -105,15 +105,15 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     rm -rf /var/lib/apt/lists/*
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
-# (replace all ~ with _ and remove final -)
-ARG ASTERISK_OPUS_VERSION="22.6.0_dfsg+_cs6.15.60671435"
+ARG ASTERISK_OPUS_VERSION="22.8.0+dfsg+_cs6.15.60671435-1"
 WORKDIR /usr/src/asterisk-opus
-RUN curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
+RUN ASTERISK_OPUS_VERSION=$(echo "${ASTERISK_OPUS_VERSION}" | sed 's/-[^-]*$//; s/~/-/g') && \
+    curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
 # https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
-ARG ASTERISK_VERSION="22.6.0"
+ARG ASTERISK_VERSION="22.8.2"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
@@ -126,9 +126,9 @@ RUN cp --verbose ../asterisk-opus*/codecs/* codecs; \
 
 ## Install app_rtsp_sip
 WORKDIR /usr/src/app_rtsp_sip
-# https://github.com/tommyjlong/app_rtsp_sip/commits/master
-ARG APP_RTSP_SIP_VERSION="5b5cd25a68d19631240106623b36e5e146242af5"
-RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/${APP_RTSP_SIP_VERSION}.tar.gz" | \
+# https://github.com/tommyjlong/app_rtsp_sip/releases
+ARG APP_RTSP_SIP_VERSION="3.1"
+RUN curl -fsSL "https://github.com/tommyjlong/app_rtsp_sip/archive/v${APP_RTSP_SIP_VERSION}.tar.gz" | \
         tar --strip-components 1 -xz; \
     cp -f app_rtsp_sip.c /usr/src/asterisk/apps
 
