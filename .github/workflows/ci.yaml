@@ -127,7 +127,7 @@ jobs:
           digest='${{ steps.build.outputs.digest }}'
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.vars.outputs.artifact-name }}
           path: /tmp/digests/*
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: digest-*
           merge-multiple: true
