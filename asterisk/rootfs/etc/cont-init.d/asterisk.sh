@@ -219,21 +219,14 @@ for sound in "${additional_sounds[@]}"; do
 
         cd "${temp_dir}" || exit 1
 
-        url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-${sound}-sln16-current.tar.gz"
-        bashio::log.info "Downloading ${url}..."
-        curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
+        for format in sln16 ulaw alaw gsm g722; do
+            url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-${sound}-${format}-current.tar.gz"
+            bashio::log.info "Downloading ${url}..."
+            curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
 
-        url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-core-sounds-${sound}-sln16-current.tar.gz"
-        bashio::log.info "Downloading ${url}..."
-        curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
-
-        bashio::log.info "Converting sounds for '${sound}' (this can take a while)..."
-        readarray -d $'\0' -t files < <(find . -type f -name "*.sln16" -print0)
-        for file in "${files[@]}"; do
-            file_without_ext="${file%".sln16"}"
-            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t gsm -r 8k "${file_without_ext}.gsm"
-            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t raw -r 8k -e a-law "${file_without_ext}.alaw"
-            sox -t raw -e signed-integer -b 16 -c 1 -r 16k "${file}" -t raw -r 8k -e mu-law "${file_without_ext}.ulaw"
+            url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-core-sounds-${sound}-${format}-current.tar.gz"
+            bashio::log.info "Downloading ${url}..."
+            curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
         done
 
         cd - >/dev/null || exit 1
