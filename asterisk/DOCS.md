@@ -58,7 +58,7 @@ Enables video support for the auto generated extensions, when `auto_add` is enab
 
 ### Option: `additional_sounds`
 
-The additional sounds languages to download from <https://downloads.asterisk.org/pub/telephony/sounds> on add-on startup, skipping when already downloaded. Example: pt-BR.
+The additional sounds languages to download from <https://downloads.asterisk.org/pub/telephony/sounds> on add-on startup, skipping when already downloaded. Examples: `fr`, `en_GB`.
 
 The sounds will be downloaded to `/media/asterisk`.
 

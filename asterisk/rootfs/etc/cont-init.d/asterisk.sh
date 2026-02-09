@@ -203,7 +203,7 @@ readarray -t additional_sounds < <(set +e && bashio::config 'additional_sounds')
 
 temp_dir="/tmp/sounds_download"
 for sound in "${additional_sounds[@]}"; do
-    sound_rel_dir="sounds/${sound//-/_}"
+    sound_rel_dir="sounds/${sound}"
     sound_dir="/media/asterisk/${sound_rel_dir}"
     asterisk_sound_dir="/var/lib/asterisk/${sound_rel_dir}"
     lang_file="${sound_dir}/.language"
