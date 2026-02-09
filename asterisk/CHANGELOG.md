@@ -3,6 +3,13 @@
 
 # Changelog
 
+## 6.2.0
+
+### New Features
+
+- The `additional_sounds` option will now also download `g722` sounds ([#434](https://github.com/TECH7Fox/asterisk-hass-addons/pull/434))
+  - Additionally, this option has been reworked so that instead of converting the sound files from `sln16`, it directly downloads the variants from https://downloads.asterisk.org/pub/telephony/sounds.
+
 ## 6.1.0
 
 ### New Features
