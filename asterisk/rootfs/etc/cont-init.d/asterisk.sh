@@ -222,11 +222,11 @@ for sound in "${additional_sounds[@]}"; do
         for format in sln16 ulaw alaw gsm g722; do
             url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-${sound}-${format}-current.tar.gz"
             bashio::log.info "Downloading ${url}..."
-            curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
+            curl -fsSL --retry 3 "${url}" | tar xz
 
             url="https://downloads.asterisk.org/pub/telephony/sounds/asterisk-core-sounds-${sound}-${format}-current.tar.gz"
             bashio::log.info "Downloading ${url}..."
-            curl -fsSL --retry 3 "${url}" | tar xz --strip-components=1
+            curl -fsSL --retry 3 "${url}" | tar xz
         done
 
         cd - >/dev/null || exit 1
