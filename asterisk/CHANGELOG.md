@@ -3,6 +3,19 @@
 
 # Changelog
 
+## 6.3.0
+
+### Bug Fixes
+
+- Fix tar extraction for Asterisk sound files ([#447](https://github.com/TECH7Fox/asterisk-hass-addons/pull/447))
+
+### Upgrades
+
+- Update Asterisk from 22.8.2 to 22.9.0
+- Update app_rtsp_sip from 3.1 to 3.2
+- Update chan-dongle
+- Update debian-base from 9.2.0 to 9.3.0 ([#444](https://github.com/TECH7Fox/asterisk-hass-addons/pull/444))
+
 ## 6.2.0
 
 ### New Features
