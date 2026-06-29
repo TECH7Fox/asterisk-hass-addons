@@ -11,9 +11,9 @@
 
 ### Upgrades
 
-- Update Asterisk from 22.8.2 to 22.9.0
+- Update Asterisk from 22.8.2 to 22.10.1
 - Update app_rtsp_sip from 3.1 to 3.2
-- Update chan-dongle
+- Update chan-dongle to latest revision
 - Update debian-base from 9.2.0 to 9.3.0 ([#444](https://github.com/TECH7Fox/asterisk-hass-addons/pull/444))
 
 ## 6.2.0
