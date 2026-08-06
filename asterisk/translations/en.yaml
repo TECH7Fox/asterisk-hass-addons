@@ -3,6 +3,12 @@ configuration:
     name: AMI Password
     description: >-
       The password that will be used for the `admin` user in AMI.
+  ami_permit:
+    name: AMI Permitted Networks
+    description: >-
+      The networks or hosts that are allowed to connect to the Asterisk Manager
+      Interface. Values are rendered as `permit` lines in `manager.conf`, for
+      example `127.0.0.1/255.255.255.0` or `192.168.1.10/255.255.255.255`.
   video_support:
     name: Video Support
     description: >-

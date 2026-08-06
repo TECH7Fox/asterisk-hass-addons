@@ -1,5 +1,8 @@
 {
   "ami_password": null,
+  "ami_permit": [
+    "127.0.0.1/255.255.255.0"
+  ],
   "video_support": false,
   "auto_add": false,
   "auto_add_secret": "",

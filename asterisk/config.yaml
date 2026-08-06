@@ -20,6 +20,8 @@ map:
   - homeassistant_config:rw
 options:
   ami_password: null
+  ami_permit:
+    - 127.0.0.1/255.255.255.0
   auto_add: true
   auto_add_secret: ""
   video_support: false
@@ -36,6 +38,8 @@ options:
   log_level: info
 schema:
   ami_password: password
+  ami_permit:
+    - str
   auto_add: bool
   auto_add_secret: password
   video_support: bool
