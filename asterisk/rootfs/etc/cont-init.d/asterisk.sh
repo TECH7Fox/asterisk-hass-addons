@@ -108,11 +108,18 @@ if bashio::config.is_empty 'ami_password'; then
     bashio::exit.nok "'ami_password' must be set"
 fi
 
+readarray -t ami_permit < <(set +e && bashio::config 'ami_permit')
+ami_permit_lines=""
+for permit in "${ami_permit[@]}"; do
+    ami_permit_lines+="permit = ${permit}"$'\n'
+done
+
 # deleting the target before writing to it ensures we don't write to a
 # symlinked file, like when the container is restarted
 rm -f "${etc_asterisk}/manager.conf"
 bashio::var.json \
-    password "$(bashio::config 'ami_password')" |
+    password "$(bashio::config 'ami_password')" \
+    permit "${ami_permit_lines}" |
     tempio \
         -template "${tempio_dir}/manager.conf.gtpl" \
         -out "${etc_asterisk}/manager.conf"

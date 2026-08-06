@@ -3,6 +3,12 @@
 
 # Changelog
 
+## 6.3.0
+
+### New Features
+
+- Add `ami_permit` option to configure Asterisk Manager Interface allowed networks.
+
 ## 6.2.0
 
 ### New Features

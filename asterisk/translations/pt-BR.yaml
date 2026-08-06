@@ -3,6 +3,13 @@ configuration:
     name: Senha AMI
     description: >-
       A senha que será usada para o usuário `admin` na AMI.
+  ami_permit:
+    name: Redes permitidas AMI
+    description: >-
+      As redes ou hosts que têm permissão para se conectar à Interface de
+      Gerenciamento do Asterisk. Os valores são renderizados como linhas
+      `permit` no `manager.conf`, por exemplo `127.0.0.1/255.255.255.0` ou
+      `192.168.1.10/255.255.255.255`.
   video_support:
     name: Suporte de vídeo
     description: >-

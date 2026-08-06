@@ -42,6 +42,25 @@ We expose some configuration options to simplify the setup of the Asterisk serve
 
 Set's the password for the Asterisk Manager Interface, to connect to the [Asterisk integration](https://github.com/TECH7Fox/Asterisk-integration).
 
+### Option: `ami_permit`
+
+The networks or hosts that are allowed to connect to the Asterisk Manager Interface. Each value is rendered as a `permit` line in `manager.conf`.
+
+The default allows local add-on access:
+
+```yaml
+ami_permit:
+  - 127.0.0.1/255.255.255.0
+```
+
+If Home Assistant or another trusted client connects from a non-loopback address, add that address with a host mask:
+
+```yaml
+ami_permit:
+  - 127.0.0.1/255.255.255.0
+  - 192.168.1.10/255.255.255.255
+```
+
 ### Option: `auto_add`
 
 Creates a extension for every [person](https://www.home-assistant.io/integrations/person/) registered in Home Assistant. They will have their number and username auto-generated starting from 100, with the `callerid` set to the person's name.
