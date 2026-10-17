@@ -115,18 +115,19 @@ jobs:
           context: asterisk
           platforms: ${{ matrix.target.platform }}
           labels: ${{ needs.prepare.outputs.meta-labels }}
-          outputs: |
-            type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=${{ needs.prepare.outputs.push }}
+          outputs: ${{ needs.prepare.outputs.push == 'true' && format('type=image,name={0},push-by-digest=true,name-canonical=true,push=true', needs.prepare.outputs.image) || 'type=image,push=false' }}
           cache-from: |
             ${{ steps.vars.outputs.cache-from }}
           cache-to: |
             ${{ steps.vars.outputs.cache-to }}
       - name: Export digest
+        if: needs.prepare.outputs.push == 'true'
         run: |
           mkdir -p /tmp/digests
           digest='${{ steps.build.outputs.digest }}'
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
+        if: needs.prepare.outputs.push == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.vars.outputs.artifact-name }}
@@ -135,6 +136,7 @@ jobs:
           retention-days: 1
 
   push:
+    if: needs.prepare.outputs.push == 'true'
     needs:
       - prepare
       - build
