@@ -3,6 +3,13 @@
 
 # Changelog
 
+## Unreleased
+
+### Upgrades
+
+- Update Asterisk from 22.8.2 to 22.11.0 LTS (supersedes #448)
+- Update Asterisk Opus codec from 22.8.0 to 22.10.0
+
 ## 6.2.0
 
 ### New Features

@@ -105,15 +105,15 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     rm -rf /var/lib/apt/lists/*
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
-ARG ASTERISK_OPUS_VERSION="22.8.0+dfsg+_cs6.15.60671435-1"
+ARG ASTERISK_OPUS_VERSION="22.10.0+dfsg+~cs6.17.60671434-2"
 WORKDIR /usr/src/asterisk-opus
-RUN ASTERISK_OPUS_VERSION=$(echo "${ASTERISK_OPUS_VERSION}" | sed 's/-[^-]*$//; s/~/-/g') && \
+RUN ASTERISK_OPUS_VERSION=$(echo "${ASTERISK_OPUS_VERSION}" | sed 's/-[^-]*$//; s/~/_/g') && \
     curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
     tar --strip-components 2 -xz
 
 # https://github.com/asterisk/asterisk/tags
 # https://www.asterisk.org/downloads/asterisk/all-asterisk-versions/
-ARG ASTERISK_VERSION="22.8.2"
+ARG ASTERISK_VERSION="22.11.0"
 WORKDIR /usr/src/asterisk
 RUN curl -fsSL "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${ASTERISK_VERSION}.tar.gz" | \
     tar --strip-components 1 -xz
