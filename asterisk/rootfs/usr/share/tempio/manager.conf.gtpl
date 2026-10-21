@@ -3,6 +3,8 @@
 
 [general]
 enabled = yes
+webenabled = yes
+httptimeout = 60
 port = 5038
 bindaddr = 0.0.0.0
 displayconnects = yes
@@ -11,6 +13,9 @@ displayconnects = yes
 secret = {{ .password }}
 deny = 0.0.0.0/0.0.0.0
 permit = 127.0.0.1/255.255.255.0
+permit = 172.30.0.0/255.255.0.0
+permit = 192.168.0.0/255.255.0.0
+permit = 10.0.0.0/255.0.0.0
 read = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
 write = system,call,log,verbose,command,agent,user,config,command,dtmf,reporting,cdr,dialplan,originate,message
 writetimeout = 5000
