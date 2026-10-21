@@ -105,7 +105,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     rm -rf /var/lib/apt/lists/*
 
 # Taken from https://metadata.ftp-master.debian.org/changelogs/main/a/asterisk/unstable_changelog
-ARG ASTERISK_OPUS_VERSION="22.10.0+dfsg+~cs6.17.60671434-2"
+ARG ASTERISK_OPUS_VERSION="22.10.1+dfsg+~cs6.17.60671434-1"
 WORKDIR /usr/src/asterisk-opus
 RUN ASTERISK_OPUS_VERSION=$(echo "${ASTERISK_OPUS_VERSION}" | sed 's/-[^-]*$//; s/~/_/g') && \
     curl -fsSL "https://salsa.debian.org/pkg-voip-team/asterisk/-/archive/upstream/${ASTERISK_OPUS_VERSION}/asterisk-upstream-${ASTERISK_OPUS_VERSION}.tar.gz?path=Xopus" | \
