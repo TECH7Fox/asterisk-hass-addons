@@ -1,5 +1,5 @@
 name: Asterisk
-version: 6.3.0
+version: 6.3.1
 breaking_versions:
   - 6.0.0
   - 5.1.0
@@ -57,3 +57,4 @@ uart: true # chan-dongle requirement
 stdin: true
 ingress: true
 ingress_port: 8088
+panel_admin: false
