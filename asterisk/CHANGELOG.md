@@ -3,6 +3,12 @@
 
 # Changelog
 
+## 6.3.1
+
+### Bug Fixes
+
+- Allow non-admin users to access Ingress ([#460](https://github.com/TECH7Fox/asterisk-hass-addons/pull/460))
+
 ## 6.3.0
 
 ### Bug Fixes
