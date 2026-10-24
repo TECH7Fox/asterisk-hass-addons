@@ -87,6 +87,7 @@
       transition: background 0.15s, border-color 0.15s;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.4rem;
     }
 
@@ -376,6 +377,9 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .key-btn:hover { background: var(--bg-card-hover); }
@@ -390,6 +394,9 @@
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .call-btn:hover { background: #059669; }
@@ -405,6 +412,8 @@
       border-radius: var(--radius);
       cursor: pointer;
       display: none;
+      align-items: center;
+      justify-content: center;
     }
 
     .hangup-btn:hover { background: #dc2626; }
@@ -1345,7 +1354,7 @@ Type a command below or select one of the quick query buttons above.</div>
         if (!dialedDigits) dialedDigits = "102";
         screen.innerText = "Calling " + dialedDigits + "...";
         callBtn.style.display = "none";
-        hangupBtn.style.display = "block";
+        hangupBtn.style.display = "flex";
         isCalling = true;
         
         logConsole(`Initiating call to Extension ${dialedDigits} via Asterisk...`);
@@ -1364,7 +1373,7 @@ Type a command below or select one of the quick query buttons above.</div>
           } else {
             logConsole(`Asterisk notice: ${res.trim()}`);
             isCalling = false;
-            callBtn.style.display = "block";
+            callBtn.style.display = "flex";
             hangupBtn.style.display = "none";
             screen.innerText = "Call Failed";
             if (res.includes('Permission denied') || res.includes('Authentication failed')) {
@@ -1378,7 +1387,7 @@ Type a command below or select one of the quick query buttons above.</div>
         } catch (err) {
           logConsole(`Call error: ${err.message || err}`);
           isCalling = false;
-          callBtn.style.display = "block";
+          callBtn.style.display = "flex";
           hangupBtn.style.display = "none";
           screen.innerText = "Error";
           showToast(`Call error: ${err.message || err}`);
@@ -1411,7 +1420,7 @@ Type a command below or select one of the quick query buttons above.</div>
         }
         
         screen.innerText = "Call Ended";
-        callBtn.style.display = "block";
+        callBtn.style.display = "flex";
         hangupBtn.style.display = "none";
         logConsole("Call terminated.");
         setTimeout(clearDialer, 1500);
