@@ -464,7 +464,7 @@
     <div class="title-area">
       <h1>Asterisk PBX Dashboard</h1>
       <span id="statusBadge" class="badge badge-success">Online</span>
-      <span class="badge badge-primary">v6.4.0 / Asterisk 22 LTS</span>
+      <span id="versionBadge" class="badge badge-primary">Asterisk PBX</span>
     </div>
     <div class="header-actions">
       <button onclick="reloadPJSIP()">🔄 Reload PJSIP</button>
@@ -1474,6 +1474,13 @@ Type a command below or select one of the quick query buttons above.</div>
         const res = await callAjam('command', { command: 'pjsip show endpoints' });
         updateEndpointsMetric(res);
         showToast("Endpoints status refreshed.");
+
+        const verRes = await callAjam('command', { command: 'core show version' });
+        const verMatch = verRes.match(/Asterisk\s+([\w.\-]+)/i);
+        if (verMatch) {
+          const badge = document.getElementById('versionBadge');
+          if (badge) badge.innerText = `Asterisk ${verMatch[1]}`;
+        }
       } catch (err) {
         logConsole(`Status error: ${err.message}`);
         updateEndpointsMetric();
