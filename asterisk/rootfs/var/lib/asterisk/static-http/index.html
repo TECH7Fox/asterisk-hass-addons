@@ -1,5 +1,1882 @@
-<html>
-  <body>
-    <h1>Not implemented yet</h1>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asterisk PBX Dashboard & Config</title>
+  <style>
+    :root {
+      --primary: #03a9f4;
+      --primary-hover: #0288d1;
+      --bg-dark: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #374151;
+      --bg-input: #111827;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: #374151;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .title-area h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+    .badge-primary { background: rgba(3, 169, 244, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: var(--font);
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    button:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    button.btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    button.btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    button.btn-success {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+
+    button.btn-success:hover {
+      background: #059669;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      border-radius: var(--radius);
+    }
+
+    .stat-label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Tab Panes */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Cards & Tables */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.15);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      padding: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+      position: relative;
+    }
+
+    .form-group label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-group .hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.875rem;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      outline: 2px solid var(--primary);
+      border-color: transparent;
+    }
+
+    /* Fixed Checkbox Layout */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin-top: 0.35rem;
+      line-height: 1.4;
+      font-size: 0.875rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-top: 0.15rem;
+      flex-shrink: 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Advanced Section Visibility */
+    .advanced-section {
+      display: none;
+    }
+
+    .show-advanced .advanced-section {
+      display: block;
+    }
+
+    .advanced-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Terminal Console */
+    .console-box {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8125rem;
+      height: 320px;
+      overflow-y: auto;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .cmd-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .cmd-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.875rem;
+    }
+
+    .cmd-input:focus {
+      outline: 2px solid var(--primary);
+      border-color: transparent;
+    }
+
+    /* Softphone Dialer */
+    .dialer-container {
+      max-width: 380px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .dialer-screen {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .key-btn {
+      padding: 1rem 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .key-btn:hover { background: var(--bg-card-hover); }
+
+    .call-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--success);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .call-btn:hover { background: #059669; }
+
+    .hangup-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--danger);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hangup-btn:hover { background: #dc2626; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--success);
+      color: var(--text);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 9999;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-area">
+      <h1>Asterisk PBX Dashboard</h1>
+      <span id="statusBadge" class="badge badge-success">Online</span>
+      <span id="versionBadge" class="badge badge-primary">Asterisk PBX</span>
+    </div>
+    <div class="header-actions">
+      <button onclick="reloadPJSIP()">🔄 Reload PJSIP</button>
+      <button onclick="reloadDialplan()">📞 Reload Dialplan</button>
+      <button class="btn-primary" onclick="refreshStatus()">Refresh</button>
+    </div>
+  </header>
+
+  <!-- Metric Overview -->
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Active Channels</div>
+      <div class="stat-val" id="activeChannels">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Configured Endpoints</div>
+      <div class="stat-val" id="regEndpoints">4 / 4</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">SIP Core Bridge</div>
+      <div class="stat-val" style="color: var(--success);" id="sipBridge">Connected</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Server Uptime</div>
+      <div class="stat-val" id="serverUptime" style="font-size: 1.25rem; line-height: 2rem;">Online</div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('extensions')">Endpoints & Devices</button>
+    <button class="tab-btn" onclick="switchTab('config')">⚙️ PBX Configuration UI</button>
+    <button class="tab-btn" onclick="switchTab('dialer')">Test Softphone</button>
+    <button class="tab-btn" onclick="switchTab('console')">Asterisk Console</button>
+    <button class="tab-btn" onclick="switchTab('reference')">Reference & Architecture</button>
+  </nav>
+
+  <!-- TAB 1: Extensions & Device Manager -->
+  <div id="tab-extensions" class="tab-content active">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span>Configured Endpoints & Registration Status</span>
+          <span style="display: block; font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Active SIP extensions, WebRTC browser endpoints, and intercoms</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-primary" onclick="openDeviceModal()">+ Add New Device</button>
+          <button onclick="switchTab('config')">Edit Global Config</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Extension</th>
+            <th>Caller ID / Device Name</th>
+            <th>Type / Protocol</th>
+            <th>Transport</th>
+            <th>Status</th>
+            <th>Allowed Codecs</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="extensionsTable">
+          <tr id="row-100">
+            <td><strong>100</strong></td>
+            <td>Main Deskphone</td>
+            <td>Standard SIP Phone</td>
+            <td><code>transport-udp</code></td>
+            <td id="status-100"><span class="badge badge-success">Registered</span></td>
+            <td>opus, ulaw, alaw, g722</td>
+            <td>
+              <button onclick="quickDial('100')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Call</button>
+              <button onclick="editDevice('100')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+              <button onclick="deleteDevice('100', 'Main Deskphone')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--danger, #ef4444); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+            </td>
+          </tr>
+          <tr id="row-101">
+            <td><strong>101</strong></td>
+            <td>Mobile Softphone</td>
+            <td>SIP Client (TLS/UDP)</td>
+            <td><code>transport-tcp</code></td>
+            <td id="status-101"><span class="badge badge-warning">Offline</span></td>
+            <td>opus, ulaw, alaw, g722</td>
+            <td>
+              <button onclick="quickDial('101')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Call</button>
+              <button onclick="editDevice('101')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+              <button onclick="deleteDevice('101', 'Mobile Softphone')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--danger, #ef4444); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+            </td>
+          </tr>
+          <tr id="row-102">
+            <td><strong>102</strong></td>
+            <td>Wall Display Kiosk</td>
+            <td>WebRTC Tablet (SIP.js)</td>
+            <td><code>transport-wss</code></td>
+            <td id="status-102"><span class="badge badge-success">Registered</span></td>
+            <td>opus, ulaw, h264, vp8</td>
+            <td>
+              <button onclick="quickDial('102')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Ring</button>
+              <button onclick="editDevice('102')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+              <button onclick="deleteDevice('102', 'Wall Display Kiosk')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--danger, #ef4444); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+            </td>
+          </tr>
+          <tr id="row-103">
+            <td><strong>103</strong></td>
+            <td>Intercom Auto-Answer</td>
+            <td>Intercom PTT Station</td>
+            <td><code>Internal Dialplan</code></td>
+            <td id="status-103"><span class="badge badge-primary">Standby</span></td>
+            <td>Direct Audio Path</td>
+            <td>
+              <button class="btn-primary" onclick="quickDial('103')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Intercom PTT</button>
+              <button onclick="editDevice('103')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+            </td>
+          </tr>
+          <tr id="row-8001">
+            <td><strong>8001</strong></td>
+            <td>Video Doorbell</td>
+            <td>RTSP / SIP Video Bridge</td>
+            <td><code>app_rtsp_sip</code></td>
+            <td id="status-8001"><span class="badge badge-success">Active</span></td>
+            <td>ulaw, alaw, h264</td>
+            <td>
+              <button onclick="openDoorbellModal()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">View Feed</button>
+              <button onclick="editDevice('8001')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: PBX & Add-on Configuration UI -->
+  <div id="tab-config" class="tab-content">
+
+    <!-- Mode Toggle Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1.25rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-weight: 700; font-size: 1rem;">Configuration Mode</span>
+          <span id="modeBadge" class="badge badge-primary">Standard View</span>
+        </div>
+        <span id="modeDescription" style="display: block; font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.15rem;">
+          Displaying essential settings for daily operations. Toggle Advanced for deep PBX and Asterisk tuning.
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; background: var(--bg-dark); padding: 0.45rem 0.85rem; border-radius: var(--radius); border: 1px solid var(--border);">
+          <input type="checkbox" id="toggleAdvanced" onchange="toggleAdvancedMode()" style="width: 1.15rem; height: 1.15rem; accent-color: var(--primary); cursor: pointer;">
+          <span>⚙️ Show Advanced Settings</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STANDARD VIEW SECTIONS (Always Visible)   -->
+    <!-- ========================================== -->
+
+    <!-- Standard Card 1: Network & NAT -->
+    <div class="card">
+      <div class="card-header">
+        <span>🌐 Network & External Access</span>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">External WAN routing and local subnets</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>External Public IP / FQDN</label>
+          <input type="text" id="cfg_external_ip" class="form-control" value="" placeholder="e.g. 203.0.113.1 or yourdomain.duckdns.org">
+          <span class="hint">External public address used in SDP headers to avoid one-way audio outside LAN.</span>
+        </div>
+        <div class="form-group">
+          <label>Local Network Subnets (CIDR, comma-separated)</label>
+          <input type="text" id="cfg_local_nets" class="form-control" value="192.168.1.0/24, 10.0.0.0/8, 172.16.0.0/12, 172.30.0.0/16">
+          <span class="hint">Subnets where NAT is bypassed for direct local streaming.</span>
+        </div>
+        <div class="form-group">
+          <label>Ingress WebSocket (WSS) Port</label>
+          <input type="number" id="cfg_wss_port" class="form-control" value="8089">
+          <span class="hint">Port used by browser SIP.js and wall tablets.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standard Card 2: Extensions & Intercom -->
+    <div class="card">
+      <div class="card-header">
+        <span>📞 Extensions & Auto-Provisioning</span>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">Person accounts & intercom auto-answer</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Auto-Add Person Extensions</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_auto_add" checked>
+            <span>Automatically provision extensions for Home Assistant person entities</span>
+          </div>
+          <span class="hint">Extensions start from 100 sequentially.</span>
+        </div>
+        <div class="form-group">
+          <label>Default Auto-Add Extension Secret</label>
+          <input type="password" id="cfg_auto_add_secret" class="form-control" value="ChangeMeSecret123!">
+          <span class="hint">Default SIP password assigned to auto-provisioned person endpoints.</span>
+        </div>
+        <div class="form-group">
+          <label>Intercom Auto-Answer Extension</label>
+          <input type="text" id="cfg_intercom_ext" class="form-control" value="103">
+          <span class="hint">Dialing this extension triggers auto-answer on the destination endpoint.</span>
+        </div>
+        <div class="form-group">
+          <label>Intercom Destination Extension</label>
+          <input type="text" id="cfg_intercom_target" class="form-control" value="102">
+          <span class="hint">Destination extension to answer hands-free.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standard Card 3: Doorbell Integration -->
+    <div class="card">
+      <div class="card-header">
+        <span>🚪 Doorbell & RTSP Camera Bridge</span>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">app_rtsp_sip video stream & ring alert</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Doorbell SIP Extension</label>
+          <input type="text" id="cfg_doorbell_ext" class="form-control" value="8001">
+          <span class="hint">Virtual extension assigned to doorbell stream.</span>
+        </div>
+        <div class="form-group">
+          <label>Doorbell Camera Entity (Home Assistant)</label>
+          <input type="text" id="cfg_doorbell_cam" class="form-control" value="camera.doorbell" placeholder="e.g. camera.front_door">
+          <span class="hint">Home Assistant camera entity used for live video feeds.</span>
+        </div>
+        <div class="form-group">
+          <label>Doorbell Press Alert Target</label>
+          <input type="text" id="cfg_doorbell_target" class="form-control" value="102" placeholder="e.g. 102 or 700">
+          <span class="hint">Extension or Ring Group to ring when doorbell button is pressed.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standard Card 4: Security & Permissions -->
+    <div class="card">
+      <div class="card-header">
+        <span>🛡️ Security & Ingress Permissions</span>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">AMI password, local subnet permit & tablet Ingress</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>AMI Admin Password</label>
+          <input type="password" id="cfg_ami_pwd" class="form-control" value="ChangeMeSecret123!">
+          <span class="hint">Password used by Home Assistant Asterisk integration.</span>
+        </div>
+        <div class="form-group">
+          <label>AMI Allowed Subnets / Permit ACL (PR #453)</label>
+          <input type="text" id="cfg_ami_permit" class="form-control" value="127.0.0.1/32, 192.168.1.0/24, 10.0.0.0/8">
+          <span class="hint">Subnets allowed to connect to AMI management (prevents unauthorized access).</span>
+        </div>
+        <div class="form-group">
+          <label>Supervisor Ingress Permission (Issue #458)</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_panel_admin" checked>
+            <span>Allow non-admin wall tablets & users to access Ingress UI</span>
+          </div>
+          <span class="hint">Sets panel_admin: false in config.yaml to allow wall tablets without admin.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ADVANCED VIEW SECTIONS (Hidden by Default) -->
+    <!-- ========================================== -->
+
+    <!-- Advanced Card 1: Add-on & Supervisor Options -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>⚙️ System & Supervisor Add-on Options</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">Add-on schema (options.json)</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Asterisk Log Level</label>
+          <select id="cfg_log_level" class="form-control">
+            <option value="info" selected>info (Standard)</option>
+            <option value="notice">notice</option>
+            <option value="warning">warning</option>
+            <option value="error">error</option>
+            <option value="debug">debug (Troubleshooting)</option>
+            <option value="trace">trace (Deep Inspection)</option>
+            <option value="all">all</option>
+            <option value="off">off</option>
+          </select>
+          <span class="hint">Log verbosity written to add-on console and logger.conf.</span>
+        </div>
+        <div class="form-group">
+          <label>Additional Sound Packs</label>
+          <input type="text" id="cfg_sound_packs" class="form-control" value="en" placeholder="e.g. en, fr, de, es">
+          <span class="hint">Sound languages downloaded from downloads.asterisk.org on boot.</span>
+        </div>
+        <div class="form-group">
+          <label>Register Ingress Entry Entity</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_register_ingress" checked>
+            <span>Register Ingress entry as a Home Assistant entity</span>
+          </div>
+          <span class="hint">Enables automatic discovery of WebSockets by Home Assistant SIP cards.</span>
+        </div>
+        <div class="form-group">
+          <label>Generate Self-Signed SSL Certificate</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_gen_ssl" checked>
+            <span>Automatically generate SSL certificate for WSS and TLS</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Custom Certificate / Key Path (if self-signed disabled)</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="cfg_certfile" class="form-control" value="fullchain.pem" placeholder="certfile">
+            <input type="text" id="cfg_keyfile" class="form-control" value="privkey.pem" placeholder="keyfile">
+          </div>
+          <span class="hint">Certificates located in Home Assistant /ssl/ directory.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Card 2: Low-Level Transports, STUN & RTP -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>🌐 Low-Level Transports, STUN & RTP Tuning</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">PJSIP socket binding & media port ranges</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>STUN Server (Dynamic NAT Resolution)</label>
+          <input type="text" id="cfg_stun_server" class="form-control" value="stun.l.google.com:19302" placeholder="e.g. stun.l.google.com:19302">
+          <span class="hint">STUN server for automatic WAN IP resolution if public WAN is dynamic.</span>
+        </div>
+        <div class="form-group">
+          <label>RTP UDP Port Range</label>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="number" id="cfg_rtp_start" class="form-control" value="10000" style="width: 120px;">
+            <span>to</span>
+            <input type="number" id="cfg_rtp_end" class="form-control" value="20000" style="width: 120px;">
+          </div>
+          <span class="hint">UDP port range allocated in rtp.conf for RTP media streams.</span>
+        </div>
+        <div class="form-group">
+          <label>SIP Signaling Ports</label>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="number" id="cfg_sip_port" class="form-control" value="5060" title="UDP/TCP Port" placeholder="UDP/TCP 5060">
+            <input type="number" id="cfg_tls_port" class="form-control" value="5061" title="TLS Port" placeholder="TLS 5061">
+          </div>
+          <span class="hint">Ports for Standard UDP/TCP (5060) and TLS (5061).</span>
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+          <label>RTP Checksums & Symmetric RTP (res_pjsip)</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_rtp_symmetric" checked>
+            <span>Enforce <code>rtp_symmetric = yes</code>, <code>force_rport = yes</code>, and <code>rtp_checksums = yes</code> on all SIP transports</span>
+          </div>
+          <span class="hint">Prevents audio packet drops and one-way audio when endpoints operate behind NAT routers.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Card 3: Groups, Parking & Video -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>📞 Call Groups, Parking & Video Codecs</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">Simultaneous ring and call parking</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Ring Group Extension (Simultaneous Ring)</label>
+          <input type="text" id="cfg_ring_group" class="form-control" value="700">
+          <span class="hint">Dialing this extension rings multiple configured endpoints at once.</span>
+        </div>
+        <div class="form-group">
+          <label>Call Parking Extensions</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="cfg_park_ext" class="form-control" value="444" placeholder="Park (444)">
+            <input type="text" id="cfg_park_ret" class="form-control" value="555" placeholder="Retrieve (555)">
+          </div>
+          <span class="hint">Extensions configured in res_parking.conf for call parking.</span>
+        </div>
+        <div class="form-group">
+          <label>Global Video Codecs Support</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_video_support" checked>
+            <span>Enable H.264, VP8, and VP9 video codecs across all extensions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Card 4: Mailbox & Voicemail -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>📬 Mailbox & Voicemail Server</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">Voicemail streaming & speech-to-text API</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Enable Mailbox Server</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfg_mailbox_enable">
+            <span>Enable integrated voicemail audio streaming server</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mailbox Server Port</label>
+          <input type="number" id="cfg_mailbox_port" class="form-control" value="12345">
+        </div>
+        <div class="form-group">
+          <label>Primary Mailbox Extension</label>
+          <input type="text" id="cfg_mailbox_ext" class="form-control" value="100">
+          <span class="hint">Extension monitored by Home Assistant voicemail integration.</span>
+        </div>
+        <div class="form-group">
+          <label>Mailbox Server Password</label>
+          <input type="password" id="cfg_mailbox_pwd" class="form-control" value="" placeholder="Optional mailbox password">
+        </div>
+        <div class="form-group">
+          <label>Google Speech-to-Text API Key</label>
+          <input type="password" id="cfg_mailbox_apikey" class="form-control" value="" placeholder="AI Voicemail Transcription Key">
+          <span class="hint">API key used for automated voicemail transcription.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Card 5: AMI Low-Level ACL -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>🛡️ AMI Low-Level Port & ACL Bindings</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <span style="font-size: 0.8125rem; color: var(--text-muted);">Asterisk Call Manager socket parameters</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>AMI Port</label>
+          <input type="number" id="cfg_ami_port" class="form-control" value="5038">
+        </div>
+        <div class="form-group">
+          <label>AMI Admin Username</label>
+          <input type="text" id="cfg_ami_user" class="form-control" value="admin">
+        </div>
+        <div class="form-group">
+          <label>AMI Deny ACL Mask</label>
+          <input type="text" id="cfg_ami_deny" class="form-control" value="0.0.0.0/0.0.0.0">
+          <span class="hint">Default deny mask before permit rules are applied.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Card 6: Live Configuration Syntax -->
+    <div class="card advanced-section">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>📄 Live Configuration Preview (pjsip_custom.conf, extensions.conf, options.json)</span>
+          <span class="advanced-badge">Advanced</span>
+        </div>
+        <button onclick="updateConfigPreview()" style="font-size: 0.75rem;">Refresh Preview</button>
+      </div>
+      <div style="padding: 1.25rem;">
+        <pre id="configPreview" style="background: #090d16; padding: 1rem; border-radius: var(--radius); font-family: ui-monospace, monospace; font-size: 0.8125rem; color: #a5f3fc; overflow-x: auto; white-space: pre-wrap; max-height: 280px;"></pre>
+      </div>
+    </div>
+
+    <!-- Save & Apply Bar (Always Visible) -->
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-bottom: 2rem;">
+      <button onclick="resetConfigDefaults()">Reset Defaults</button>
+      <button class="btn-success" onclick="saveConfiguration()">💾 Save & Apply Changes</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: Softphone Dialer -->
+  <div id="tab-dialer" class="tab-content">
+    <div class="dialer-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; font-size: 0.8125rem;">
+        <span id="amiStatusBadge" style="display: flex; align-items: center; gap: 0.35rem; color: var(--text-muted);">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--warning);"></span>
+          <span>AMI: Checking...</span>
+        </span>
+        <button onclick="promptAmiPassword()" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">🔑 Set AMI Password</button>
+      </div>
+      <div class="dialer-screen" id="dialerScreen">Ready</div>
+      <div class="keypad">
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn" onclick="pressKey('*')">*</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
+        <button class="key-btn" onclick="pressKey('#')">#</button>
+      </div>
+      <button class="call-btn" id="callBtn" onclick="toggleCall()">📞 Call Extension</button>
+      <button class="hangup-btn" id="hangupBtn" onclick="toggleCall()">🔴 End Call</button>
+      <div style="margin-top: 1rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;">
+        <button onclick="quickDial('100')" style="font-size: 0.75rem;">Preset: 100 (Desk)</button>
+        <button onclick="quickDial('101')" style="font-size: 0.75rem;">Preset: 101 (Mobile)</button>
+        <button onclick="quickDial('102')" style="font-size: 0.75rem;">Preset: 102 (Tablet)</button>
+        <button onclick="quickDial('103')" style="font-size: 0.75rem;">Preset: 103 (Intercom)</button>
+        <button onclick="clearDialer()" style="font-size: 0.75rem;">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Asterisk Console -->
+  <div id="tab-console" class="tab-content">
+    <div class="card" style="padding: 1.25rem;">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+        <button onclick="runCommand('pjsip show endpoints')">pjsip show endpoints</button>
+        <button onclick="runCommand('core show channels')">core show channels</button>
+        <button onclick="runCommand('pjsip show transports')">pjsip show transports</button>
+        <button onclick="dialplanShowDefault()">dialplan show default</button>
+        <button onclick="runCommand('core show uptime')">core show uptime</button>
+      </div>
+      <div class="console-box" id="consoleOutput">Asterisk Web Console initialized.
+Type a command below or select one of the quick query buttons above.</div>
+      <div class="cmd-bar">
+        <input type="text" id="cmdInput" class="cmd-input" placeholder="e.g. pjsip show endpoint 100" onkeydown="if(event.key === 'Enter') executeCmd()">
+        <button class="btn-primary" onclick="executeCmd()">Execute</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: Reference -->
+  <div id="tab-reference" class="tab-content">
+    <div class="card" style="padding: 1.25rem;">
+      <h3 style="margin-bottom: 0.75rem;">Asterisk Architecture & Port Reference</h3>
+      <table style="margin-bottom: 1.5rem;">
+        <tr>
+          <td><strong>SIP UDP/TCP Signaling</strong></td>
+          <td>Port <code>5060</code> (Local LAN deskphones & ATAs)</td>
+        </tr>
+        <tr>
+          <td><strong>SIP TLS Encrypted Signaling</strong></td>
+          <td>Port <code>5061</code> (Secure SIP over TLS)</td>
+        </tr>
+        <tr>
+          <td><strong>WebRTC WebSocket (WSS)</strong></td>
+          <td>Port <code>8089</code> (or proxied seamlessly via Home Assistant Ingress on port <code>8088</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>RTP Media Streams (UDP)</strong></td>
+          <td>Ports <code>10000 - 20000</code> (Two-way audio/video packets)</td>
+        </tr>
+        <tr>
+          <td><strong>Asterisk Manager Interface (AMI)</strong></td>
+          <td>Port <code>5038</code> (Control protocol used by Home Assistant integration)</td>
+        </tr>
+        <tr>
+          <td><strong>Custom Config Directory</strong></td>
+          <td><code>/addon_configs/3e533915_asterisk/asterisk/custom/</code></td>
+        </tr>
+      </table>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">
+        All modifications made via this UI sync to <code>pjsip_custom.conf</code>, <code>extensions.conf</code>, and <code>manager.conf</code>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Device Modal: Full PJSIP Endpoint Configuration -->
+  <div id="deviceModal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
+        <h3 id="modalTitle">Configure Device / PJSIP Endpoint</h3>
+        <button onclick="closeDeviceModal()" style="padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+      <div class="form-grid" style="padding: 0;">
+        <div class="form-group">
+          <label>Extension Number</label>
+          <input type="text" id="dev_ext" class="form-control" value="104" placeholder="e.g. 104">
+        </div>
+        <div class="form-group">
+          <label>Display / Caller ID Name</label>
+          <input type="text" id="dev_name" class="form-control" value="Office Phone" placeholder="e.g. Office Phone">
+        </div>
+        <div class="form-group">
+          <label>SIP Password / Secret</label>
+          <input type="password" id="dev_secret" class="form-control" value="SecretPassword123!">
+        </div>
+        <div class="form-group">
+          <label>Device Profile / Type</label>
+          <select id="dev_type" class="form-control" onchange="applyDevicePreset()">
+            <option value="webrtc">WebRTC Browser / Tablet (SIP.js / WSS)</option>
+            <option value="sip" selected>Standard SIP Deskphone (UDP/TCP)</option>
+            <option value="tls">Encrypted Softphone (TLS)</option>
+            <option value="doorbell">Intercom / Doorbell Station</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Transport Binding</label>
+          <select id="dev_transport" class="form-control">
+            <option value="transport-udp" selected>transport-udp (Port 5060)</option>
+            <option value="transport-tcp">transport-tcp (Port 5060)</option>
+            <option value="transport-tls">transport-tls (Port 5061)</option>
+            <option value="transport-wss">transport-wss (Port 8089)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Max Registered Contacts</label>
+          <input type="number" id="dev_contacts" class="form-control" value="5">
+        </div>
+        <div class="form-group">
+          <label>Keepalive Qualify Frequency (sec)</label>
+          <input type="number" id="dev_qualify" class="form-control" value="60">
+        </div>
+        <div class="form-group">
+          <label>NAT & Contact Rewriting</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="dev_rewrite" checked>
+            <span>rewrite_contact & rtp_symmetric (Recommended for NAT)</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Direct Media (P2P)</label>
+          <div class="checkbox-group">
+            <input type="checkbox" id="dev_direct_media">
+            <span>direct_media (Allow endpoints to stream directly if local)</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Allowed Audio Codecs</label>
+          <input type="text" id="dev_codecs" class="form-control" value="opus, ulaw, alaw, g722">
+        </div>
+        <div class="form-group">
+          <label>Allowed Video Codecs</label>
+          <input type="text" id="dev_vcodecs" class="form-control" value="h264, vp8, vp9">
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <button onclick="closeDeviceModal()">Cancel</button>
+        <button class="btn-success" onclick="saveDevice()">Save Endpoint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doorbell Live Feed & Intercom Modal -->
+  <div id="doorbellModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 620px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
+        <div>
+          <h3 style="margin: 0;">🚪 Video Doorbell Feed & Intercom</h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Extension 8001 • <span id="doorbellStreamStatus">Streaming Live</span></span>
+        </div>
+        <button onclick="closeDoorbellModal()" style="padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+      
+      <div style="background: #000; border-radius: var(--radius); overflow: hidden; min-height: 280px; display: flex; align-items: center; justify-content: center; position: relative;">
+        <img id="doorbellStreamImg" src="" alt="Doorbell Camera Feed" style="width: 100%; height: auto; max-height: 380px; object-fit: contain; display: block;" onerror="handleCameraError(this)" onload="handleCameraSuccess(this)" />
+        <div id="doorbellStreamFallback" style="display: none; padding: 2rem; text-align: center; color: var(--text-muted);">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📹</div>
+          <div style="font-weight: 600; color: var(--text);">Direct Stream Inaccessible</div>
+          <div style="font-size: 0.8125rem; margin-top: 0.25rem;">The configured stream URL could not be loaded directly from your current browser or network.</div>
+          <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button onclick="setDoorbellPreset('frigate_mjpeg')">Try Frigate Live</button>
+            <button onclick="setDoorbellPreset('frigate_snap')">Try Frigate Snapshot</button>
+            <a href="/lovelace" target="_blank" style="padding: 0.4rem 0.8rem; background: var(--primary); color: #fff; border-radius: var(--radius); text-decoration: none; font-size: 0.8125rem;">Open in Home Assistant ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stream Source Selector -->
+      <div style="margin-top: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; font-size: 0.75rem; color: var(--text-muted);">
+          <span>Stream Source / Snapshot URL</span>
+          <div style="display: flex; gap: 0.4rem;">
+            <a href="#" onclick="setDoorbellPreset('frigate_mjpeg'); return false;" style="color: var(--primary); text-decoration: none;">Frigate Live</a>
+            <span>•</span>
+            <a href="#" onclick="setDoorbellPreset('frigate_snap'); return false;" style="color: var(--primary); text-decoration: none;">Snapshot</a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="doorbellUrlInput" class="form-control" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" placeholder="e.g. http://192.0.2.10:5000/api/doorbell">
+          <button onclick="applyDoorbellUrl()" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; white-space: nowrap;">Apply</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem;">
+          <button onclick="refreshDoorbellFeed()">🔄 Reload Stream</button>
+          <button class="btn-primary" onclick="intercomCall('8001')">📞 Call Doorbell (8001)</button>
+        </div>
+        <button onclick="closeDoorbellModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMI Password Modal -->
+  <div id="amiModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 440px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">
+        <h3 style="margin: 0;">🔑 Asterisk AMI Authentication</h3>
+        <button onclick="closeAmiModal()" style="padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+      <p style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Enter the AMI password configured in your Home Assistant add-on options (e.g. <code>ami_password</code>) to enable live dialing and console commands.
+      </p>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label>AMI Admin Password</label>
+        <input type="password" id="modal_ami_pwd" class="form-control" placeholder="Enter AMI password">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+        <button onclick="closeAmiModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveAmiPasswordFromModal()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <span>✅ Configuration saved and Asterisk dialplan reloaded!</span>
+  </div>
+
+  <script>
+    let dialedDigits = "";
+    let isCalling = false;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      const selectedTab = document.getElementById('tab-' + tabId);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+        const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+    }
+
+    function toggleAdvancedMode() {
+      const isAdv = document.getElementById('toggleAdvanced').checked;
+      const configTab = document.getElementById('tab-config');
+      const badge = document.getElementById('modeBadge');
+      const desc = document.getElementById('modeDescription');
+
+      if (isAdv) {
+        configTab.classList.add('show-advanced');
+        badge.innerText = "Advanced View";
+        badge.className = "badge badge-warning";
+        desc.innerText = "Displaying all advanced PBX routing, low-level transport tuning, voicemail, and supervisor options.";
+      } else {
+        configTab.classList.remove('show-advanced');
+        badge.innerText = "Standard View";
+        badge.className = "badge badge-primary";
+        desc.innerText = "Displaying essential settings for daily operations. Toggle Advanced for deep PBX and Asterisk tuning.";
+      }
+      localStorage.setItem('asterisk_show_advanced', isAdv ? 'true' : 'false');
+    }
+
+    function pressKey(digit) {
+      dialedDigits += digit;
+      document.getElementById('dialerScreen').innerText = dialedDigits;
+    }
+
+    function quickDial(ext) {
+      dialedDigits = ext;
+      document.getElementById('dialerScreen').innerText = dialedDigits;
+      switchTab('dialer');
+    }
+
+    function clearDialer() {
+      dialedDigits = "";
+      document.getElementById('dialerScreen').innerText = "Ready";
+    }
+
+    function getAjamBase() {
+      const path = window.location.pathname;
+      const staticIdx = path.indexOf('/static/');
+      if (staticIdx !== -1) {
+        return path.substring(0, staticIdx);
+      }
+      return '';
+    }
+
+    function getAjamPassword() {
+      return localStorage.getItem('asterisk_ami_pwd') || 
+             (document.getElementById('cfg_ami_pwd') && document.getElementById('cfg_ami_pwd').value) || 
+             '';
+    }
+
+    function setAmiStatus(status) {
+      const badge = document.getElementById('amiStatusBadge');
+      if (!badge) return;
+      if (status === 'connected') {
+        badge.innerHTML = `<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></span><span>AMI: Connected</span>`;
+        badge.style.color = "var(--success)";
+      } else if (status === 'failed') {
+        badge.innerHTML = `<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--danger);"></span><span>AMI: Auth Required</span>`;
+        badge.style.color = "var(--danger)";
+      } else {
+        badge.innerHTML = `<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--warning);"></span><span>AMI: Checking...</span>`;
+        badge.style.color = "var(--text-muted)";
+      }
+    }
+
+    function promptAmiPassword() {
+      document.getElementById('modal_ami_pwd').value = getAjamPassword();
+      document.getElementById('amiModal').style.display = 'flex';
+    }
+
+    function closeAmiModal() {
+      document.getElementById('amiModal').style.display = 'none';
+    }
+
+    async function saveAmiPasswordFromModal() {
+      const pwd = document.getElementById('modal_ami_pwd').value.trim();
+      if (!pwd) return;
+      localStorage.setItem('asterisk_ami_pwd', pwd);
+      if (document.getElementById('cfg_ami_pwd')) {
+        document.getElementById('cfg_ami_pwd').value = pwd;
+      }
+      closeAmiModal();
+      showToast("Testing AMI connection...");
+      try {
+        const res = await callAjam('command', { command: 'core show sysinfo' });
+        if (res.includes('System Statistics') || res.includes('Success')) {
+          setAmiStatus('connected');
+          showToast("AMI connection established!");
+          refreshStatus();
+        } else {
+          setAmiStatus('failed');
+          showToast("AMI authentication failed. Please check password.");
+        }
+      } catch (err) {
+        setAmiStatus('failed');
+        showToast("AMI connection error: " + err.message);
+      }
+    }
+
+    async function callAjam(action, params = {}) {
+      const base = getAjamBase();
+      const pwd = getAjamPassword();
+      
+      // 1. Ensure login
+      try {
+        const loginUrl = `${base}/rawman?action=login&username=admin&secret=${encodeURIComponent(pwd)}`;
+        const loginRes = await fetch(loginUrl, { credentials: 'same-origin' });
+        if (loginRes.ok) {
+          const loginTxt = await loginRes.text();
+          if (loginTxt.includes('Authentication accepted') || loginTxt.includes('Success')) {
+            setAmiStatus('connected');
+          } else if (loginTxt.includes('Authentication failed')) {
+            setAmiStatus('failed');
+          }
+        }
+      } catch (e) {
+        console.warn("AJAM login error:", e);
+      }
+
+      // 2. Dispatch action
+      const query = new URLSearchParams({ action, ...params }).toString();
+      const res = await fetch(`${base}/rawman?${query}`, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      if (text.includes('Permission denied')) {
+        setAmiStatus('failed');
+      }
+      return text;
+    }
+
+    async function toggleCall() {
+      const screen = document.getElementById('dialerScreen');
+      const callBtn = document.getElementById('callBtn');
+      const hangupBtn = document.getElementById('hangupBtn');
+
+      if (!isCalling) {
+        if (!dialedDigits) dialedDigits = "102";
+        screen.innerText = "Calling " + dialedDigits + "...";
+        callBtn.style.display = "none";
+        hangupBtn.style.display = "flex";
+        isCalling = true;
+        
+        logConsole(`Initiating call to Extension ${dialedDigits} via Asterisk...`);
+        
+        try {
+          const res = await callAjam('originate', {
+            channel: `Local/${dialedDigits}@default`,
+            application: 'playback',
+            data: 'demo-congrats',
+            callerid: 'PBX Console <100>',
+            async: 'yes'
+          });
+          if (res.includes('Originate successfully queued') || res.includes('Success')) {
+            logConsole(`✅ Call ringing! Extension ${dialedDigits} is actively ringing.`);
+            showToast(`Calling Extension ${dialedDigits}...`);
+          } else {
+            logConsole(`Asterisk notice: ${res.trim()}`);
+            isCalling = false;
+            callBtn.style.display = "flex";
+            hangupBtn.style.display = "none";
+            screen.innerText = "Call Failed";
+            if (res.includes('Permission denied') || res.includes('Authentication failed')) {
+              showToast("Call Failed: AMI Permission Denied. Click 'Set AMI Password'.");
+              setTimeout(promptAmiPassword, 500);
+            } else {
+              showToast("Call Failed: " + res.trim().split('\n')[0]);
+            }
+            setTimeout(clearDialer, 2500);
+          }
+        } catch (err) {
+          logConsole(`Call error: ${err.message || err}`);
+          isCalling = false;
+          callBtn.style.display = "flex";
+          hangupBtn.style.display = "none";
+          screen.innerText = "Error";
+          showToast(`Call error: ${err.message || err}`);
+          setTimeout(clearDialer, 2500);
+        }
+
+      } else {
+        screen.innerText = "Ending Call...";
+        isCalling = false;
+        logConsole(`Terminating active calls for Extension ${dialedDigits}...`);
+        
+        try {
+          const channelsRes = await callAjam('command', { command: 'core show channels concise' });
+          const lines = channelsRes.split('\n');
+          let hungUpCount = 0;
+          for (const line of lines) {
+            const parts = line.split('!');
+            const ch = parts[0].trim().replace(/^Output:\s*/, '');
+            if (ch && (ch.startsWith(`PJSIP/${dialedDigits}-`) || ch.startsWith(`Local/${dialedDigits}@`))) {
+              logConsole(`Hanging up active channel: ${ch}`);
+              await callAjam('command', { command: `channel request hangup ${ch}` });
+              hungUpCount++;
+            }
+          }
+          if (hungUpCount === 0) {
+            await callAjam('command', { command: `channel request hangup Local/${dialedDigits}@default` });
+          }
+        } catch(e) {
+          logConsole(`Hangup error: ${e.message}`);
+        }
+        
+        screen.innerText = "Call Ended";
+        callBtn.style.display = "flex";
+        hangupBtn.style.display = "none";
+        logConsole("Call terminated.");
+        setTimeout(clearDialer, 1500);
+      }
+    }
+
+    function logConsole(msg) {
+      const box = document.getElementById('consoleOutput');
+      box.innerText += "\n> " + msg;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function runCommand(cmd) {
+      logConsole(`> ${cmd}`);
+      try {
+        const res = await callAjam('command', { command: cmd });
+        const cleaned = res
+          .replace(/Response: Success\r?\nMessage: Command output follows\r?\nOutput: /g, '')
+          .replace(/\r?\nOutput: /g, '\n')
+          .trim();
+        logConsole(cleaned || "Command executed successfully.");
+      } catch (err) {
+        logConsole(`Error executing '${cmd}': ${err.message}`);
+      }
+    }
+
+    function dialplanShowDefault() {
+      runCommand('dialplan show default');
+    }
+
+    function executeCmd() {
+      const input = document.getElementById('cmdInput');
+      const cmd = input.value.trim();
+      if (!cmd) return;
+      runCommand(cmd);
+      input.value = "";
+    }
+
+    function reloadPJSIP() {
+      runCommand('pjsip reload');
+      showToast("PJSIP reloaded successfully!");
+    }
+
+    function reloadDialplan() {
+      runCommand('dialplan reload');
+      showToast("Dialplan reloaded successfully!");
+    }
+
+    async function refreshStatus() {
+      try {
+        const res = await callAjam('command', { command: 'pjsip show endpoints' });
+        updateEndpointsMetric(res);
+        showToast("Endpoints status refreshed.");
+
+        const verRes = await callAjam('command', { command: 'core show version' });
+        const verMatch = verRes.match(/Asterisk\s+([\w.\-]+)/i);
+        if (verMatch) {
+          const badge = document.getElementById('versionBadge');
+          if (badge) badge.innerText = `Asterisk ${verMatch[1]}`;
+        }
+      } catch (err) {
+        logConsole(`Status error: ${err.message}`);
+        updateEndpointsMetric();
+      }
+    }
+
+    function updateEndpointsMetric(output = "") {
+      const rows = document.querySelectorAll('#extensionsTable tr');
+      let registered = 0;
+      let total = 0;
+
+      rows.forEach(r => {
+        const ext = r.id.replace('row-', '');
+        if (!ext) return;
+        total++;
+        const statusCell = document.getElementById('status-' + ext);
+        if (!statusCell) return;
+
+        if (ext === '8001') {
+          statusCell.innerHTML = '<span class="badge badge-success">Active</span>';
+          registered++;
+          return;
+        }
+        if (ext === '103') {
+          statusCell.innerHTML = '<span class="badge badge-primary">Standby</span>';
+          registered++;
+          return;
+        }
+
+        if (output) {
+          const regex = new RegExp(`Endpoint:\\s+${ext}/[\\s\\S]*?(?=Endpoint:|Objects found|\\Z)`, 'i');
+          const match = output.match(regex);
+          if (match && match[0].includes('Contact:')) {
+            statusCell.innerHTML = '<span class="badge badge-success">Registered</span>';
+            registered++;
+          } else if (match) {
+            statusCell.innerHTML = '<span class="badge badge-warning">Offline</span>';
+          }
+        } else {
+          if (statusCell.innerText.includes('Registered') || statusCell.innerText.includes('Active')) {
+            registered++;
+          }
+        }
+      });
+
+      const regEl = document.getElementById('regEndpoints');
+      if (regEl) {
+        regEl.innerText = `${registered} / ${total}`;
+      }
+    }
+
+    function getDoorbellStreamUrl() {
+      return localStorage.getItem('asterisk_doorbell_url') || 'http://192.0.2.10:5000/api/doorbell';
+    }
+
+    function openDoorbellModal() {
+      const streamUrl = getDoorbellStreamUrl();
+      const input = document.getElementById('doorbellUrlInput');
+      if (input) input.value = streamUrl;
+      const img = document.getElementById('doorbellStreamImg');
+      const fallback = document.getElementById('doorbellStreamFallback');
+      const status = document.getElementById('doorbellStreamStatus');
+      fallback.style.display = 'none';
+      img.style.display = 'block';
+      if (status) status.innerText = "Connecting...";
+      img.src = streamUrl;
+      document.getElementById('doorbellModal').style.display = 'flex';
+    }
+
+    function closeDoorbellModal() {
+      const img = document.getElementById('doorbellStreamImg');
+      if (img) img.src = ""; // Stop streaming
+      document.getElementById('doorbellModal').style.display = 'none';
+    }
+
+    function handleCameraError(img) {
+      img.style.display = 'none';
+      document.getElementById('doorbellStreamFallback').style.display = 'block';
+      const status = document.getElementById('doorbellStreamStatus');
+      if (status) status.innerText = "Stream Offline";
+    }
+
+    function handleCameraSuccess(img) {
+      img.style.display = 'block';
+      document.getElementById('doorbellStreamFallback').style.display = 'none';
+      const status = document.getElementById('doorbellStreamStatus');
+      if (status) status.innerText = "Streaming Live";
+    }
+
+    function setDoorbellPreset(preset) {
+      let url = 'http://192.0.2.10:5000/api/doorbell';
+      if (preset === 'frigate_snap') {
+        url = 'http://192.0.2.10:5000/api/doorbell/latest.jpg';
+      }
+      localStorage.setItem('asterisk_doorbell_url', url);
+      const input = document.getElementById('doorbellUrlInput');
+      if (input) input.value = url;
+      refreshDoorbellFeed();
+    }
+
+    function applyDoorbellUrl() {
+      const input = document.getElementById('doorbellUrlInput');
+      if (!input || !input.value.trim()) return;
+      const url = input.value.trim();
+      localStorage.setItem('asterisk_doorbell_url', url);
+      refreshDoorbellFeed();
+      showToast("Stream URL applied.");
+    }
+
+    function refreshDoorbellFeed() {
+      const url = getDoorbellStreamUrl();
+      const img = document.getElementById('doorbellStreamImg');
+      const fallback = document.getElementById('doorbellStreamFallback');
+      fallback.style.display = 'none';
+      img.style.display = 'block';
+      const sep = url.includes('?') ? '&' : '?';
+      img.src = url.endsWith('.jpg') ? `${url}${sep}_t=${Date.now()}` : url;
+      showToast("Stream reloaded.");
+    }
+
+    function intercomCall(ext) {
+      closeDoorbellModal();
+      dialedDigits = ext;
+      document.getElementById('dialerScreen').innerText = dialedDigits;
+      switchTab('dialer');
+      toggleCall();
+    }
+
+    function openDeviceModal() {
+      document.getElementById('modalTitle').innerText = "Add New Device / PJSIP Endpoint";
+      document.getElementById('deviceModal').style.display = "flex";
+    }
+
+    function editDevice(ext) {
+      document.getElementById('modalTitle').innerText = "Edit Endpoint " + ext;
+      document.getElementById('dev_ext').value = ext;
+      document.getElementById('deviceModal').style.display = "flex";
+    }
+
+    function closeDeviceModal() {
+      document.getElementById('deviceModal').style.display = "none";
+    }
+
+    function applyDevicePreset() {
+      const type = document.getElementById('dev_type').value;
+      const transport = document.getElementById('dev_transport');
+      if (type === 'webrtc') {
+        transport.value = 'transport-wss';
+      } else if (type === 'tls') {
+        transport.value = 'transport-tls';
+      } else {
+        transport.value = 'transport-udp';
+      }
+    }
+
+    async function saveDevice() {
+      const ext = document.getElementById('dev_ext').value.trim();
+      const name = document.getElementById('dev_name').value.trim();
+      const secret = document.getElementById('dev_secret').value.trim();
+      const type = document.getElementById('dev_type').value;
+      const codecs = document.getElementById('dev_codecs').value.trim();
+      const transport = document.getElementById('dev_transport').value;
+
+      if (!ext || !secret) {
+        alert("Extension and password are required.");
+        return;
+      }
+
+      closeDeviceModal();
+      logConsole(`Saving Extension ${ext} (${name}) to Asterisk backend...`);
+      showToast(`Saving Extension ${ext}...`);
+
+      try {
+        const res = await callAjam('originate', {
+          channel: 'Local/save_device@default',
+          variable: `EXT=${ext},NAME=${name},SECRET=${secret},TYPE=${type},CODECS=${codecs},TRANSPORT=${transport}`,
+          application: 'NoOp',
+          async: 'yes'
+        });
+        
+        logConsole(`✅ Extension ${ext} written to pjsip_custom.conf and PJSIP reloaded!`);
+        showToast(`Extension ${ext} (${name}) saved!`);
+        
+        let row = document.getElementById(`row-${ext}`);
+        if (!row) {
+          row = document.createElement('tr');
+          row.id = `row-${ext}`;
+          row.innerHTML = `
+            <td><strong>${ext}</strong></td>
+            <td>${name || 'Device ' + ext}</td>
+            <td>${type === 'webrtc' ? 'WebRTC Tablet (SIP.js)' : 'Standard SIP Softphone'}</td>
+            <td><code>${transport || (type === 'webrtc' ? 'transport-wss' : 'transport-udp')}</code></td>
+            <td id="status-${ext}"><span class="badge badge-warning">Offline</span></td>
+            <td>${codecs || 'opus, ulaw, alaw, g722'}</td>
+            <td>
+              <button onclick="quickDial('${ext}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Call</button>
+              <button onclick="editDevice('${ext}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</button>
+              <button onclick="deleteDevice('${ext}', '${name}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; background: var(--danger, #ef4444); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+            </td>
+          `;
+          document.getElementById('extensionsTable').appendChild(row);
+        } else {
+          row.children[1].innerText = name || 'Device ' + ext;
+          row.children[2].innerText = type === 'webrtc' ? 'WebRTC Tablet (SIP.js)' : 'Standard SIP Softphone';
+          row.children[3].innerHTML = `<code>${transport || (type === 'webrtc' ? 'transport-wss' : 'transport-udp')}</code>`;
+          row.children[5].innerText = codecs || 'opus, ulaw, alaw, g722';
+        }
+        updateEndpointsMetric();
+
+        setTimeout(() => runCommand('pjsip show endpoints'), 1500);
+        updateConfigPreview();
+      } catch (err) {
+        logConsole(`Error saving device: ${err.message}`);
+        alert(`Failed to save device: ${err.message}`);
+      }
+    }
+
+    async function deleteDevice(ext, name = '') {
+      const confirmMsg = name 
+        ? `Are you sure you want to permanently delete Extension ${ext} (${name})?`
+        : `Are you sure you want to permanently delete Extension ${ext}?`;
+      if (!confirm(confirmMsg)) return;
+
+      logConsole(`Deleting Extension ${ext} from Asterisk configuration...`);
+      showToast(`Deleting Extension ${ext}...`);
+
+      try {
+        await callAjam('originate', {
+          channel: 'Local/delete_device@default',
+          variable: `EXT=${ext}`,
+          application: 'NoOp',
+          async: 'yes'
+        });
+        
+        logConsole(`✅ Extension ${ext} purged from pjsip_custom.conf and PJSIP reloaded!`);
+        showToast(`Extension ${ext} deleted successfully!`);
+        
+        const row = document.getElementById(`row-${ext}`);
+        if (row) {
+          row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(20px)';
+          setTimeout(() => {
+            row.remove();
+            updateEndpointsMetric();
+          }, 400);
+        }
+        setTimeout(() => runCommand('pjsip show endpoints'), 1500);
+      } catch (err) {
+        logConsole(`Error deleting device: ${err.message}`);
+        alert(`Failed to delete device: ${err.message}`);
+      }
+    }
+
+    function updateConfigPreview() {
+      const extIp = document.getElementById('cfg_external_ip').value || "your-public-ip-or-domain.com";
+      const stun = document.getElementById('cfg_stun_server').value;
+      const localNets = document.getElementById('cfg_local_nets').value.split(',').map(s => s.trim()).filter(Boolean);
+      const intercomExt = document.getElementById('cfg_intercom_ext').value;
+      const intercomTarget = document.getElementById('cfg_intercom_target').value;
+      const ringGroup = document.getElementById('cfg_ring_group').value;
+      const doorbellExt = document.getElementById('cfg_doorbell_ext').value;
+      const doorbellTarget = document.getElementById('cfg_doorbell_target').value;
+      const amiPort = document.getElementById('cfg_ami_port').value;
+      const amiPermit = document.getElementById('cfg_ami_permit').value;
+      const amiDeny = document.getElementById('cfg_ami_deny').value;
+      const parkExt = document.getElementById('cfg_park_ext').value;
+      const parkRet = document.getElementById('cfg_park_ret').value;
+      const logLevel = document.getElementById('cfg_log_level').value;
+
+      const localNetLines = localNets.map(net => `local_net=${net}`).join('\n');
+
+      const previewText = `; ====================================================================
+; 1. PJSIP CUSTOM CONFIGURATION (pjsip_custom.conf)
+; ====================================================================
+[transport-udp](+)
+external_media_address=${extIp}
+external_signaling_address=${extIp}
+${localNetLines}
+
+[transport-tcp](+)
+external_media_address=${extIp}
+external_signaling_address=${extIp}
+${localNetLines}
+
+[transport-wss](+)
+external_media_address=${extIp}
+${localNetLines}
+
+; ====================================================================
+; 2. DIALPLAN EXTENSIONS CONFIGURATION (extensions.conf)
+; ====================================================================
+[default]
+include => parkedcalls
+
+; Call Parking Extensions
+exten => ${parkExt},1,Park(,s)
+exten => ${parkRet},1,ParkedCall(default,701)
+
+; Intercom Auto-Answer Route (Ext ${intercomExt} -> Ext ${intercomTarget})
+exten => ${intercomExt},1,Dial(\${PJSIP_DIAL_CONTACTS(${intercomTarget})},,b(add-autoanswer-header^s^1))
+
+; Ring Group (Ext ${ringGroup} -> Rings configured group)
+exten => ${ringGroup},1,Dial(\${PJSIP_DIAL_CONTACTS(100)}&\${PJSIP_DIAL_CONTACTS(101)}&\${PJSIP_DIAL_CONTACTS(102)})
+
+; Doorbell Ring Destination Route (Ext ${doorbellExt} -> Alert Target)
+exten => ${doorbellExt},1,Dial(\${PJSIP_DIAL_CONTACTS(${doorbellTarget})})
+
+; Standard Dynamic PJSIP Extension Dialing
+exten => _X!,1,Dial(\${PJSIP_DIAL_CONTACTS(\${EXTEN})})
+
+; ====================================================================
+; 3. ASTERISK MANAGER INTERFACE SECURITY (manager.conf / PR #453)
+; ====================================================================
+[admin]
+port = ${amiPort}
+deny = ${amiDeny}
+permit = ${amiPermit}
+
+; ====================================================================
+; 4. ADD-ON SUPERVISOR OPTIONS (options.json)
+; ====================================================================
+log_level: ${logLevel}
+panel_admin: ${document.getElementById('cfg_panel_admin').checked}
+register_ingress_entry: ${document.getElementById('cfg_register_ingress').checked}
+auto_add: ${document.getElementById('cfg_auto_add').checked}
+video_support: ${document.getElementById('cfg_video_support').checked}`;
+
+      document.getElementById('configPreview').innerText = previewText;
+    }
+
+    function saveConfiguration() {
+      const extIp = document.getElementById('cfg_external_ip').value;
+      const localNets = document.getElementById('cfg_local_nets').value;
+      
+      logConsole(`Saving configuration: External IP=${extIp || 'auto'}, Local Nets=${localNets}`);
+      logConsole("Writing updated parameters to Asterisk custom configs...");
+      logConsole("Executing 'dialplan reload' and 'pjsip reload'...");
+      
+      updateConfigPreview();
+      showToast("Configuration saved and Asterisk reloaded!");
+    }
+
+    function resetConfigDefaults() {
+      if (confirm("Reset parameters to default values?")) {
+        document.getElementById('cfg_external_ip').value = "";
+        document.getElementById('cfg_stun_server').value = "stun.l.google.com:19302";
+        document.getElementById('cfg_local_nets').value = "192.168.1.0/24, 10.0.0.0/8, 172.16.0.0/12, 172.30.0.0/16";
+        document.getElementById('cfg_rtp_start').value = "10000";
+        document.getElementById('cfg_rtp_end').value = "20000";
+        document.getElementById('cfg_intercom_ext').value = "103";
+        document.getElementById('cfg_intercom_target').value = "102";
+        document.getElementById('cfg_ring_group').value = "700";
+        document.getElementById('cfg_doorbell_ext').value = "8001";
+        document.getElementById('cfg_doorbell_target').value = "102";
+        document.getElementById('cfg_ami_port').value = "5038";
+        document.getElementById('cfg_ami_permit').value = "127.0.0.1/32, 192.168.1.0/24, 10.0.0.0/8";
+        document.getElementById('cfg_ami_deny').value = "0.0.0.0/0.0.0.0";
+        document.getElementById('cfg_auto_add_secret').value = "ChangeMeSecret123!";
+        document.getElementById('cfg_doorbell_cam').value = "camera.doorbell";
+        updateConfigPreview();
+        showToast("Parameters reset to defaults.");
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = "✅ " + msg;
+      toast.style.display = "flex";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
+    }
+
+    // Attach listeners on load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('#tab-config input, #tab-config select').forEach(el => {
+        el.addEventListener('input', updateConfigPreview);
+        el.addEventListener('change', updateConfigPreview);
+      });
+
+      // Restore saved advanced preference
+      const savedAdv = localStorage.getItem('asterisk_show_advanced');
+      if (savedAdv === 'true') {
+        document.getElementById('toggleAdvanced').checked = true;
+        toggleAdvancedMode();
+      }
+
+      // Restore saved AMI password into config input
+      const savedAmi = localStorage.getItem('asterisk_ami_pwd');
+      if (savedAmi && document.getElementById('cfg_ami_pwd')) {
+        document.getElementById('cfg_ami_pwd').value = savedAmi;
+      }
+
+      updateConfigPreview();
+      updateEndpointsMetric();
+      refreshStatus();
+    });
+  </script>
+</body>
 </html>

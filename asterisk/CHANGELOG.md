@@ -3,6 +3,12 @@
 
 # Changelog
 
+## 6.4.0
+
+### New Features
+
+- Replace placeholder with functional PBX dashboard and configuration interface ([#461](https://github.com/TECH7Fox/asterisk-hass-addons/pull/461))
+
 ## 6.3.1
 
 ### Bug Fixes
