@@ -3,7 +3,7 @@
 
 [general]
 enabled = yes
-webenabled = yes
+webenabled = {{ if .webui }}yes{{ else }}no{{ end }}
 httptimeout = 60
 port = 5038
 bindaddr = 0.0.0.0

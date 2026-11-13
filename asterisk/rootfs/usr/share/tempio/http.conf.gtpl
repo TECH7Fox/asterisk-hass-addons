@@ -9,5 +9,7 @@ tlsenable=yes
 tlsbindaddr=[::]:8089
 tlscertfile={{ .certfile }}
 tlsprivatekey={{ .keyfile }}
-enablestatic=yes
+enablestatic={{ if .webui }}yes{{ else }}no{{ end }}
+{{ if .webui -}}
 redirect=/ static/index.html
+{{- end }}

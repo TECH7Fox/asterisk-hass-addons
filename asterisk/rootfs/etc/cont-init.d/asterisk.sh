@@ -108,11 +108,17 @@ if bashio::config.is_empty 'ami_password'; then
     bashio::exit.nok "'ami_password' must be set"
 fi
 
+webui=$(bashio::config 'webui')
+if [[ -z "${webui}" || "${webui}" == "null" ]]; then
+    webui="true"
+fi
+
 # deleting the target before writing to it ensures we don't write to a
 # symlinked file, like when the container is restarted
 rm -f "${etc_asterisk}/manager.conf"
 bashio::var.json \
-    password "$(bashio::config 'ami_password')" |
+    password "$(bashio::config 'ami_password')" \
+    webui "^${webui}" |
     tempio \
         -template "${tempio_dir}/manager.conf.gtpl" \
         -out "${etc_asterisk}/manager.conf"
@@ -127,7 +133,8 @@ bashio::var.json \
 rm -f "${etc_asterisk}/http.conf"
 bashio::var.json \
     certfile "${target_certfile}" \
-    keyfile "${target_keyfile}" |
+    keyfile "${target_keyfile}" \
+    webui "^${webui}" |
     tempio \
         -template "${tempio_dir}/http.conf.gtpl" \
         -out "${etc_asterisk}/http.conf"

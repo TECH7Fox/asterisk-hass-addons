@@ -105,6 +105,12 @@ You can get a key [here](https://cloud.google.com/speech-to-text). Google says i
 
 The log level to configure Asterisk to use. To know more about the existing presets, check [`logger.conf`](./rootfs/usr/share/tempio/logger.conf.gtpl).
 
+### Option: `webui`
+
+Enables or disables the built-in Asterisk static Web UI dashboard and AJAM web interface on ports `8088` and `8089` (enabled by default). When disabled, `/ws` WebSocket endpoints remain active for SIP clients while the dashboard and `/rawman` HTTP endpoints are turned off.
+
+When accessing the Web UI directly in standalone Docker deployments (outside Home Assistant Ingress), prefer HTTPS on port `8089` (`/static/index.html`) or place the container behind a TLS reverse proxy so AMI credentials are not transmitted over plain HTTP.
+
 ## STDIN action
 
 You can use the STDIN action to run any Asterisk CLI commands that you want. For example:
