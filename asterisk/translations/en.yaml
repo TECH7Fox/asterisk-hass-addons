@@ -70,3 +70,9 @@ configuration:
     name: Log Level
     description: >-
       The log level to configure Asterisk to use.
+  webui:
+    name: Web UI Dashboard
+    description: >-
+      Enables/disables the built-in Asterisk static Web UI dashboard and AJAM
+      web interface on ports 8088 and 8089. Disabling this keeps the /ws
+      WebSocket endpoint active for SIP clients while turning off the dashboard.

@@ -3,6 +3,18 @@
 
 # Changelog
 
+## 6.5.0
+
+### New Features
+
+- Add `webui` configuration option to enable or disable the built-in Web UI dashboard and AJAM HTTP interface while preserving `/ws` WebSockets
+
+### Bug Fixes
+
+- Gate the Web UI dashboard behind an AMI login screen before displaying status, endpoints, or controls, and add explicit logout/session handling
+- Populate the Endpoints & Devices table dynamically from Asterisk (`pjsip show endpoints`) instead of hard-coded demo rows (fixes #465, #466)
+- Fix `save_device.py` PJSIP stanzas (remove nonexistent `linphone-*` template references) and sanitize dialplan `System()` parameters
+
 ## 6.4.0
 
 ### New Features

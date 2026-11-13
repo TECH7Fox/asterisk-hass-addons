@@ -1,5 +1,5 @@
 name: Asterisk
-version: 6.4.0
+version: 6.5.0
 breaking_versions:
   - 6.0.0
   - 5.1.0
@@ -34,6 +34,7 @@ options:
   mailbox_extension: "100"
   mailbox_google_api_key: ""
   log_level: info
+  webui: true
 schema:
   ami_password: password
   auto_add: bool
@@ -51,6 +52,7 @@ schema:
   mailbox_extension: str
   mailbox_google_api_key: password
   log_level: list(all|trace|debug|info|notice|warning|error|fatal|off)
+  webui: bool
 host_network: true
 init: false
 uart: true # chan-dongle requirement

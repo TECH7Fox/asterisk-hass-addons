@@ -12,5 +12,6 @@
   "mailbox_password": "",
   "mailbox_extension": "100",
   "mailbox_google_api_key": "",
-  "log_level": "info"
+  "log_level": "info",
+  "webui": true
 }

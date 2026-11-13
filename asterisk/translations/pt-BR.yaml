@@ -70,3 +70,9 @@ configuration:
     name: Nível de registro
     description: >-
       O nível de registro para configurar o Asterisk para usar.
+  webui:
+    name: Painel Web UI
+    description: >-
+      Habilita/desabilita o painel Web UI estático integrado do Asterisk e a
+      interface web AJAM nas portas 8088 e 8089. Desabilitar mantém o endpoint
+      WebSocket /ws ativo para clientes SIP enquanto desativa o painel.
